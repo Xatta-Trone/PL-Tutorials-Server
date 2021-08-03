@@ -13,12 +13,12 @@ class CreatePermissionRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('permission_role', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('role_id');
-            $table->unsignedBigInteger('permission_id');
-            $table->timestamps();
-        });
+        // Schema::create('permission_role', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->unsignedBigInteger('role_id');
+        //     $table->unsignedBigInteger('permission_id');
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -28,6 +28,6 @@ class CreatePermissionRolesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('permission_role');
+        // Schema::dropIfExists('permission_role');
     }
 }

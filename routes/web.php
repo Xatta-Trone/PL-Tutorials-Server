@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
 
     $a = Admin::find(1);
-    $a->canperform('user_show');
+    $a->allPermissions()->pluck('name');
+
+    // dd($a->hasRole('system'));
 
 
 

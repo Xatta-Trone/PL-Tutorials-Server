@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laratrust\Traits\LaratrustUserTrait;
 
 class Admin extends Authenticatable
 {
+    use LaratrustUserTrait;
     use HasFactory;
     use Notifiable;
     use HasApiTokens;
@@ -43,20 +45,20 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
+    // public function roles()
+    // {
+    //     return $this->belongsToMany(Role::class);
+    // }
 
-    public function permissions()
-    {
-        $roles = $this->roles()->pluck('admin_role.role_id');
-        $permissions = PermissionRole::whereIn('role_id', $roles)->distinct()->pluck('permission_id');
-        return  Permission::whereIn('id', $permissions)->distinct()->pluck('name');
-    }
+    // public function permissions()
+    // {
+    //     $roles = $this->roles()->pluck('admin_role.role_id');
+    //     $permissions = PermissionRole::whereIn('role_id', $roles)->distinct()->pluck('permission_id');
+    //     return  Permission::whereIn('id', $permissions)->distinct()->pluck('name');
+    // }
 
-    public function canperform($permission)
-    {
-        return !!in_array($permission, $this->permissions()->toArray());
-    }
+    // public function canperform($permission)
+    // {
+    //     return !!in_array($permission, $this->permissions()->toArray());
+    // }
 }
