@@ -18,6 +18,6 @@ class AdminGuardMiddleware
             return $next($request);
         }
 
-        return response()->json(['message' => 'Unauthenticated.'], 401);
+        return response()->json(['message' => 'UNAUTHENTICATED'], 401);
     }
 }

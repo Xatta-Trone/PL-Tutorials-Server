@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddWhitelistedToUsersTable extends Migration
+class AddSoftDeleteToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddWhitelistedToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('whitelisted')->default(1);
+            $table->softDeletes();
         });
     }
 
@@ -26,7 +26,7 @@ class AddWhitelistedToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('whitelisted');
+            $table->dropSoftDeletes();
         });
     }
 }

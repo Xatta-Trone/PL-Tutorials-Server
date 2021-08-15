@@ -25,6 +25,10 @@ class Admin extends Authenticatable
         'email',
         'password',
     ];
+    // protected $with = [''];
+    // protected $appends = [
+    //     'allPermissions',
+    // ];
 
     /**
      * The attributes that should be hidden for arrays.

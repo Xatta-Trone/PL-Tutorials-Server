@@ -1,5 +1,6 @@
 <?php
 
+use App\Mail\UserLoginDetails;
 use App\Models\Admin\Admin;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +18,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
 
     $a = Admin::find(1);
+    $a->password = 'asdfasdf';
     $a->allPermissions()->pluck('name');
+    return new UserLoginDetails($a);
 
     // dd($a->hasRole('system'));
 

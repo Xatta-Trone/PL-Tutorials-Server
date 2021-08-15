@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminLoginRequest;
+use App\Traits\AuthTrait;
 use App\Models\Admin\Admin;
 use Illuminate\Http\Request;
+
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\AdminLoginRequest;
 
 class AdminAuthController extends Controller
 {
+    use AuthTrait;
     // public function register(RegisterRequest $request)
     // {
     //     $validatedData = $request->validated();
@@ -32,11 +35,23 @@ class AdminAuthController extends Controller
     {
         $validatedData = $request->validated();
 
-        $admin = Admin::where('email', $validatedData['email'])->firstOrFail();
+        $admin = Admin::where('email', $validatedData['email'])->first();
+
+        if ($admin == null) {
+            return response()->json([
+                'message' => self::$INVALID_EMAIL_PASSWORD,
+            ], 401);
+        }
+
+        if ($admin->status == 0) {
+            return response()->json([
+                'message' => self::$ACCOUNT_NOT_ACTIVE,
+            ], 401);
+        }
 
         if (!$admin || !Hash::check($validatedData['password'], $admin->password)) {
             return response()->json([
-                'message' => 'Invalid login details',
+                'message' => self::$INVALID_EMAIL_PASSWORD,
             ], 401);
         }
 
@@ -46,6 +61,7 @@ class AdminAuthController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $admin,
+            'message' => self::$AUTH_SUCCESS,
         ]);
     }
 
@@ -55,13 +71,28 @@ class AdminAuthController extends Controller
         return $request->user();
     }
 
+    public function permissions(Request $request)
+    {
+        // return auth()->guard('admin')->user();
+        return $request->user()->allPermissions()->pluck('name');
+    }
+
     public function logout(Request $request)
     {
-        return $request->user()->currentAccessToken()->delete();
+        $STATUS =  $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'code' => $STATUS,
+            'message' => $STATUS == 1 ? self::$LOGGED_OUT : self::$SOMETHING_WENT_WRONG,
+        ]);
     }
 
     public function logout_all(Request $request)
     {
-        return $request->user()->tokens()->delete();
+        $STATUS =  $request->user()->tokens()->delete();
+        return response()->json([
+            'code' => $STATUS,
+            'message' => $STATUS == 1 ? self::$LOGGED_OUT : self::$SOMETHING_WENT_WRONG,
+        ]);
     }
 }
