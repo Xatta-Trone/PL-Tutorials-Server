@@ -15,12 +15,36 @@ class VueTable2Service
         $orderBy = request()->input('orderBy', 'id');
         $ascending = request()->input('ascending', 0);
         $byColumn = request()->input('byColumn', 1);
-        $data = $model->select($fields);
+
+
+        $rawfields = array_filter($fields, function ($col) {
+            return !str_contains($col, ':');
+        });
+
+        $relaitonship_fields = array_filter($fields, function ($col) {
+            return str_contains($col, ':');
+        });
+
+
+        $data = $model->select($rawfields);
+
+
+        if (count($relaitonship_fields) > 0) {
+            $data = $model->with($relaitonship_fields);
+        }
+
+
+
 
         if (isset($query) && $query) {
             $data = $byColumn == 1 ?
                 $this->filterByColumn($data, $query) :
                 $this->filter($data, $query, $fields);
+        }
+
+        if (isset($orderBy) && !str_contains($orderBy, '.')) {
+            $direction = $ascending == 1 ? 'ASC' : 'DESC';
+            $data->orderBy($orderBy, $direction);
         }
 
         $count = $data->count();
@@ -29,12 +53,17 @@ class VueTable2Service
                 ->skip($limit * ($page - 1));
         }
 
-        if (isset($orderBy)) {
-            $direction = $ascending == 1 ? 'ASC' : 'DESC';
-            $data->orderBy($orderBy, $direction);
-        }
 
-        $results = $data->get()->toArray();
+
+        $results = $data->get();
+
+        // if (isset($orderBy) && str_contains($orderBy, '.')) {
+        //     // $direction = $ascending == 1 ? 'ASC' : 'DESC';
+        //     $results = $ascending == 1 ? $results->sortBy($orderBy) : $results->sortByDesc($orderBy);
+        // }
+
+
+        $results = $results->toArray();
 
         return [
             'data' => $results,

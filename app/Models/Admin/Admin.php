@@ -2,11 +2,12 @@
 
 namespace App\Models\Admin;
 
+use App\Models\Admin\Post;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Laratrust\Traits\LaratrustUserTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Laratrust\Traits\LaratrustUserTrait;
 
 class Admin extends Authenticatable
 {
@@ -65,4 +66,9 @@ class Admin extends Authenticatable
     // {
     //     return !!in_array($permission, $this->permissions()->toArray());
     // }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'user_id');
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Util;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin\Course;
 use App\Models\Admin\Department;
 use App\Models\Admin\LevelTerm;
 use App\Models\User\User;
@@ -45,6 +46,13 @@ class PublicInfoController extends Controller
     {
         // dd($id);
         $lts = LevelTerm::select('name', 'id', 'slug')->where('department_id', $id)->get();
+        return response()->json(['status' => true, 'data' => $lts]);
+    }
+
+    public function getcourse($dept_id, $levelterm_id)
+    {
+        // dd($id);
+        $lts = Course::select('course_name', 'id', 'slug')->where('department_id', $dept_id)->where('level_term_id', $levelterm_id)->get();
         return response()->json(['status' => true, 'data' => $lts]);
     }
 }

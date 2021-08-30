@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\AdminGuardMiddleware;
+use App\Http\Middleware\CORSMiddleware;
 use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 use App\Http\Middleware\UserGuardMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
@@ -70,5 +71,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'type.admin' => AdminGuardMiddleware::class,
         'type.user' => UserGuardMiddleware::class,
+        'cors' => CORSMiddleware::class,
     ];
 }
