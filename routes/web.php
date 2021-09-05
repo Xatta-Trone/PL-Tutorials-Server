@@ -1,10 +1,13 @@
 <?php
 
+
+use Goutte\Client;
 use App\Models\Admin\Post;
 use App\Models\Admin\Admin;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Mail\UserLoginDetails;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
@@ -219,3 +222,47 @@ Route::get('call', function () {
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+
+
+Route::get('/scrap', function () {
+    $client = new Client();
+    $crawler = $client->request('GET', 'https://www.engineeringbooks.me/search/label/civil?max-results=20');
+
+    $crawler->filter('a.timestamp-link')->each(function ($node) {
+        // dd($node->text . "\n");
+        $href  = $node->attr('href');
+        $title = $node->attr('title');
+        $date = $node->filter('abbr.published')->attr('title');
+        $datefomatted = Carbon::createFromDate($date);
+        // $c = Carbon::yesterday();
+
+        echo $date . '\n';
+
+        if ($datefomatted->isYesterday()) {
+            getinfo($href);
+        }
+    });
+});
+
+
+function getinfo($link)
+{
+    $client = new Client();
+    $crawler = $client->request('GET', $link);
+
+    // get title
+    $title = $crawler->filter('.post-body h2')->first()->text();
+    // get author
+    $author = $crawler->filter('.post-body div')->eq(1)->filter('span')->eq(1)->text();
+    //get link
+    $crawler->filter('.post-body a')->each(function ($node) use ($title, $author) {
+        // dd($node->text() . "\n");
+        if ($node->text() == 'LINK') {
+            $href  = $node->attr('href');
+            dd(compact('href', 'title', 'author'));
+        } else {
+            return 'none';
+        }
+    });
+    // dd($crawler->filter('a')->link());
+}
