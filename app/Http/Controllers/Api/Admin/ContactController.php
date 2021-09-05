@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Traits\ImageTrait;
+use App\Models\Admin\Reply;
 use App\Traits\ContactTrait;
 use Illuminate\Http\Request;
+use App\Models\Admin\Contact;
+use App\Mail\SendContactResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\ContactReplyRequest;
 use App\Http\Services\CustomVueTable2Service;
-use App\Models\Admin\Contact;
-use App\Models\Admin\Reply;
 
 class ContactController extends Controller
 {
@@ -72,6 +74,10 @@ class ContactController extends Controller
     public function update(ContactReplyRequest $request, $id)
     {
         $post =  Reply::create(array_merge($request->validated(), ['replied_by' => auth()->id()]));
+
+        Mail::to($request->input('mailto'))->send(new SendContactResponse($post));
+
+
         Contact::find($id)->update(['status' => 1, 'replied' => '1']);
 
 

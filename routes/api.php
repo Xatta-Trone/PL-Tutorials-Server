@@ -3,14 +3,15 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\AuthController;
+use App\Http\Controllers\Api\Admin\BookController;
+use App\Http\Controllers\Api\Admin\PostController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\admin\UsersController;
+use App\Http\Controllers\Api\Admin\ContactController;
+use App\Http\Controllers\Api\Admin\SoftwareController;
 use App\Http\Controllers\Api\admin\UserDataController;
 use App\Http\Controllers\Api\Admin\AdminAuthController;
-use App\Http\Controllers\Api\Admin\BookController;
-use App\Http\Controllers\Api\Admin\ContactController;
-use App\Http\Controllers\Api\Admin\PostController;
-use App\Http\Controllers\Api\Admin\SoftwareController;
+use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Util\PublicInfoController;
 use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 
@@ -30,15 +31,7 @@ use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 // });
 
 Route::prefix('v1')->group(function () {
-    // public urls
-    Route::get('emailcheck', [PublicInfoController::class, 'checkEmail']);
-    Route::get('studentidcheck', [PublicInfoController::class, 'checkstudentID']);
-    Route::get('getdepartments', [PublicInfoController::class, 'getdepartments']);
-    Route::get(
-        'getlevelterms/{id}',
-        [PublicInfoController::class, 'getlevelterms']
-    );
-    Route::get('getcourse/{dept_id}/{levelterm_id}', [PublicInfoController::class, 'getcourse']);
+
 
     // Auth routes
     Route::post('register/', [AuthController::class, 'register']);
@@ -52,6 +45,8 @@ Route::prefix('v1')->group(function () {
 
     // Admin
     Route::prefix('admin')->group(function () {
+
+        // public urls
         Route::post('login', [AdminAuthController::class, 'login']);
 
         Route::middleware(['auth:sanctum', UpdateSanctumConfigForCustomGuard::class, 'type.admin'])->group(function () {
@@ -64,6 +59,16 @@ Route::prefix('v1')->group(function () {
 
 
             //User Data resource
+
+            Route::get('emailcheck', [PublicInfoController::class, 'checkEmail']);
+            Route::get('studentidcheck', [PublicInfoController::class, 'checkstudentID']);
+            Route::get('getdepartments', [PublicInfoController::class, 'getdepartments']);
+            Route::get('getlevelterms/{id}', [PublicInfoController::class, 'getlevelterms']);
+            Route::get('getcourse/{dept_id}/{levelterm_id}', [PublicInfoController::class, 'getcourse']);
+
+
+
+
             // Route::get('userdatas', [UserDataController::class, 'index']);
             Route::get('users/restore/{id}', [UserController::class, 'restore']);
             Route::get('users/resetpass/{id}', [UserController::class, 'passwordReset']);
@@ -71,11 +76,12 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('userdatas', UserDataController::class);
             Route::apiResource('posts', PostController::class);
             Route::apiResource('softwares', SoftwareController::class);
+            Route::apiResource('books', BookController::class);
             Route::apiResource(
-                'books',
-                BookController::class
+                'contacts',
+                ContactController::class
             );
-            Route::apiResource('contacts', ContactController::class);
+            Route::apiResource('settings', SettingsController::class);
         });
     });
 });

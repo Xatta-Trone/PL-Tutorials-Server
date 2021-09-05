@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Services\CustomVueTable2Service;
 use App\Models\Admin\Post;
 use App\Models\Admin\Admin;
 use Illuminate\Support\Arr;
@@ -8,6 +7,8 @@ use Illuminate\Support\Str;
 use App\Mail\UserLoginDetails;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Services\CustomVueTable2Service;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+
 
 Route::get('/', function () {
 
@@ -201,3 +205,17 @@ Route::get('/', function () {
 
     return view('welcome');
 });
+
+
+Route::get('call', function () {
+    $call = request()->input('call');
+
+    if (request()->get('kay') && request()->get('kay') == env('ARTISAN_KEY')) {
+        Artisan::call($call);
+
+        return $call . ' called success';
+    }
+    return $call . ' not success';
+});
+
+Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');

@@ -88,7 +88,7 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, $id)
     {
-        // return $request->all();
+        // return $request->validated();
         $post = Post::findOrFail($id);
 
         $post->update(array_merge($request->validated(), ['image' => $this->updateimage(), 'user_id' => auth()->id(), 'user_type' => 'admin']));

@@ -84,6 +84,7 @@ class SoftwareController extends Controller
      */
     public function update(SoftwareUpdateRequest $request, $id)
     {
+        // return $request->validated();
         $post = Software::findOrFail($id);
 
         $post->update(array_merge($request->validated(), ['image' => $this->updateimage(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
