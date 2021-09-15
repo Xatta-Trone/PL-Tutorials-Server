@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\Admin\SoftwareController;
 use App\Http\Controllers\Api\admin\UserDataController;
 use App\Http\Controllers\Api\Admin\AdminAuthController;
 use App\Http\Controllers\Api\Admin\SettingsController;
+use App\Http\Controllers\Api\Admin\TestimonialController;
+use App\Http\Controllers\Api\Admin\UtilitesController;
 use App\Http\Controllers\Api\Util\PublicInfoController;
 use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 
@@ -77,11 +79,9 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('posts', PostController::class);
             Route::apiResource('softwares', SoftwareController::class);
             Route::apiResource('books', BookController::class);
-            Route::apiResource(
-                'contacts',
-                ContactController::class
-            );
+            Route::apiResource('contacts', ContactController::class);
             Route::apiResource('settings', SettingsController::class);
+            Route::apiResource('testimonials', TestimonialController::class);
         });
     });
 });

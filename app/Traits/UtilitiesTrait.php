@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Traits;
+
+trait UtilitiesTrait
+{
+
+    public static $UTILITIES_CREATED = 'UTILITIES_CREATED';
+    public static $UTILITIES_CREATION_ERROR = 'UTILITIES_CREATION_ERROR';
+
+    public static $UTILITIES_NOT_FOUND = 'UTILITIES_NOT_FOUND';
+    public static $UTILITIES_FOUND = 'UTILITIES_FOUND';
+
+    public static $UTILITIES_NOT_UPDATED = 'UTILITIES_NOT_UPDATED';
+    public static $UTILITIES_UPDATED = 'UTILITIES_UPDATED';
+
+    public static $UTILITIES_NOT_DELETED = 'UTILITIES_NOT_DELETED';
+    public static $UTILITIES_DELETED = 'UTILITIES_DELETED';
+
+    public static $UTILITIES_NOT_RESTORED = 'UTILITIES_NOT_RESTORED';
+    public static $UTILITIES_RESTORED = 'UTILITIES_RESTORED';
+}

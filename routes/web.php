@@ -2,6 +2,7 @@
 
 
 use Goutte\Client;
+use App\Models\User\User;
 use App\Models\Admin\Post;
 use App\Models\Admin\Admin;
 use Illuminate\Support\Arr;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Services\CustomVueTable2Service;
+use App\Models\Admin\Activity;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,11 +26,50 @@ use App\Http\Services\CustomVueTable2Service;
 |
 */
 
-
+function getModels($path)
+{
+    $out = [];
+    $results = scandir($path);
+    foreach ($results as $result) {
+        if ($result === '.' or $result === '..') continue;
+        $filename = $path . '/' . $result;
+        if (is_dir($filename)) {
+            $out = array_merge($out, getModels($filename));
+        } else {
+            $out[] = substr($filename, 0, -4);
+        }
+    }
+    return $out;
+}
 
 
 Route::get('/', function () {
 
+    // dd(get_class(new Post()));
+
+
+    $path = app_path() . "/Models";
+
+    dd(getModels($path));
+
+
+
+
+    $user = new User;
+    $new_users = User::where('created_at', '>', now())->count();
+    $new_users_this_week = User::where('created_at', '>', Carbon::now()->subWeek())->count();
+    $total_users = User::all()->count();
+    // $total_downloads = User::all()->count();
+
+
+    $data = [
+        'online_users' => $user->allOnline()->count(),
+        'new_user_today' => $new_users,
+        'new_user_week' => $new_users_this_week,
+        'total_users' => $total_users,
+    ];
+
+    dd($data);
     // $a = Admin::find(1);
     // $a->password = 'asdfasdf';
     // $a->allPermissions()->pluck('name');

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Traits\ImageTrait;
 use Illuminate\Http\Request;
-use App\Traits\SoftwareTrait;
-use App\Models\Admin\Software;
+use App\Traits\TestimonialTrait;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SoftwareCreateRequest;
-use App\Http\Requests\SoftwareUpdateRequest;
+use App\Http\Requests\TestimonialCreateRequest;
+use App\Http\Requests\TestimonialUpdateRequest;
 use App\Http\Services\CustomVueTable2Service;
+use App\Models\Admin\Testimonial;
+use App\Traits\UserTrait;
 
-class SoftwareController extends Controller
+class TestimonialController extends Controller
 {
-    use ImageTrait, SoftwareTrait;
+    use TestimonialTrait, UserTrait;
     /**
      * Display a listing of the resource.
      *
@@ -22,9 +22,9 @@ class SoftwareController extends Controller
     public function index()
     {
         $vs = new CustomVueTable2Service();
-        return  $vs->get(new Software(), [
-            'id', 'name', 'department_slug', 'level_term_slug', 'status', 'user_id',
-        ], ['admin:id,name:foreign_key=user_id']);
+        return  $vs->get(new Testimonial(), [
+            'id', 'name', 'dept_batch', 'status', 'user_letter'
+        ]);
     }
 
     /**
@@ -33,19 +33,19 @@ class SoftwareController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(SoftwareCreateRequest $request)
+    public function store(TestimonialCreateRequest $request)
     {
-        $post =  Software::create(array_merge($request->validated(), ['image' => $this->upload(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
+        $post =  Testimonial::create(array_merge($request->validated(), ['user_letter' => $this->userLetter($request->input('name'))]));
 
 
         if ($post) {
             return response()->json([
-                'message' => self::$SOFTWARE_CREATED,
+                'message' => self::$TESTIMONIAL_CREATED,
                 'status' => 'true'
             ], 201);
         } else {
             return response()->json([
-                'message' => self::$SOFTWARE_CREATION_ERROR,
+                'message' => self::$TESTIMONIAL_CREATION_ERROR,
                 'status' => 'false'
             ], 422);
         }
@@ -59,17 +59,17 @@ class SoftwareController extends Controller
      */
     public function show($id)
     {
-        $post = Software::find($id);
+        $post = Testimonial::find($id);
         if ($post) {
             return response()->json([
-                'message' => self::$SOFTWARE_FOUND,
+                'message' => self::$TESTIMONIAL_FOUND,
                 'status' => 'true',
                 'post' => $post,
             ], 200);
         }
 
         return response()->json([
-            'message' => self::$SOFTWARE_NOT_FOUND,
+            'message' => self::$TESTIMONIAL_NOT_FOUND,
             'status' => 'false',
             'post' => null,
         ], 404);
@@ -82,26 +82,23 @@ class SoftwareController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(SoftwareUpdateRequest $request, $id)
+    public function update(TestimonialUpdateRequest $request, $id)
     {
-        // return $request->all();
-        $post = Software::findOrFail($id);
+        $post = Testimonial::findOrFail($id);
 
-        if ($request->has('course_id') && ($request->input('course_id') == null || $request->input('course_id') == 'null' || $request->input('course_id') == '')) {
-            $request->input('course_id') == null;
-        }
 
-        $post->update(array_merge($request->validated(), ['image' => $this->updateimage(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
+
+        $post->update(array_merge($request->validated(), ['user_letter' => $this->userLetter($request->input('name'))]));
         // dd($post);
         if ($post) {
             return response()->json([
-                'message' => self::$SOFTWARE_UPDATED,
+                'message' => self::$TESTIMONIAL_UPDATED,
                 'status' => 'true',
 
             ], 200);
         }
         return response()->json([
-            'message' => self::$SOFTWARE_NOT_UPDATED,
+            'message' => self::$TESTIMONIAL_NOT_UPDATED,
             'status' => 'false',
         ], 422);
     }
@@ -114,28 +111,26 @@ class SoftwareController extends Controller
      */
     public function destroy($id)
     {
-        $post = Software::find($id);
+        $post = Testimonial::find($id);
 
         if ($post == null) {
             return response()->json([
-                'message' => self::$SOFTWARE_NOT_FOUND,
+                'message' => self::$TESTIMONIAL_NOT_FOUND,
                 'status' => 'false',
             ], 422);
         }
 
-        if ($post->image) {
-            $this->deleteimage($post->image, $post->post_type);
-        }
+
 
         if ($post->delete()) {
             return response()->json([
-                'message' => self::$SOFTWARE_DELETED,
+                'message' => self::$TESTIMONIAL_DELETED,
                 'status' => 'true',
 
             ], 200);
         }
         return response()->json([
-            'message' => self::$SOFTWARE_NOT_DELETED,
+            'message' => self::$TESTIMONIAL_NOT_DELETED,
             'status' => 'false',
         ], 422);
     }
