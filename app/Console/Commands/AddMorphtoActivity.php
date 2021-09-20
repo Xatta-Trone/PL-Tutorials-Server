@@ -2,23 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User\User;
-use App\Models\Admin\Admin;
-use Illuminate\Support\Str;
+
 use App\Models\Admin\Activity;
-use App\Models\Admin\Contact;
-use App\Models\Admin\Course;
-use App\Models\Admin\Department;
-use App\Models\Admin\LevelTerm;
-use App\Models\Admin\Permission;
-use App\Models\Admin\Post;
-use App\Models\Admin\Quote;
-use App\Models\Admin\Reply;
-use App\Models\Admin\Role;
-use App\Models\Admin\Settings;
-use App\Models\Admin\Software;
-use App\Models\Admin\Testimonial;
-use App\Models\admin\UserData;
+
 use App\Traits\ActivityTrait;
 use Illuminate\Console\Command;
 

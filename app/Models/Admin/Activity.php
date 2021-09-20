@@ -12,7 +12,16 @@ class Activity extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $appends = ['causer_name'];
+    // protected $with = ['causer'];
+
+
+    /**
+     * Get the parent commentable model (post or video).
+     */
+    public function causer()
+    {
+        return $this->morphTo();
+    }
 
     public function getCauserNameAttribute()
     {

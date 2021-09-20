@@ -1,21 +1,23 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\User\AuthController;
-use App\Http\Controllers\Api\Admin\BookController;
-use App\Http\Controllers\Api\Admin\PostController;
-use App\Http\Controllers\Api\Admin\UserController;
-use App\Http\Controllers\Api\admin\UsersController;
-use App\Http\Controllers\Api\Admin\ContactController;
-use App\Http\Controllers\Api\Admin\SoftwareController;
-use App\Http\Controllers\Api\admin\UserDataController;
+use App\Http\Controllers\Api\Admin\ActivityController;
 use App\Http\Controllers\Api\Admin\AdminAuthController;
+use App\Http\Controllers\Api\Admin\BookController;
+use App\Http\Controllers\Api\Admin\ContactController;
+use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\FaqController;
+use App\Http\Controllers\Api\Admin\PostController;
 use App\Http\Controllers\Api\Admin\SettingsController;
+use App\Http\Controllers\Api\Admin\SoftwareController;
 use App\Http\Controllers\Api\Admin\TestimonialController;
-use App\Http\Controllers\Api\Admin\UtilitesController;
+use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\admin\UserDataController;
+use App\Http\Controllers\Api\Admin\UserTraceController;
+use App\Http\Controllers\Api\User\AuthController;
 use App\Http\Controllers\Api\Util\PublicInfoController;
 use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,32 +35,26 @@ use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 // });
 
 Route::prefix('v1')->group(function () {
-
-
     // Auth routes
     Route::post('register/', [AuthController::class, 'register']);
     Route::post('login/', [AuthController::class, 'login'])->name('loginapi');
     // logged in user
     Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::get('me', [AuthController::class, 'me']);
+        // Route::get('logout-all', [AuthController::class, 'logout_all']);
         Route::get('logout', [AuthController::class, 'logout']);
-        Route::get('logout-all', [AdminAuthController::class, 'logout_all']);
     });
 
     // Admin
     Route::prefix('admin')->group(function () {
-
         // public urls
         Route::post('login', [AdminAuthController::class, 'login']);
 
         Route::middleware(['auth:sanctum', UpdateSanctumConfigForCustomGuard::class, 'type.admin'])->group(function () {
             Route::get('me', [AdminAuthController::class, 'me']);
             Route::get('permissions', [AdminAuthController::class, 'permissions']);
+            // Route::get('logout-all', [AdminAuthController::class, 'logout_all']);
             Route::get('logout', [AdminAuthController::class, 'logout']);
-            Route::get('logout-all', [AdminAuthController::class, 'logout_all']);
-
-
-
 
             //User Data resource
 
@@ -68,12 +64,12 @@ Route::prefix('v1')->group(function () {
             Route::get('getlevelterms/{id}', [PublicInfoController::class, 'getlevelterms']);
             Route::get('getcourse/{dept_id}/{levelterm_id}', [PublicInfoController::class, 'getcourse']);
 
-
-
-
             // Route::get('userdatas', [UserDataController::class, 'index']);
             Route::get('users/restore/{id}', [UserController::class, 'restore']);
             Route::get('users/resetpass/{id}', [UserController::class, 'passwordReset']);
+            Route::get('users/activitydata/{id}', [UserController::class, 'userActivity']);
+            Route::get('users/locationdata/{id}', [UserController::class, 'userLocation']);
+
             Route::apiResource('users', UserController::class);
             Route::apiResource('userdatas', UserDataController::class);
             Route::apiResource('posts', PostController::class);
@@ -82,6 +78,13 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('contacts', ContactController::class);
             Route::apiResource('settings', SettingsController::class);
             Route::apiResource('testimonials', TestimonialController::class);
+            Route::apiResource('faqs', FaqController::class);
+            Route::apiResource('activities', ActivityController::class);
+            Route::apiResource('usertraces', UserTraceController::class);
+
+            // Dashboard data
+            Route::get('dashboard/all', [DashboardController::class, 'index']);
+            Route::get('dashboard/chartdata', [DashboardController::class, 'chartdata']);
         });
     });
 });

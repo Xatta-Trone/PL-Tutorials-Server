@@ -1,19 +1,18 @@
 <?php
 
-
-use Goutte\Client;
-use App\Models\User\User;
-use App\Models\Admin\Post;
-use App\Models\Admin\Admin;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+use App\Http\Services\CustomVueTable2Service;
 use App\Mail\UserLoginDetails;
+use App\Models\Admin\Activity;
+use App\Models\Admin\Admin;
+use App\Models\Admin\Post;
+use App\Models\User\User;
+use Goutte\Client;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Artisan;
-use App\Http\Services\CustomVueTable2Service;
-use App\Models\Admin\Activity;
+use Illuminate\Support\Str;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,36 +30,93 @@ function getModels($path)
     $out = [];
     $results = scandir($path);
     foreach ($results as $result) {
-        if ($result === '.' or $result === '..') continue;
-        $filename = $path . '/' . $result;
+        if ($result === '.' or $result === '..') {
+            continue;
+        }
+        $filename = $path.'/'.$result;
         if (is_dir($filename)) {
             $out = array_merge($out, getModels($filename));
         } else {
             $out[] = substr($filename, 0, -4);
         }
     }
+
     return $out;
 }
 
-
 Route::get('/', function () {
+    $startDate = Carbon::now()->subDays(30);
+    $endDate = Carbon::now();
 
-    // dd(get_class(new Post()));
+    $dates = [];
 
+    for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+        $dates[]['date'] = $date->format('Y-m-d');
+    }
 
-    $path = app_path() . "/Models";
+    $a = Activity::select(DB::raw("count(*) AS activities, sum(case when `activity` = 'downloaded' then 1 else 0 end) AS downloads, Date(`created_at`) as date"))
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->groupBy(DB::raw('Date(`created_at`)'))->orderBy(DB::raw('Date(`created_at`)'))
+        ->get()->toArray();
 
-    dd(getModels($path));
+    $u =
+        User::select(DB::raw('count(*) AS users, Date(`created_at`) as date'))
+        ->whereBetween('created_at', [$startDate, $endDate])
+        ->groupBy(DB::raw('Date(`created_at`)'))->orderBy(DB::raw('Date(`created_at`)'))
+        ->get()->toArray();
 
+    $c = array_replace_recursive(
+        array_combine(array_column($a, 'date'), $a),
+        array_combine(array_column($u, 'date'), $u),
+        array_combine(array_column($dates, 'date'), $dates)
+    );
 
+    $finalData = [];
 
+    foreach ($c as $key => $value) {
+        $keys = ['users', 'activities', 'downloads'];
 
-    $user = new User;
+        $data = ['users' => 0, 'activities' => 0, 'downloads' => 0, 'date' => Carbon::parse($value['date'])->format('M d')];
+
+        // $c[$key] = array_merge($value, ['date' => Carbon::parse($value['date'])->format('M d')]); //format the dates
+        // foreach ($keys as $k) {
+        //     // var_dump(array_key_exists($k, $value), $k, $value);
+        //     if (!array_key_exists($k, $value)) {
+        //         $data[$key] = $value[$key]; //fill the missing values
+        //     }
+        // }
+
+        if (array_key_exists('users', $value)) {
+            $data['users'] = $value['users']; //fill the missing values
+        }
+
+        if (array_key_exists('activities', $value)) {
+            $data['activities'] = $value['activities']; //fill the missing values
+        }
+
+        if (array_key_exists('downloads', $value)) {
+            $data['downloads'] = $value['downloads']; //fill the missing values
+        }
+
+        // if (!array_key_exists('activities', $value)) {
+        //     $c[$key] = array_merge($value, ['activities' => 0]); //fill the missing values
+        // }
+
+        $finalData[] = $data;
+    }
+
+    dd($dates, $a, $u, $c, $finalData);
+
+    return view('welcome');
+
+    $user = new User();
+    dd($user->allOnline());
+
+    $user = new User();
     $new_users = User::where('created_at', '>', now())->count();
     $new_users_this_week = User::where('created_at', '>', Carbon::now()->subWeek())->count();
     $total_users = User::all()->count();
     // $total_downloads = User::all()->count();
-
 
     $data = [
         'online_users' => $user->allOnline()->count(),
@@ -76,7 +132,6 @@ Route::get('/', function () {
     // return new UserLoginDetails($a);
 
     // dd($a->hasRole('system'));
-
 
     // $query = request()->input('query', null);
     // $limit = request()->input('limit', 50);
@@ -95,15 +150,12 @@ Route::get('/', function () {
     // $relations = ['user:id,name:foreign_key=user_id', 'course:id,slug'];
     // $columns = [];
 
-
     // $vs = new CustomVueTable2Service();
     // $d =  $vs->get(new Post(), [
     //     'id', 'name', 'department_slug', 'level_term_slug', 'status',  'course_id', 'user_id',
     // ], ['user:id,name:foreign_key=user_id', 'course:id,slug']);
 
     // dd($d);
-
-
 
     // // $parent_table = (new Post())->{$relation}()->getRelated()->getTable();
     // $parent_model = new Post();
@@ -164,7 +216,6 @@ Route::get('/', function () {
     // // dd($columns);
     // $query_all = $parent_query . $relation_query;
 
-
     // $data = DB::table($parent_table)->select(DB::raw($query_all));
 
     // foreach ($relation_tables as $table) {
@@ -181,9 +232,6 @@ Route::get('/', function () {
     //     });
     // }
 
-
-
-
     // if (isset($orderBy)) {
     //     $direction = $ascending == 1 ? 'ASC' : 'DESC';
     //     $data->orderBy($orderBy, $direction);
@@ -195,37 +243,15 @@ Route::get('/', function () {
     //         ->skip($limit * ($page - 1));
     // }
 
-
-
-
-
-
     // $data = $data->get();
     // // $data = $data->toSql();
 
     // dd($data);
 
-
-
-
-
-
-
     // dd($parent_table, $parent_query);
     //check if relation contains :
 
-
-
-
-
-
-
-
-
-
-
     // dd($parent_table, $parent_query);
-
 
     // $a_without = array_filter($cols, function ($col) {
     //     return !str_contains($col, ':');
@@ -235,21 +261,14 @@ Route::get('/', function () {
     //     return str_contains($col, ':');
     // });
 
-
     // $u = Post::query()->with(['course' => function ($q) {
     //     return $q->select('id', 'slug')->orderBy('id', 'desc');
     // }])->get()->take(2);
 
-
-
-
     // dd($a_with, $a_without, $u);
-
-
 
     return view('welcome');
 });
-
 
 Route::get('call', function () {
     $call = request()->input('call');
@@ -257,13 +276,13 @@ Route::get('call', function () {
     if (request()->get('kay') && request()->get('kay') == env('ARTISAN_KEY')) {
         Artisan::call($call);
 
-        return $call . ' called success';
+        return $call.' called success';
     }
-    return $call . ' not success';
+
+    return $call.' not success';
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
-
 
 Route::get('/scrap', function () {
     $client = new Client();
@@ -271,20 +290,19 @@ Route::get('/scrap', function () {
 
     $crawler->filter('a.timestamp-link')->each(function ($node) {
         // dd($node->text . "\n");
-        $href  = $node->attr('href');
+        $href = $node->attr('href');
         $title = $node->attr('title');
         $date = $node->filter('abbr.published')->attr('title');
         $datefomatted = Carbon::createFromDate($date);
         // $c = Carbon::yesterday();
 
-        echo $date . '\n';
+        echo $date.'\n';
 
         if ($datefomatted->isYesterday()) {
             getinfo($href);
         }
     });
 });
-
 
 function getinfo($link)
 {
@@ -299,7 +317,7 @@ function getinfo($link)
     $crawler->filter('.post-body a')->each(function ($node) use ($title, $author) {
         // dd($node->text() . "\n");
         if ($node->text() == 'LINK') {
-            $href  = $node->attr('href');
+            $href = $node->attr('href');
             dd(compact('href', 'title', 'author'));
         } else {
             return 'none';

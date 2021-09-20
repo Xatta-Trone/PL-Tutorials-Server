@@ -18,6 +18,7 @@ use App\Models\Admin\Software;
 use App\Models\admin\UserData;
 use App\Models\Admin\LevelTerm;
 use App\Models\Admin\Department;
+use App\Models\Admin\Faq;
 use App\Models\Admin\Testimonial;
 
 trait ActivityTrait
@@ -99,6 +100,9 @@ trait ActivityTrait
                 break;
             case 'utilities':
                 return get_class(new Settings());
+                break;
+            case 'faq':
+                return get_class(new Faq());
                 break;
 
             default:

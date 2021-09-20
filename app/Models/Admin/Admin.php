@@ -3,6 +3,7 @@
 namespace App\Models\Admin;
 
 use App\Models\Admin\Post;
+use App\Models\Admin\Activity;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -70,5 +71,13 @@ class Admin extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class, 'user_id');
+    }
+
+    /**
+     * Get all of the post's comments.
+     */
+    public function activities()
+    {
+        return $this->morphMany(Activity::class, 'causer');
     }
 }

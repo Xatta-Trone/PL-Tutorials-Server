@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Services\CustomVueTable2Service;
+use App\Models\Admin\Activity;
 
 class ActivityController extends Controller
 {
@@ -14,7 +16,39 @@ class ActivityController extends Controller
      */
     public function index()
     {
-        //
+        $query = request()->input('query', null);
+        $limit = request()->input('limit', 10);
+        $page = request()->input('page', 1);
+        $orderBy = request()->input('orderBy', 'id');
+        $ascending = request()->input('ascending', 0);
+        $byColumn = request()->input('byColumn', 1);
+
+
+        $activiey = Activity::query()->select(['id', 'causer_type', 'causer_id', 'activity', 'label']);
+
+        if ($query != null) {
+            $activiey = $activiey->where('activity', 'LIKE', "%{$query}%");
+            $activiey = $activiey->orWhere('label', 'LIKE', "%{$query}%");
+            // $activiey = $activiey->whereHas('causer');
+            // $activiey = $activiey->orWhere('label', 'LIKE', "%{$query}%");
+            // $activiey = $activiey->with(['causer' => function ($q) use ($query) {
+            //     $q->where(function ($q) {
+            //         $q->where('name', 'LIKE', "%{$query}%");
+            //     });
+            // }]);
+        } else {
+            $activiey = $activiey->with('causer');
+        }
+
+        $activiey = $activiey->with('causer')->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
+
+
+
+
+        return response()->json([
+            'data' => $activiey->toArray(),
+            'count' => Activity::all()->count(),
+        ]);
     }
 
     /**

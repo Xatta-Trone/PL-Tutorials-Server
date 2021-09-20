@@ -2,8 +2,10 @@
 
 namespace App\Models\User;
 
+use App\Models\Admin\Activity;
 use App\Traits\UserTrait;
 use App\Models\Admin\Post;
+use App\Models\Admin\UserTrace;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -60,5 +62,18 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class, 'user_id');
+    }
+
+    /**
+     * Get all of the post's comments.
+     */
+    public function causer()
+    {
+        return $this->morphMany(Activity::class, 'causer');
+    }
+
+    public function traces()
+    {
+        return $this->hasMany(UserTrace::class);
     }
 }
