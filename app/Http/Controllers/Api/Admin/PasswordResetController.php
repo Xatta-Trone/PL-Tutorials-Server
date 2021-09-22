@@ -67,7 +67,8 @@ class PasswordResetController extends Controller
         return response()->json([
             'message' => self::$TOKEN_CREATED_SUCCESSFULLY,
             'status' => 'true',
-            'token' => $hashedToken
+            'token' => $hashedToken,
+            'expires' => config('auth.passwords.users.expire')
 
         ], 201);
     }

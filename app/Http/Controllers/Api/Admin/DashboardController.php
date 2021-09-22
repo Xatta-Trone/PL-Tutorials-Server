@@ -22,16 +22,16 @@ class DashboardController extends Controller
     public function index()
     {
         $user = new User();
-        $user_total = User::all()->count();
+        $user_total = User::count();
         $new_contact = Contact::where('status', 0)->get()->count();
         $total_downloads = Activity::where('activity', 'downloaded')->get()->count();
-        $total_activities = Activity::all()->count();
-        $total_userdatas = UserData::all()->count();
-        $total_posts = Post::all()->count();
-        $total_softwares = Software::all()->count();
-        $total_books = Book::all()->count();
-        $total_testimonial = Testimonial::all()->count();
-        $total_faq = Faq::all()->count();
+        $total_activities = Activity::count();
+        $total_userdatas = UserData::count();
+        $total_posts = Post::count();
+        $total_softwares = Software::count();
+        $total_books = Book::count();
+        $total_testimonial = Testimonial::count();
+        $total_faq = Faq::count();
         $new_user_today = User::whereDate('created_at', Carbon::today())->count();
         $new_user_thisweek = User::where('created_at', '>=', Carbon::today()->subDays(7))->count();
 
