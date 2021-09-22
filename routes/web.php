@@ -2,7 +2,6 @@
 
 use App\Http\Services\CustomVueTable2Service;
 use App\Mail\UserLoginDetails;
-use App\Models\Admin\Activity;
 use App\Models\Admin\Admin;
 use App\Models\Admin\Post;
 use App\Models\User\User;
@@ -44,68 +43,45 @@ function getModels($path)
     return $out;
 }
 
+ function getPieUserDataByBatchNDept()
+ {
+     $pieUserDatas = DB::table('users')
+                        ->selectRaw('substr(`student_id`,1,4) as total, count(`id`) as number')
+                        ->where(DB::raw('substr(`student_id`,1,4)'), '<>', '0000')
+                        ->groupBy(DB::raw('substr(`student_id`,1,4)'))
+                        ->orderBy('total', 'desc')
+                        ->get()->toArray();
+
+     foreach ($pieUserDatas as $pieUser) {
+         $pieUser->dept_batch = returnDeptBatchString($pieUser->total);
+     }
+
+     $data = [
+            'labels' => array_column($pieUserDatas, 'dept_batch'),
+            'data' => array_column($pieUserDatas, 'number'),
+        ];
+
+     return $data;
+
+     // $rand_color = '#' . substr(md5(mt_rand()), 0, 6);
+ }
+
+     function returnDeptBatchString($batchDept = '')
+     {
+         $batch = substr($batchDept, 0, 2);
+         $dept = substr($batchDept, 2, 2);
+
+         $single_department = DB::table('departments')->where('code', $dept)->first();
+
+         $dept_status_or_slug = ($single_department != null) ? strtoupper($single_department->slug) : 'Not Found';
+
+         return $dept_status_or_slug."'".$batch;
+
+         //return $batch.'+'.$dept;
+     }
+
 Route::get('/', function () {
-    $startDate = Carbon::now()->subDays(30);
-    $endDate = Carbon::now();
-
-    $dates = [];
-
-    for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
-        $dates[]['date'] = $date->format('Y-m-d');
-    }
-
-    $a = Activity::select(DB::raw("count(*) AS activities, sum(case when `activity` = 'downloaded' then 1 else 0 end) AS downloads, Date(`created_at`) as date"))
-        ->whereBetween('created_at', [$startDate, $endDate])
-        ->groupBy(DB::raw('Date(`created_at`)'))->orderBy(DB::raw('Date(`created_at`)'))
-        ->get()->toArray();
-
-    $u =
-        User::select(DB::raw('count(*) AS users, Date(`created_at`) as date'))
-        ->whereBetween('created_at', [$startDate, $endDate])
-        ->groupBy(DB::raw('Date(`created_at`)'))->orderBy(DB::raw('Date(`created_at`)'))
-        ->get()->toArray();
-
-    $c = array_replace_recursive(
-        array_combine(array_column($a, 'date'), $a),
-        array_combine(array_column($u, 'date'), $u),
-        array_combine(array_column($dates, 'date'), $dates)
-    );
-
-    $finalData = [];
-
-    foreach ($c as $key => $value) {
-        $keys = ['users', 'activities', 'downloads'];
-
-        $data = ['users' => 0, 'activities' => 0, 'downloads' => 0, 'date' => Carbon::parse($value['date'])->format('M d')];
-
-        // $c[$key] = array_merge($value, ['date' => Carbon::parse($value['date'])->format('M d')]); //format the dates
-        // foreach ($keys as $k) {
-        //     // var_dump(array_key_exists($k, $value), $k, $value);
-        //     if (!array_key_exists($k, $value)) {
-        //         $data[$key] = $value[$key]; //fill the missing values
-        //     }
-        // }
-
-        if (array_key_exists('users', $value)) {
-            $data['users'] = $value['users']; //fill the missing values
-        }
-
-        if (array_key_exists('activities', $value)) {
-            $data['activities'] = $value['activities']; //fill the missing values
-        }
-
-        if (array_key_exists('downloads', $value)) {
-            $data['downloads'] = $value['downloads']; //fill the missing values
-        }
-
-        // if (!array_key_exists('activities', $value)) {
-        //     $c[$key] = array_merge($value, ['activities' => 0]); //fill the missing values
-        // }
-
-        $finalData[] = $data;
-    }
-
-    dd($dates, $a, $u, $c, $finalData);
+    dd(getPieUserDataByBatchNDept());
 
     return view('welcome');
 

@@ -32,6 +32,8 @@ class DashboardController extends Controller
         $total_books = Book::all()->count();
         $total_testimonial = Testimonial::all()->count();
         $total_faq = Faq::all()->count();
+        $new_user_today = User::whereDate('created_at', Carbon::today())->count();
+        $new_user_thisweek = User::where('created_at', '>=', Carbon::today()->subDays(7))->count();
 
         $data = [
             'online_users' => $user->allOnline()->count(),
@@ -45,6 +47,8 @@ class DashboardController extends Controller
             'total_posts' => $total_posts,
             'total_testimonial' => $total_testimonial,
             'total_faq' => $total_faq,
+            'new_user_today' => $new_user_today,
+            'new_user_thisweek' => $new_user_thisweek,
         ];
 
         return response()->json($data);
@@ -53,6 +57,20 @@ class DashboardController extends Controller
     public function chartdata()
     {
         $data = $this->getDataBetweenDates(Carbon::now()->subDays(30), Carbon::now());
+
+        return response()->json($data);
+    }
+
+    public function batchDeptDataPie()
+    {
+        $data = $this->deptBatchDataPie();
+
+        return response()->json($data);
+    }
+
+    public function batchDeptDatatable()
+    {
+        $data = $this->getPieUserDataByBatchNDept();
 
         return response()->json($data);
     }

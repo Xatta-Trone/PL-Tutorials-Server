@@ -5,7 +5,9 @@ use App\Http\Controllers\Api\Admin\AdminAuthController;
 use App\Http\Controllers\Api\Admin\BookController;
 use App\Http\Controllers\Api\Admin\ContactController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\DummyUserDataController;
 use App\Http\Controllers\Api\Admin\FaqController;
+use App\Http\Controllers\Api\Admin\PasswordResetController;
 use App\Http\Controllers\Api\Admin\PostController;
 use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Admin\SoftwareController;
@@ -48,12 +50,20 @@ Route::prefix('v1')->group(function () {
     // Admin
     Route::prefix('admin')->group(function () {
         // public urls
+        //login & password reset
         Route::post('login', [AdminAuthController::class, 'login']);
+        Route::post('request-password', [PasswordResetController::class, 'requestPassword']);
+        Route::get('reset-password', [PasswordResetController::class, 'resetPassword'])->name('api.reset.password');
+        Route::post('reset-password', [PasswordResetController::class, 'resetPassword']);
+
+        Route::get('dummyuserdata/download', [DummyUserDataController::class, 'backupData']);
+
+
 
         Route::middleware(['auth:sanctum', UpdateSanctumConfigForCustomGuard::class, 'type.admin'])->group(function () {
             Route::get('me', [AdminAuthController::class, 'me']);
             Route::get('permissions', [AdminAuthController::class, 'permissions']);
-            // Route::get('logout-all', [AdminAuthController::class, 'logout_all']);
+            Route::get('logout-all', [AdminAuthController::class, 'logout_all']);
             Route::get('logout', [AdminAuthController::class, 'logout']);
 
             //User Data resource
@@ -82,9 +92,14 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('activities', ActivityController::class);
             Route::apiResource('usertraces', UserTraceController::class);
 
+
+            Route::apiResource('dummyuserdata', DummyUserDataController::class);
+
             // Dashboard data
             Route::get('dashboard/all', [DashboardController::class, 'index']);
             Route::get('dashboard/chartdata', [DashboardController::class, 'chartdata']);
+            Route::get('dashboard/deptbatchdatapie', [DashboardController::class, 'batchDeptDataPie']);
+            Route::get('dashboard/deptbatchdatatable', [DashboardController::class, 'batchDeptDatatable']);
         });
     });
 });

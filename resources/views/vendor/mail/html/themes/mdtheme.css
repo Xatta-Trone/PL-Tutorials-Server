@@ -1,13 +1,12 @@
 /* Base */
 
-body,
-body *:not(html):not(style):not(br):not(tr):not(code) {
+body, body *:not(html):not(style):not(br):not(tr):not(code) {
     font-family: Avenir, Helvetica, sans-serif;
     box-sizing: border-box;
 }
 
 body {
-    background-color: #fdfdfd;
+    background-color: #f2f2f7;
     color: #7f8c8d;
     height: 100%;
     hyphens: auto;
@@ -83,7 +82,7 @@ img {
 /* Layout */
 
 .wrapper {
-    background-color: #fdfdfd;
+    background-color: #f2f2f7;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -109,7 +108,7 @@ img {
 }
 
 .header a {
-    color: #61d2b4;
+    color: #000000;
     font-size: 19px;
     font-weight: bold;
     text-decoration: none;
@@ -119,9 +118,9 @@ img {
 /* Body */
 
 .body {
-    background-color: #e1e1e1;
-    border-bottom: 1px solid #d8dddc;
-    border-top: 1px solid #d8dddc;
+    background-color: #f2f2f7;
+    border-bottom: 1px solid #f2f2f7;
+    border-top: 1px solid #f2f2f7;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -165,7 +164,7 @@ img {
 }
 
 .footer p {
-    color: #ffffff;
+    color: #000000;
     font-size: 12px;
     text-align: center;
 }
@@ -218,8 +217,7 @@ img {
     -webkit-text-size-adjust: none;
 }
 
-.button-blue,
-.button-primary {
+.button-blue, .button-primary {
     background-color: #3097d1;
     border-top: 10px solid #3097d1;
     border-right: 18px solid #3097d1;
@@ -227,8 +225,7 @@ img {
     border-left: 18px solid #3097d1;
 }
 
-.button-green,
-.button-success {
+.button-green, .button-success {
     background-color: #61d2b4;
     border-top: 10px solid #61d2b4;
     border-right: 18px solid #61d2b4;
@@ -236,8 +233,7 @@ img {
     border-left: 18px solid #61d2b4;
 }
 
-.button-red,
-.button-error {
+.button-red, .button-error {
     background-color: #e74c3c;
     border-top: 10px solid #e74c3c;
     border-right: 18px solid #e74c3c;
@@ -252,10 +248,8 @@ img {
 }
 
 .panel-content {
-    background-color: #e9e9e9;
+    background-color: #efefef;
     padding: 16px;
-    text-align: center;
-    color: #222222;
 }
 
 .panel-item {
@@ -270,8 +264,8 @@ img {
 /* Promotions */
 
 .promotion {
-    background-color: #ffffff;
-    border: 2px dashed #9ba2ab;
+    background-color: #FFFFFF;
+    border: 2px dashed #9BA2AB;
     margin: 0;
     margin-bottom: 25px;
     margin-top: 25px;
