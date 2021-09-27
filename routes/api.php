@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Admin\ActivityController;
 use App\Http\Controllers\Api\Admin\AdminAuthController;
+use App\Http\Controllers\Api\Admin\AdminController;
 use App\Http\Controllers\Api\Admin\BookController;
 use App\Http\Controllers\Api\Admin\ContactController;
 use App\Http\Controllers\Api\Admin\DashboardController;
@@ -73,6 +74,7 @@ Route::prefix('v1')->group(function () {
             Route::get('getdepartments', [PublicInfoController::class, 'getdepartments']);
             Route::get('getlevelterms/{id}', [PublicInfoController::class, 'getlevelterms']);
             Route::get('getcourse/{dept_id}/{levelterm_id}', [PublicInfoController::class, 'getcourse']);
+            Route::get('getroles', [PublicInfoController::class, 'getroles']);
 
             // Route::get('userdatas', [UserDataController::class, 'index']);
             Route::get('users/restore/{id}', [UserController::class, 'restore']);
@@ -80,7 +82,10 @@ Route::prefix('v1')->group(function () {
             Route::get('users/activitydata/{id}', [UserController::class, 'userActivity']);
             Route::get('users/locationdata/{id}', [UserController::class, 'userLocation']);
 
+            Route::get('admins/activitydata/{id}', [AdminController::class, 'adminActivity']);
+
             Route::apiResource('users', UserController::class);
+            Route::apiResource('admins', AdminController::class);
             Route::apiResource('userdatas', UserDataController::class);
             Route::apiResource('posts', PostController::class);
             Route::apiResource('softwares', SoftwareController::class);

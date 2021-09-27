@@ -1,17 +1,18 @@
 <?php
 
-use App\Http\Services\CustomVueTable2Service;
-use App\Mail\UserLoginDetails;
-use App\Models\Admin\Admin;
-use App\Models\Admin\Post;
-use App\Models\User\User;
 use Goutte\Client;
+use App\Models\Role;
+use App\Models\User\User;
+use App\Models\Admin\Post;
+use App\Models\Admin\Admin;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use App\Mail\UserLoginDetails;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Services\CustomVueTable2Service;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +33,7 @@ function getModels($path)
         if ($result === '.' or $result === '..') {
             continue;
         }
-        $filename = $path.'/'.$result;
+        $filename = $path . '/' . $result;
         if (is_dir($filename)) {
             $out = array_merge($out, getModels($filename));
         } else {
@@ -43,44 +44,53 @@ function getModels($path)
     return $out;
 }
 
- function getPieUserDataByBatchNDept()
- {
-     $pieUserDatas = DB::table('users')
-                        ->selectRaw('substr(`student_id`,1,4) as total, count(`id`) as number')
-                        ->where(DB::raw('substr(`student_id`,1,4)'), '<>', '0000')
-                        ->groupBy(DB::raw('substr(`student_id`,1,4)'))
-                        ->orderBy('total', 'desc')
-                        ->get()->toArray();
+function getPieUserDataByBatchNDept()
+{
+    $pieUserDatas = DB::table('users')
+        ->selectRaw('substr(`student_id`,1,4) as total, count(`id`) as number')
+        ->where(DB::raw('substr(`student_id`,1,4)'), '<>', '0000')
+        ->groupBy(DB::raw('substr(`student_id`,1,4)'))
+        ->orderBy('total', 'desc')
+        ->get()->toArray();
 
-     foreach ($pieUserDatas as $pieUser) {
-         $pieUser->dept_batch = returnDeptBatchString($pieUser->total);
-     }
+    foreach ($pieUserDatas as $pieUser) {
+        $pieUser->dept_batch = returnDeptBatchString($pieUser->total);
+    }
 
-     $data = [
-            'labels' => array_column($pieUserDatas, 'dept_batch'),
-            'data' => array_column($pieUserDatas, 'number'),
-        ];
+    $data = [
+        'labels' => array_column($pieUserDatas, 'dept_batch'),
+        'data' => array_column($pieUserDatas, 'number'),
+    ];
 
-     return $data;
+    return $data;
 
-     // $rand_color = '#' . substr(md5(mt_rand()), 0, 6);
- }
+    // $rand_color = '#' . substr(md5(mt_rand()), 0, 6);
+}
 
-     function returnDeptBatchString($batchDept = '')
-     {
-         $batch = substr($batchDept, 0, 2);
-         $dept = substr($batchDept, 2, 2);
+function returnDeptBatchString($batchDept = '')
+{
+    $batch = substr($batchDept, 0, 2);
+    $dept = substr($batchDept, 2, 2);
 
-         $single_department = DB::table('departments')->where('code', $dept)->first();
+    $single_department = DB::table('departments')->where('code', $dept)->first();
 
-         $dept_status_or_slug = ($single_department != null) ? strtoupper($single_department->slug) : 'Not Found';
+    $dept_status_or_slug = ($single_department != null) ? strtoupper($single_department->slug) : 'Not Found';
 
-         return $dept_status_or_slug."'".$batch;
+    return $dept_status_or_slug . "'" . $batch;
 
-         //return $batch.'+'.$dept;
-     }
+    //return $batch.'+'.$dept;
+}
 
 Route::get('/', function () {
+
+
+    return Role::find([1, 2]);
+
+
+
+
+
+
     dd(getPieUserDataByBatchNDept());
 
     return view('welcome');
@@ -252,10 +262,10 @@ Route::get('call', function () {
     if (request()->get('kay') && request()->get('kay') == env('ARTISAN_KEY')) {
         Artisan::call($call);
 
-        return $call.' called success';
+        return $call . ' called success';
     }
 
-    return $call.' not success';
+    return $call . ' not success';
 });
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
@@ -272,7 +282,7 @@ Route::get('/scrap', function () {
         $datefomatted = Carbon::createFromDate($date);
         // $c = Carbon::yesterday();
 
-        echo $date.'\n';
+        echo $date . '\n';
 
         if ($datefomatted->isYesterday()) {
             getinfo($href);
