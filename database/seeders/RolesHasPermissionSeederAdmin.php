@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Role;
 use App\Models\User\User;
+use App\Models\Permission;
 use App\Models\Admin\Admin;
 use Illuminate\Database\Seeder;
-use App\Models\Admin\Permission;
 use Illuminate\Support\Facades\DB;
 
 class RolesHasPermissionSeederAdmin extends Seeder

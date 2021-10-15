@@ -9,10 +9,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\AdminLoginRequest;
+use App\Http\Requests\AdminProfileUpdateRequest;
+use App\Models\User\User;
+use App\Traits\PasswordResetTrait;
 
 class AdminAuthController extends Controller
 {
-    use AuthTrait;
+    use AuthTrait, PasswordResetTrait;
     // public function register(RegisterRequest $request)
     // {
     //     $validatedData = $request->validated();
@@ -93,6 +96,33 @@ class AdminAuthController extends Controller
         return response()->json([
             'code' => $STATUS,
             'message' => $STATUS == 1 ? self::$LOGGED_OUT : self::$SOMETHING_WENT_WRONG,
+        ]);
+    }
+
+    public function resetpassword(Request $request)
+    {
+
+        $request->validate([
+            'password' => 'bail|required|confirmed|min:8',
+
+            'id' => 'required'
+        ]);
+        $STATUS =  Admin::find($request->id)->update(['password' => Hash::make($request->password)]);
+        return response()->json([
+            'code' => $STATUS,
+            'message' => $STATUS == 1 ? self::$PASSWORD_UPDATED_SUCCESSFULLY :
+                self::$PASSWORD_NOT_UPDATED,
+        ]);
+    }
+
+    public function updateprofile(AdminProfileUpdateRequest $request)
+    {
+
+        $STATUS =  Admin::find($request->id)->update(['name' => $request->name, 'email' => $request->email]);
+        return response()->json([
+            'code' => $STATUS,
+            'message' => $STATUS == 1 ? self::$PASSWORD_UPDATED_SUCCESSFULLY :
+                self::$PASSWORD_NOT_UPDATED,
         ]);
     }
 }

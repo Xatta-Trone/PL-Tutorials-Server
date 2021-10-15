@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Traits;
+
+trait PermissionTrait
+{
+
+    public static $PERMISSION_CREATED = 'PERMISSION_CREATED';
+    public static $PERMISSION_CREATION_ERROR = 'PERMISSION_CREATION_ERROR';
+
+    public static $PERMISSION_NOT_FOUND = 'PERMISSION_NOT_FOUND';
+    public static $PERMISSION_FOUND = 'PERMISSION_FOUND';
+
+    public static $PERMISSION_NOT_UPDATED = 'PERMISSION_NOT_UPDATED';
+    public static $PERMISSION_UPDATED = 'PERMISSION_UPDATED';
+
+    public static $PERMISSION_NOT_DELETED = 'PERMISSION_NOT_DELETED';
+    public static $PERMISSION_DELETED = 'PERMISSION_DELETED';
+
+    public static $PERMISSION_NOT_RESTORED = 'PERMISSION_NOT_RESTORED';
+    public static $PERMISSION_RESTORED = 'PERMISSION_RESTORED';
+}

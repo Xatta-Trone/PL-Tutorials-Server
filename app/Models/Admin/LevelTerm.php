@@ -10,8 +10,14 @@ class LevelTerm extends Model
 {
     use HasFactory;
 
-    public function dept()
+    protected $guarded = [];
+
+    public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+    public function course()
+    {
+        return $this->hasMany(Course::class);
     }
 }

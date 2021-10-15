@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin\Course;
 use App\Models\Admin\Department;
 use App\Models\Admin\LevelTerm;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User\User;
 use Illuminate\Http\Request;
@@ -61,6 +62,12 @@ class PublicInfoController extends Controller
     {
         // dd($id);
         $lts = Role::select('id', 'name')->get();
+        return response()->json(['status' => true, 'data' => $lts]);
+    }
+
+    public function getpermissions()
+    {
+        $lts = Permission::select('id', 'name')->get();
         return response()->json(['status' => true, 'data' => $lts]);
     }
 }

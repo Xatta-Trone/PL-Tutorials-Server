@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Services\CustomVueTable2Service;
+use App\Models\Admin\Course;
+use App\Models\Admin\LevelTerm;
 
 /*
 |--------------------------------------------------------------------------
@@ -84,7 +86,7 @@ function returnDeptBatchString($batchDept = '')
 Route::get('/', function () {
 
 
-    return Role::find([1, 2]);
+    return Course::with(['levelterm','department'])->find(1);
 
 
 

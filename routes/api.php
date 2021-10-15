@@ -5,11 +5,16 @@ use App\Http\Controllers\Api\Admin\AdminAuthController;
 use App\Http\Controllers\Api\Admin\AdminController;
 use App\Http\Controllers\Api\Admin\BookController;
 use App\Http\Controllers\Api\Admin\ContactController;
+use App\Http\Controllers\Api\Admin\CourseController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\DepartmentController;
 use App\Http\Controllers\Api\Admin\DummyUserDataController;
 use App\Http\Controllers\Api\Admin\FaqController;
+use App\Http\Controllers\Api\Admin\LevelTermController;
 use App\Http\Controllers\Api\Admin\PasswordResetController;
+use App\Http\Controllers\Api\Admin\PermissionController;
 use App\Http\Controllers\Api\Admin\PostController;
+use App\Http\Controllers\Api\Admin\RoleController;
 use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Admin\SoftwareController;
 use App\Http\Controllers\Api\Admin\TestimonialController;
@@ -44,7 +49,7 @@ Route::prefix('v1')->group(function () {
     // logged in user
     Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::get('me', [AuthController::class, 'me']);
-        // Route::get('logout-all', [AuthController::class, 'logout_all']);
+        Route::get('logout-all', [AuthController::class, 'logout_all']);
         Route::get('logout', [AuthController::class, 'logout']);
     });
 
@@ -56,6 +61,7 @@ Route::prefix('v1')->group(function () {
         Route::post('request-password', [PasswordResetController::class, 'requestPassword']);
         Route::get('reset-password', [PasswordResetController::class, 'resetPassword'])->name('api.reset.password');
         Route::post('reset-password', [PasswordResetController::class, 'resetPassword']);
+        Route::post('reset-pass', [AdminAuthController::class, 'resetpassword']);
 
         Route::get('dummyuserdata/download', [DummyUserDataController::class, 'backupData']);
 
@@ -75,6 +81,7 @@ Route::prefix('v1')->group(function () {
             Route::get('getlevelterms/{id}', [PublicInfoController::class, 'getlevelterms']);
             Route::get('getcourse/{dept_id}/{levelterm_id}', [PublicInfoController::class, 'getcourse']);
             Route::get('getroles', [PublicInfoController::class, 'getroles']);
+            Route::get('getpermissions', [PublicInfoController::class, 'getpermissions']);
 
             // Route::get('userdatas', [UserDataController::class, 'index']);
             Route::get('users/restore/{id}', [UserController::class, 'restore']);
@@ -96,6 +103,11 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('faqs', FaqController::class);
             Route::apiResource('activities', ActivityController::class);
             Route::apiResource('usertraces', UserTraceController::class);
+            Route::apiResource('departments', DepartmentController::class);
+            Route::apiResource('levelterms', LevelTermController::class);
+            Route::apiResource('courses', CourseController::class);
+            Route::apiResource('roles', RoleController::class);
+            Route::apiResource('permissions', PermissionController::class);
 
 
             Route::apiResource('dummyuserdata', DummyUserDataController::class);

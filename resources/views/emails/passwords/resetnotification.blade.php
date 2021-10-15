@@ -7,7 +7,7 @@ Click the button below to reset your password:
 
 
 @component('mail::button', ['color'=> 'green', 'url'
-=>env('CLIENT_DOMAIN')."/auth/reset-password?token={$token}&email={$user->email}"])
+=>env('ADMIN_DOMAIN')."/auth/reset-password?token={$token}&email={$user->email}"])
 Reset password
 @endcomponent
 
@@ -16,7 +16,7 @@ Reset password
 If the button doesn't work, click on the link below.
 
 
-[{{env('CLIENT_DOMAIN')."/auth/reset-password?token={$token}&email={$user->email}"}}]({{env('CLIENT_DOMAIN')."/auth/reset-password?token={$token}&email={$user->email}"}})
+[{{env('ADMIN_DOMAIN')."/auth/reset-password?token={$token}&email={$user->email}"}}]({{env('ADMIN_DOMAIN')."/auth/reset-password?token={$token}&email={$user->email}"}})
 
 
 If you didn't initiate this request, then you can safely ignor this email.

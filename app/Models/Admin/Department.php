@@ -10,6 +10,8 @@ class Department extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $guarded = [];
+
     public function levelterms()
     {
         return $this->hasMany(LevelTerm::class);
