@@ -17,6 +17,11 @@ class Course extends Model
         return $this->hasMany(Post::class);
     }
 
+    public function active_posts()
+    {
+        return $this->hasMany(Post::class)->where('status', 1);
+    }
+
     public function levelterm()
     {
         return $this->belongsTo(LevelTerm::class, 'level_term_id');

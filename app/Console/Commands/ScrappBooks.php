@@ -53,6 +53,7 @@ class ScrappBooks extends Command
             if ($datefomatted->isYesterday()) {
                 $this->getinfo($href);
             }
+            // $this->getinfo($href);
         });
     }
 

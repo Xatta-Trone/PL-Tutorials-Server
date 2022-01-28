@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class CustomVueTable2Service
 {
-    public function get($model, array $main_cols, array $relations = [])
+    public function get($model, array $main_cols, array $relations = [], String $filterWhere = '')
     {
         // extract(request()->only(['query', 'limit', 'page', 'orderBy', 'ascending', 'byColumn']));
         $query = request()->input('query', null);
@@ -85,6 +85,10 @@ class CustomVueTable2Service
 
         $data = DB::table($parent_table)->select(DB::raw($query_all));
 
+        if ($filterWhere != '') {
+            $data = $data->where('status', $filterWhere);
+        }
+
         foreach ($relation_tables as $table) {
             $data->join(DB::raw($table['table']), DB::raw($table['foreign_key']), '=', DB::raw($table['local_key']), 'left outer');
         }
@@ -96,6 +100,8 @@ class CustomVueTable2Service
                 $this->filterByColumn($data, $query) :
                 $this->filter($data, $query, $columns);
         }
+
+
 
 
         if (isset($orderBy)) {

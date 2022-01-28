@@ -21,7 +21,12 @@ use App\Http\Controllers\Api\Admin\TestimonialController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\admin\UserDataController;
 use App\Http\Controllers\Api\Admin\UserTraceController;
+use App\Http\Controllers\Api\User\ActivitySaveController;
 use App\Http\Controllers\Api\User\AuthController;
+use App\Http\Controllers\Api\User\BookController as UserBookController;
+use App\Http\Controllers\Api\User\GeneralDataController;
+use App\Http\Controllers\Api\User\MaterialController;
+use App\Http\Controllers\Api\User\SoftwareController as UserSoftwareController;
 use App\Http\Controllers\Api\Util\PublicInfoController;
 use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 use Illuminate\Http\Request;
@@ -43,14 +48,32 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::prefix('v1')->group(function () {
+    //general routes
+    Route::get('quote', [GeneralDataController::class, 'quote']);
+    Route::get('count-data', [GeneralDataController::class, 'countData']);
+    Route::get('testimonials', [GeneralDataController::class, 'testimonials']);
+    Route::get('social-links', [GeneralDataController::class, 'socialLinks']);
+    Route::get('faqs', [GeneralDataController::class, 'faq']);
+    Route::post('submit-response', [GeneralDataController::class, 'contactSubmission']);
+    Route::post('submit-activity', [ActivitySaveController::class, 'index']);
+
+    Route::get('books', [UserBookController::class, 'index']);
+
+    //departments
+    Route::get('departments', [MaterialController::class, 'departments']);
+    Route::get('departments/{deptSlug}/{ltSlug?}/{courseSlug?}', [MaterialController::class, 'infos']);
+
     // Auth routes
-    Route::post('register/', [AuthController::class, 'register']);
-    Route::post('login/', [AuthController::class, 'login'])->name('loginapi');
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login'])->name('loginapi');
     // logged in user
     Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::get('logout-all', [AuthController::class, 'logout_all']);
         Route::get('logout', [AuthController::class, 'logout']);
+
+        //book
+        Route::get('softwares', [UserSoftwareController::class, 'index']);
     });
 
     // Admin
