@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Traits;
+
+trait BanHistoryTrait
+{
+
+    public static $BAN_HISTORY_CREATED = 'BAN_HISTORY_CREATED';
+    public static $BAN_HISTORY_CREATION_ERROR = 'BAN_HISTORY_CREATION_ERROR';
+
+    public static $BAN_HISTORY_NOT_FOUND = 'BAN_HISTORY_NOT_FOUND';
+    public static $BAN_HISTORY_FOUND = 'BAN_HISTORY_FOUND';
+
+    public static $BAN_HISTORY_NOT_UPDATED = 'BAN_HISTORY_NOT_UPDATED';
+    public static $BAN_HISTORY_UPDATED = 'BAN_HISTORY_UPDATED';
+
+    public static $BAN_HISTORY_NOT_DELETED = 'BAN_HISTORY_NOT_DELETED';
+    public static $BAN_HISTORY_DELETED = 'BAN_HISTORY_DELETED';
+
+    public static $BAN_HISTORY_NOT_RESTORED = 'BAN_HISTORY_NOT_RESTORED';
+    public static $BAN_HISTORY_RESTORED = 'BAN_HISTORY_RESTORED';
+}

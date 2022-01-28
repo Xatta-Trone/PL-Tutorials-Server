@@ -3,6 +3,7 @@
 namespace App\Models\User;
 
 use App\Models\Admin\Activity;
+use App\Models\Admin\BanHistory;
 use App\Traits\UserTrait;
 use App\Models\Admin\Post;
 use App\Models\Admin\UserTrace;
@@ -75,5 +76,10 @@ class User extends Authenticatable
     public function traces()
     {
         return $this->hasMany(UserTrace::class);
+    }
+
+    public function banhistories()
+    {
+        return $this->hasMany(BanHistory::class);
     }
 }

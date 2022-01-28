@@ -3,6 +3,9 @@
 use App\Http\Controllers\Api\Admin\ActivityController;
 use App\Http\Controllers\Api\Admin\AdminAuthController;
 use App\Http\Controllers\Api\Admin\AdminController;
+use App\Http\Controllers\Api\Admin\BanController;
+use App\Http\Controllers\Api\Admin\BanDaysController;
+use App\Http\Controllers\Api\Admin\BanHistoriesController;
 use App\Http\Controllers\Api\Admin\BookController;
 use App\Http\Controllers\Api\Admin\ChatController;
 use App\Http\Controllers\Api\Admin\ContactController;
@@ -136,6 +139,9 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('courses', CourseController::class);
             Route::apiResource('roles', RoleController::class);
             Route::apiResource('permissions', PermissionController::class);
+            Route::apiResource('bans', BanController::class);
+            Route::apiResource('bandays', BanDaysController::class);
+            Route::apiResource('banhistory', BanHistoriesController::class);
 
 
             Route::apiResource('dummyuserdata', DummyUserDataController::class);
