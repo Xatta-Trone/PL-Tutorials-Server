@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Admin\ActivityController;
 use App\Http\Controllers\Api\Admin\AdminAuthController;
 use App\Http\Controllers\Api\Admin\AdminController;
 use App\Http\Controllers\Api\Admin\BookController;
+use App\Http\Controllers\Api\Admin\ChatController;
 use App\Http\Controllers\Api\Admin\ContactController;
 use App\Http\Controllers\Api\Admin\CourseController;
 use App\Http\Controllers\Api\Admin\DashboardController;
@@ -111,6 +112,10 @@ Route::prefix('v1')->group(function () {
             Route::get('users/resetpass/{id}', [UserController::class, 'passwordReset']);
             Route::get('users/activitydata/{id}', [UserController::class, 'userActivity']);
             Route::get('users/locationdata/{id}', [UserController::class, 'userLocation']);
+            //chat with user
+            Route::get('users/chat/{id}', [ChatController::class, 'show']);
+            Route::post('chats/create', [ChatController::class, 'store']);
+
 
             Route::get('admins/activitydata/{id}', [AdminController::class, 'adminActivity']);
 
