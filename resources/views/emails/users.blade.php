@@ -1,7 +1,7 @@
 @component('mail::message')
 # Hello, {{ $user->name }}
 
-The body of your message. {{ $user->password }}
+Your password {{ $user->password }}
 
 @component('mail::button', ['url' => ''])
 Button Text

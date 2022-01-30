@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Admin\DepartmentController;
 use App\Http\Controllers\Api\Admin\DummyUserDataController;
 use App\Http\Controllers\Api\Admin\FaqController;
 use App\Http\Controllers\Api\Admin\LevelTermController;
+use App\Http\Controllers\Api\Admin\PagesController;
 use App\Http\Controllers\Api\Admin\PasswordResetController;
 use App\Http\Controllers\Api\Admin\PermissionController;
 use App\Http\Controllers\Api\Admin\PostController;
@@ -142,6 +143,7 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('bans', BanController::class);
             Route::apiResource('bandays', BanDaysController::class);
             Route::apiResource('banhistory', BanHistoriesController::class);
+            Route::apiResource('pages', PagesController::class);
 
 
             Route::apiResource('dummyuserdata', DummyUserDataController::class);

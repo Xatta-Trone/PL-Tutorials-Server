@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api\User;
 
 use Carbon\Carbon;
 use App\Models\User\User;
+use App\Traits\UserTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Traits\UserAuthTrait;
+use App\Models\admin\UserData;
 use App\Models\Admin\UserTrace;
+use App\Traits\UserRegisterTrait;
 use App\Http\Requests\LoginRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -16,25 +19,49 @@ use App\Http\Requests\RegisterRequest;
 
 class AuthController extends Controller
 {
-    use UserAuthTrait;
+    use UserAuthTrait, UserRegisterTrait, UserTrait;
     public function register(RegisterRequest $request)
     {
         $validatedData = $request->validated();
         // dd($validatedData);
 
-        $user = User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-        ]);
+        $student_id_without_prefix = $request->student_id = $this->studentIdWithoutPrefix($request->student_id);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $checkForStudentInDB = UserData::select('student_name', 'student_id', 'id', 'status')->where('student_id', 'like', '%' . $student_id_without_prefix . '%')->get()->first();
 
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user,
-        ]);
+        if ($checkForStudentInDB && $checkForStudentInDB->status == 1) {
+            return response()->json([
+                'message' => self::$USER_ALREADY_REGISTERED,
+                'status' => 'false',
+            ], 422);
+        }
+
+        $checkinUsers = User::where('student_id', 'like', '%' . $student_id_without_prefix . '%')->orWhere('email', '=', $request->email)->get()->first();
+
+        if ($checkinUsers) {
+            return response()->json([
+                'message' => self::$USER_ALREADY_REGISTERED,
+                'status' => 'false',
+            ], 422);
+        }
+
+        $userdata = $checkForStudentInDB != null ? array_merge($request->validated(), ['name' => $checkForStudentInDB->student_name, 'student_id' => $student_id_without_prefix]) : array_merge($request->validated(), ['student_id' => $student_id_without_prefix]);
+
+        return $this->createNewAccount($userdata, $checkForStudentInDB != null ? $checkForStudentInDB->id : null);
+
+        // $user = User::create([
+        //     'name' => $validatedData['name'],
+        //     'email' => $validatedData['email'],
+        //     'password' => Hash::make($validatedData['password']),
+        // ]);
+
+        // $token = $user->createToken('auth_token')->plainTextToken;
+
+        // return response()->json([
+        //     'access_token' => $token,
+        //     'token_type' => 'Bearer',
+        //     'user' => $user,
+        // ]);
     }
 
     public function login(LoginRequest $request)
