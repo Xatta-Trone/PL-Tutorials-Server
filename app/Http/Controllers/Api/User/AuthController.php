@@ -24,8 +24,23 @@ class AuthController extends Controller
     {
         $validatedData = $request->validated();
         // dd($validatedData);
+        //data pre-process
+        $student_id_without_prefix = $request->student_id = $this->studentIdWithoutPrefix($validatedData['student_id']);
 
-        $student_id_without_prefix = $request->student_id = $this->studentIdWithoutPrefix($request->student_id);
+
+
+        //check if already registered
+        $checkinUsers = User::where('student_id', 'like', '%' . $student_id_without_prefix . '%')->orWhere('email', '=', $request->email)->get()->first();
+        if ($checkinUsers) {
+            return response()->json([
+                'message' => self::$USER_ALREADY_REGISTERED,
+                'status' => 'false',
+            ], 422);
+        }
+
+        //check in our db
+
+
 
         $checkForStudentInDB = UserData::select('student_name', 'student_id', 'id', 'status')->where('student_id', 'like', '%' . $student_id_without_prefix . '%')->get()->first();
 
@@ -36,14 +51,9 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $checkinUsers = User::where('student_id', 'like', '%' . $student_id_without_prefix . '%')->orWhere('email', '=', $request->email)->get()->first();
 
-        if ($checkinUsers) {
-            return response()->json([
-                'message' => self::$USER_ALREADY_REGISTERED,
-                'status' => 'false',
-            ], 422);
-        }
+
+
 
         $userdata = $checkForStudentInDB != null ? array_merge($request->validated(), ['name' => $checkForStudentInDB->student_name, 'student_id' => $student_id_without_prefix]) : array_merge($request->validated(), ['student_id' => $student_id_without_prefix]);
 

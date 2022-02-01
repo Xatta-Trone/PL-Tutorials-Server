@@ -13,8 +13,10 @@ class DummyUserDataImport implements ToModel, WithHeadingRow
      */
     public function model(array $row)
     {
+        $merit = $row['merit'] ?? $row['merit_position'] ?? null;
         return new DummyUserData([
-            'merit' => $row['merit'] ?? $row['merit_position'] ?? null,
+            // 'merit' => is_numeric($merit) == false ? sprintf("%04d", (int) substr($merit, 1)) : sprintf("%04d", $merit),
+            'merit' => is_numeric($merit) == false ? $merit : sprintf("%04d", $merit),
             'student_id' => $row['student_id'] ?? $row['student_no'] ?? $row['Student_Id'] ?? null,
             'student_name' => $row['student_name'] ?? $row['name_english'] ?? $row['name'] ?? null,
             'hall_name' => $row['hall_name'] ?? $row['hall'] ?? null,
