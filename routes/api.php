@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\User\BookController as UserBookController;
 use App\Http\Controllers\Api\User\GeneralDataController;
 use App\Http\Controllers\Api\User\MaterialController;
 use App\Http\Controllers\Api\User\SoftwareController as UserSoftwareController;
+use App\Http\Controllers\Api\User\UserPasswordResetController;
 use App\Http\Controllers\Api\Util\PublicInfoController;
 use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 use Illuminate\Http\Request;
@@ -55,6 +56,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     //general routes
     Route::get('quote', [GeneralDataController::class, 'quote']);
+    Route::get('halls', [GeneralDataController::class, 'halls']);
     Route::get('count-data', [GeneralDataController::class, 'countData']);
     Route::get('testimonials', [GeneralDataController::class, 'testimonials']);
     Route::get('social-links', [GeneralDataController::class, 'socialLinks']);
@@ -71,6 +73,8 @@ Route::prefix('v1')->group(function () {
     // Auth routes
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login'])->name('loginapi');
+    Route::post('request-password', [UserPasswordResetController::class, 'requestPassword']);
+    Route::post('reset-password', [PasswordResetController::class, 'resetPassword']);
     // logged in user
     Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::get('me', [AuthController::class, 'me']);

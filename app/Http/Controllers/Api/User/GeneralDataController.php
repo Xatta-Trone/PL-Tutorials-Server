@@ -11,6 +11,7 @@ use App\Models\Admin\Contact;
 use App\Models\Admin\Faq;
 use App\Models\Admin\Settings;
 use App\Models\Admin\Testimonial;
+use App\Models\admin\UserData;
 
 class GeneralDataController extends Controller
 {
@@ -53,6 +54,11 @@ class GeneralDataController extends Controller
     public function faq()
     {
         $data = Faq::where('status', 1)->get(['title', 'body', 'id']);
+        return $data != null ? $this->successResponse('LINKS_FOUND', $data) : $this->errorResponse('LINKS_NOT_FOUND', $data);
+    }
+    public function halls()
+    {
+        $data = UserData::distinct()->get(['hall_name'])->pluck('hall_name');
         return $data != null ? $this->successResponse('LINKS_FOUND', $data) : $this->errorResponse('LINKS_NOT_FOUND', $data);
     }
 }

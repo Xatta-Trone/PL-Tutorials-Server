@@ -26,8 +26,7 @@ class AuthController extends Controller
         // dd($validatedData);
         //data pre-process
         $student_id_without_prefix = $request->student_id = $this->studentIdWithoutPrefix($validatedData['student_id']);
-
-
+        $merit = sprintf("%04d", $validatedData['merit_position']);
 
         //check if already registered
         $checkinUsers = User::where('student_id', 'like', '%' . $student_id_without_prefix . '%')->orWhere('email', '=', $request->email)->get()->first();
@@ -40,9 +39,18 @@ class AuthController extends Controller
 
         //check in our db
 
+        $checkForStudentInDB = UserData::select('student_name', 'student_id', 'id', 'status')
+            ->where([['student_id', 'like', '%' . $student_id_without_prefix . '%'], ['merit', '=', $merit], ['hall_name', '=', $validatedData['hall_name']]])
+            ->orWhere([['student_id', 'like',  $student_id_without_prefix], ['merit', '=', $merit], ['student_name', 'like', '%' . $validatedData['name'] . '%']])
+            ->get()->first();
 
+        if (!$checkForStudentInDB) {
+            return response()->json([
+                'message' => 'NO_DATA_FOUND',
+                'status' => 'false',
+            ], 422);
+        }
 
-        $checkForStudentInDB = UserData::select('student_name', 'student_id', 'id', 'status')->where('student_id', 'like', '%' . $student_id_without_prefix . '%')->get()->first();
 
         if ($checkForStudentInDB && $checkForStudentInDB->status == 1) {
             return response()->json([
@@ -51,13 +59,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-
-
-
-
-        $userdata = $checkForStudentInDB != null ? array_merge($request->validated(), ['name' => $checkForStudentInDB->student_name, 'student_id' => $student_id_without_prefix]) : array_merge($request->validated(), ['student_id' => $student_id_without_prefix]);
-
-        return $this->createNewAccount($userdata, $checkForStudentInDB != null ? $checkForStudentInDB->id : null);
+        return $this->createNewAccount(array_merge($request->validated(), ['student_id' => $student_id_without_prefix, 'name' => $checkForStudentInDB->student_name]), $checkForStudentInDB->id);
 
         // $user = User::create([
         //     'name' => $validatedData['name'],
@@ -106,7 +108,7 @@ class AuthController extends Controller
 
         if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             return response()->json([
-                'message' => 'Invalid login details!',
+                'message' => 'Email or password incorrect !',
             ], 401);
         }
 

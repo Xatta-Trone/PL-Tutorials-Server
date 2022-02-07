@@ -7,14 +7,17 @@ use App\Models\Admin\Post;
 use App\Models\Admin\Admin;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Models\Admin\Course;
+use App\Mail\AdminWelcomeMsg;
 use App\Mail\UserLoginDetails;
 use Illuminate\Support\Carbon;
+use App\Models\Admin\LevelTerm;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Services\CustomVueTable2Service;
-use App\Models\Admin\Course;
-use App\Models\Admin\LevelTerm;
+use App\Mail\UserPasswordResetNotification;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,8 +88,14 @@ function returnDeptBatchString($batchDept = '')
 
 Route::get('/', function () {
 
+    $user = User::where('student_id', '14041444')->get()->first();
 
-    return Course::with(['levelterm','department'])->find(1);
+    // Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
+
+    return new UserPasswordResetNotification($user, 'asdfasdf');
+
+
+    // return Course::with(['levelterm','department'])->find(1);
 
 
 
