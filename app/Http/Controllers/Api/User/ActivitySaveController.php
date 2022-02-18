@@ -16,9 +16,8 @@ class ActivitySaveController extends Controller
 
 
         $data = [
-            'causer_type' => $this->getpostclass($request->input('model_type', 'user')),
+            'causer_type' => $this->getpostclass('user'),
             'causer_id' => $request->input('causer_id', 0),
-            'model_type' => get_class(new User()),
             'activity' => $request->input('activity', 'downloaded'),
             'model_id' => $request->input('model_id', 0),
             'model_type' => $this->getpostclass($request->input('model_type')),

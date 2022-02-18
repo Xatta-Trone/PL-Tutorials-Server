@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use App\Models\Admin\Course;
 use App\Models\Admin\Contact;
 use App\Models\Admin\Activity;
+use App\Models\Admin\Book;
 use App\Models\Admin\Settings;
 use App\Models\Admin\Software;
 use App\Models\admin\UserData;
@@ -73,6 +74,9 @@ trait ActivityTrait
                 break;
             case 'post':
                 return get_class(new Post());
+                break;
+            case 'book':
+                return get_class(new Book());
                 break;
             case 'software':
                 return get_class(new Software());
