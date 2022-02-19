@@ -88,41 +88,41 @@ function returnDeptBatchString($batchDept = '')
 
 Route::get('/', function () {
 
-    $user = User::where('student_id', '14041444')->get()->first();
+    // $user = User::where('student_id', '14041444')->get()->first();
 
-    // Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
+    // // Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
 
-    return new UserPasswordResetNotification($user, 'asdfasdf');
-
-
-    // return Course::with(['levelterm','department'])->find(1);
+    // return new UserPasswordResetNotification($user, 'asdfasdf');
 
 
+    // // return Course::with(['levelterm','department'])->find(1);
 
 
 
 
-    dd(getPieUserDataByBatchNDept());
 
-    return view('welcome');
 
-    $user = new User();
-    dd($user->allOnline());
+    // dd(getPieUserDataByBatchNDept());
 
-    $user = new User();
-    $new_users = User::where('created_at', '>', now())->count();
-    $new_users_this_week = User::where('created_at', '>', Carbon::now()->subWeek())->count();
-    $total_users = User::all()->count();
-    // $total_downloads = User::all()->count();
+    // return view('welcome');
 
-    $data = [
-        'online_users' => $user->allOnline()->count(),
-        'new_user_today' => $new_users,
-        'new_user_week' => $new_users_this_week,
-        'total_users' => $total_users,
-    ];
+    // $user = new User();
+    // dd($user->allOnline());
 
-    dd($data);
+    // $user = new User();
+    // $new_users = User::where('created_at', '>', now())->count();
+    // $new_users_this_week = User::where('created_at', '>', Carbon::now()->subWeek())->count();
+    // $total_users = User::all()->count();
+    // // $total_downloads = User::all()->count();
+
+    // $data = [
+    //     'online_users' => $user->allOnline()->count(),
+    //     'new_user_today' => $new_users,
+    //     'new_user_week' => $new_users_this_week,
+    //     'total_users' => $total_users,
+    // ];
+
+    // dd($data);
     // $a = Admin::find(1);
     // $a->password = 'asdfasdf';
     // $a->allPermissions()->pluck('name');
