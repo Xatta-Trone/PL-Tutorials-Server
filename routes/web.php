@@ -88,9 +88,9 @@ function returnDeptBatchString($batchDept = '')
 
 Route::get('/', function () {
 
-    // $user = User::where('student_id', '14041444')->get()->first();
+    $user = User::where('student_id', '1404194')->get()->first();
 
-    // // Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
+    Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
 
     // return new UserPasswordResetNotification($user, 'asdfasdf');
 
