@@ -16,9 +16,9 @@ class PermissionSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         Permission::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        // DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $sql = "INSERT INTO `permissions` (`id`, `name`, `created_at`, `updated_at`) VALUES
                 (1, 'user_show', '2018-06-15 19:30:04', '2018-06-15 19:30:04'),
                 (2, 'user_create', '2018-06-15 19:30:22', '2018-06-15 19:30:22'),
