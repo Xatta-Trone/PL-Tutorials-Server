@@ -30,7 +30,7 @@ class PostBookSoftwareSeeder extends Seeder
 (14, 'Books', NULL, 'ce', '1-2', 2, 1, 'admin', 'post', 'https://drive.google.com/drive/folders/1NO_fjo7_hXXdNtffQti5jagu9UENUH5d?usp=sharing', '', '1', NULL, 'Books  ce 1-2  Basic Electrical Technology eee165 3 credit', '2018-06-22 16:56:15', '2018-07-05 17:09:22'),
 (15, 'Chotha', NULL, 'ce', '1-2', 2, 1, 'admin', 'post', 'https://drive.google.com/drive/folders/1qRzp0f9RzPy_YQCQ2ozDHs84KVHQA7BH?usp=sharing', '', '1', NULL, 'Chotha  ce 1-2  Basic Electrical Technology eee165 3 credit', '2018-06-22 16:57:09', '2018-07-05 17:09:26'),
 (16, 'Class Lecture', NULL, 'ce', '1-2', 2, 1, 'admin', 'post', 'https://drive.google.com/drive/folders/1h_zOB7uwLg5yrCdOj8IeyeaO0AgBsm-e?usp=sharing', '', '1', NULL, 'Class Lecture  ce 1-2  Basic Electrical Technology eee165 3 credit', '2018-06-22 16:57:32', '2018-07-05 17:09:31');";
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::statement($post);
 
         $book = "
