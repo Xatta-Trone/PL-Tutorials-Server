@@ -15,8 +15,20 @@ class MaterialController extends Controller
 {
     public function departments()
     {
-        $data = DepartmentResource::collection(Department::orderBy('name')->get(['name', 'slug', 'image']));
+        $data = DepartmentResource::collection(Department::orderBy('name')->get(['name', 'slug', 'image', 'id']));
         return $data != null ? $this->successResponse('DEPARTMENTS_FOUND', $data) : $this->errorResponse('DEPARTMENTS_NOT_FOUND', $data);
+    }
+
+    public function levelterms()
+    {
+        $data = LevelTerm::orderBy('name')->get(['name', 'slug', 'id', 'department_id']);
+        return $data != null ? $this->successResponse('LEVEL_TERM_FOUND', $data) : $this->errorResponse('LEVEL_NOT_FOUND', $data);
+    }
+
+    public function courses()
+    {
+        $data = Course::orderBy('course_name')->get(['course_name', 'slug', 'id', 'department_id', 'level_term_id']);
+        return $data != null ? $this->successResponse('LEVEL_TERM_FOUND', $data) : $this->errorResponse('LEVEL_NOT_FOUND', $data);
     }
 
     public function infos($deptSlug, $ltSlug = null, $courseSlug = null)

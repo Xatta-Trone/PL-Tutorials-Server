@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DepartmentResource extends JsonResource
+class LevelTermResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,13 +14,6 @@ class DepartmentResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-
-            'name' => $this->name,
-            'slug' => $this->slug,
-            'image' => url('/storage/departments/' . $this->image),
-            'id'=> $this->id
-
-        ];
+        return parent::toArray($request);
     }
 }

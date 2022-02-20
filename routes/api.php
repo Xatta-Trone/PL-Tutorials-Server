@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\User\AuthController;
 use App\Http\Controllers\Api\User\BookController as UserBookController;
 use App\Http\Controllers\Api\User\GeneralDataController;
 use App\Http\Controllers\Api\User\MaterialController;
+use App\Http\Controllers\Api\User\SearchControlller;
 use App\Http\Controllers\Api\User\SoftwareController as UserSoftwareController;
 use App\Http\Controllers\Api\User\UserPasswordResetController;
 use App\Http\Controllers\Api\Util\PublicInfoController;
@@ -65,9 +66,14 @@ Route::prefix('v1')->group(function () {
     Route::post('submit-activity', [ActivitySaveController::class, 'index']);
 
     Route::get('books', [UserBookController::class, 'index']);
+    Route::get('search', [SearchControlller::class, 'search']);
 
     //departments
     Route::get('departments', [MaterialController::class, 'departments']);
+    Route::get('level-terms', [MaterialController::class, 'levelterms']);
+    Route::get('courses',
+        [MaterialController::class, 'courses']
+    );
     Route::get('departments/{deptSlug}/{ltSlug?}/{courseSlug?}', [MaterialController::class, 'infos']);
 
     // Auth routes
