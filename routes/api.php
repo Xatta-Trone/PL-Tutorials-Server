@@ -86,6 +86,7 @@ Route::prefix('v1')->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::get('logout-all', [AuthController::class, 'logout_all']);
         Route::get('logout', [AuthController::class, 'logout']);
+        Route::post('reset-user-password', [AuthController::class, 'changeUserPassword']);
 
         //book
         Route::get('softwares', [UserSoftwareController::class, 'index']);

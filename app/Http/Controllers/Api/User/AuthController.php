@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UserPasswordResetRequest;
 
 class AuthController extends Controller
 {
@@ -137,5 +138,44 @@ class AuthController extends Controller
     public function logout_all(Request $request)
     {
         return $request->user()->tokens()->delete();
+    }
+
+
+    public function changeUserPassword(UserPasswordResetRequest $request)
+    {
+        $user = User::where('id', $request->user()->id)->get()->first();
+
+        if (!$user) {
+            return response()->json([
+                'message' => self::$USER_NOT_FOUND,
+                'status' => 'false',
+            ], 404);
+        }
+
+        if ($user->status == 0) {
+            return response()->json([
+                'message' => self::$ACCOUNT_NOT_ACTIVE,
+                'status' => 'false',
+            ], 401);
+        }
+
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json([
+                'message' => self::$USER_OLD_PASSWORD_DOES_NOT_MATCH,
+                'status' => 'false',
+            ], 422);
+        }
+
+        if ($user->update(['password' => Hash::make($request->password)])) {
+            return response()->json([
+                'message' => self::$USER_PASSWORD_CHANGED_SUCCESSFULLY,
+                'status' => 'true',
+            ], 201);
+        } else {
+            return response()->json([
+                'message' => self::$USER_PASSWORD_CHANGE_ERROR,
+                'status' => 'false',
+            ], 201);
+        }
     }
 }
