@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactCreateRequest;
 use App\Models\Admin\Contact;
 use App\Models\Admin\Faq;
+use App\Models\Admin\Page;
 use App\Models\Admin\Settings;
 use App\Models\Admin\Testimonial;
 use App\Models\admin\UserData;
@@ -60,5 +61,17 @@ class GeneralDataController extends Controller
     {
         $data = UserData::distinct()->get(['hall_name'])->pluck('hall_name');
         return $data != null ? $this->successResponse('LINKS_FOUND', $data) : $this->errorResponse('LINKS_NOT_FOUND', $data);
+    }
+
+    public function pages()
+    {
+        $data = Page::where('status', 1)->get(['title', 'slug', 'id']);
+        return $data != null ? $this->successResponse('LINKS_FOUND', $data) : $this->errorResponse('LINKS_NOT_FOUND', $data);
+    }
+
+    public function pageBySlug(string $slug)
+    {
+        $data = Page::where('slug', $slug)->where('status', 1)->get()->first();
+        return $data != null ? $this->successResponse('PAGE_FOUND', $data) : $this->errorResponse('PAGE_NOT_FOUND', $data);
     }
 }

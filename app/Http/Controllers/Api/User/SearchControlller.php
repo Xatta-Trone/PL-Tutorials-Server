@@ -12,7 +12,7 @@ class SearchControlller extends Controller
 {
     public function search()
     {
-        $query = request()->get('query');
+        $query = request()->get('q');
         $l_t = request()->get('l_t');
         $dept = request()->get('department');
         $course_id = request()->get('course_id');

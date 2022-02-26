@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\User\GeneralDataController;
 use App\Http\Controllers\Api\User\MaterialController;
 use App\Http\Controllers\Api\User\SearchControlller;
 use App\Http\Controllers\Api\User\SoftwareController as UserSoftwareController;
+use App\Http\Controllers\Api\User\UserInfoControler;
 use App\Http\Controllers\Api\User\UserPasswordResetController;
 use App\Http\Controllers\Api\Util\PublicInfoController;
 use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
@@ -62,6 +63,8 @@ Route::prefix('v1')->group(function () {
     Route::get('testimonials', [GeneralDataController::class, 'testimonials']);
     Route::get('social-links', [GeneralDataController::class, 'socialLinks']);
     Route::get('faqs', [GeneralDataController::class, 'faq']);
+    Route::get('pages', [GeneralDataController::class, 'pages']);
+    Route::get('page/{slug}', [GeneralDataController::class, 'pageBySlug']);
     Route::post('submit-response', [GeneralDataController::class, 'contactSubmission']);
     Route::post('submit-activity', [ActivitySaveController::class, 'index']);
 
@@ -87,6 +90,7 @@ Route::prefix('v1')->group(function () {
         Route::get('logout-all', [AuthController::class, 'logout_all']);
         Route::get('logout', [AuthController::class, 'logout']);
         Route::post('reset-user-password', [AuthController::class, 'changeUserPassword']);
+        Route::get('user-activity', [UserInfoControler::class, 'getUserActivity']);
 
         //book
         Route::get('softwares', [UserSoftwareController::class, 'index']);
