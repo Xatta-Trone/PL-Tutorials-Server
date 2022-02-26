@@ -1,18 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api\User;
 
-use App\Events\SendMessage;
+use App\Traits\ChatTrait;
+use App\Models\Admin\Chat;
+use Illuminate\Http\Request;
+use App\Events\SendMessageToAdmin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChatCreateRequest;
-use App\Models\Admin\Chat;
-use App\Traits\ChatTrait;
-use Illuminate\Http\Request;
 
-class ChatController extends Controller
+class UserChatController extends Controller
 {
     use ChatTrait;
-
     /**
      * Display a listing of the resource.
      *
@@ -20,13 +19,13 @@ class ChatController extends Controller
      */
     public function index()
     {
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(ChatCreateRequest $request)
@@ -34,8 +33,9 @@ class ChatController extends Controller
         $chat = Chat::create($request->validated());
 
         if ($chat) {
-            event(new SendMessage($chat, $request->user_id));
-            return response()->json(['message' => self::$MESSAGE_SENT,
+            event(new SendMessageToAdmin($chat, $request->user()->name));
+            return response()->json([
+                'message' => self::$MESSAGE_SENT,
                 'status' => 'true',
                 'chat' => $chat,
             ], 201);
@@ -50,42 +50,36 @@ class ChatController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show()
     {
-
         $page = request()->get('page', 1);
         $per_page = request()->get('perpage', 10);
 
 
-        $chat_data = Chat::where('user_id', $id)->skip(($page - 1) * $per_page)->withTrashed()->take($per_page)->orderBy('id', 'asc')->get();
+        $chat_data = Chat::where('user_id', request()->user()->id)->skip(($page - 1) * $per_page)->take($per_page)->orderBy('id', 'asc')->get();
 
-        return response()->json([
-            'message' => self::$CHAT_FOUND,
-            'status' => 'true',
-            'chat' => $chat_data,
-        ], 200);
+        return response()->json($chat_data);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param int $id
-     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

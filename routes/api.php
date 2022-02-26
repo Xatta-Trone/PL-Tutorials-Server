@@ -1,44 +1,45 @@
 <?php
 
-use App\Http\Controllers\Api\Admin\ActivityController;
-use App\Http\Controllers\Api\Admin\AdminAuthController;
-use App\Http\Controllers\Api\Admin\AdminController;
-use App\Http\Controllers\Api\Admin\BanController;
-use App\Http\Controllers\Api\Admin\BanDaysController;
-use App\Http\Controllers\Api\Admin\BanHistoriesController;
-use App\Http\Controllers\Api\Admin\BookController;
-use App\Http\Controllers\Api\Admin\ChatController;
-use App\Http\Controllers\Api\Admin\ContactController;
-use App\Http\Controllers\Api\Admin\CourseController;
-use App\Http\Controllers\Api\Admin\DashboardController;
-use App\Http\Controllers\Api\Admin\DepartmentController;
-use App\Http\Controllers\Api\Admin\DummyUserDataController;
-use App\Http\Controllers\Api\Admin\FaqController;
-use App\Http\Controllers\Api\Admin\LevelTermController;
-use App\Http\Controllers\Api\Admin\PagesController;
-use App\Http\Controllers\Api\Admin\PasswordResetController;
-use App\Http\Controllers\Api\Admin\PermissionController;
-use App\Http\Controllers\Api\Admin\PostController;
-use App\Http\Controllers\Api\Admin\RoleController;
-use App\Http\Controllers\Api\Admin\SettingsController;
-use App\Http\Controllers\Api\Admin\SoftwareController;
-use App\Http\Controllers\Api\Admin\TestimonialController;
-use App\Http\Controllers\Api\Admin\UserController;
-use App\Http\Controllers\Api\admin\UserDataController;
-use App\Http\Controllers\Api\Admin\UserTraceController;
-use App\Http\Controllers\Api\User\ActivitySaveController;
-use App\Http\Controllers\Api\User\AuthController;
-use App\Http\Controllers\Api\User\BookController as UserBookController;
-use App\Http\Controllers\Api\User\GeneralDataController;
-use App\Http\Controllers\Api\User\MaterialController;
-use App\Http\Controllers\Api\User\SearchControlller;
-use App\Http\Controllers\Api\User\SoftwareController as UserSoftwareController;
-use App\Http\Controllers\Api\User\UserInfoControler;
-use App\Http\Controllers\Api\User\UserPasswordResetController;
-use App\Http\Controllers\Api\Util\PublicInfoController;
-use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Admin\BanController;
+use App\Http\Controllers\Api\Admin\FaqController;
+use App\Http\Controllers\Api\User\AuthController;
+use App\Http\Controllers\Api\Admin\BookController;
+use App\Http\Controllers\Api\Admin\ChatController;
+use App\Http\Controllers\Api\Admin\PostController;
+use App\Http\Controllers\Api\Admin\RoleController;
+use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\Admin\AdminController;
+use App\Http\Controllers\Api\Admin\PagesController;
+use App\Http\Controllers\Api\Admin\CourseController;
+use App\Http\Controllers\Api\User\SearchControlller;
+use App\Http\Controllers\Api\User\UserInfoControler;
+use App\Http\Controllers\Api\Admin\BanDaysController;
+use App\Http\Controllers\Api\Admin\ContactController;
+use App\Http\Controllers\Api\User\MaterialController;
+use App\Http\Controllers\Api\Admin\ActivityController;
+use App\Http\Controllers\Api\Admin\SettingsController;
+use App\Http\Controllers\Api\Admin\SoftwareController;
+use App\Http\Controllers\Api\admin\UserDataController;
+use App\Http\Controllers\Api\Admin\AdminAuthController;
+use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\LevelTermController;
+use App\Http\Controllers\Api\Admin\UserTraceController;
+use App\Http\Controllers\Api\Util\PublicInfoController;
+use App\Http\Controllers\Api\Admin\DepartmentController;
+use App\Http\Controllers\Api\Admin\PermissionController;
+use App\Http\Controllers\Api\User\GeneralDataController;
+use App\Http\Controllers\Api\Admin\TestimonialController;
+use App\Http\Controllers\Api\User\ActivitySaveController;
+use App\Http\Controllers\Api\Admin\BanHistoriesController;
+use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
+use App\Http\Controllers\Api\Admin\DummyUserDataController;
+use App\Http\Controllers\Api\Admin\PasswordResetController;
+use App\Http\Controllers\Api\User\UserPasswordResetController;
+use App\Http\Controllers\Api\User\BookController as UserBookController;
+use App\Http\Controllers\Api\User\SoftwareController as UserSoftwareController;
+use App\Http\Controllers\Api\User\UserChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -94,6 +95,11 @@ Route::prefix('v1')->group(function () {
 
         //book
         Route::get('softwares', [UserSoftwareController::class, 'index']);
+
+        //chat with admin
+        Route::get('chats', [UserChatController::class, 'show']);
+        Route::post('chats/create', [UserChatController::class, 'store']);
+        Route::delete('chats/{id}', [UserChatController::class, 'destroy']);
     });
 
     // Admin
@@ -134,6 +140,7 @@ Route::prefix('v1')->group(function () {
             //chat with user
             Route::get('users/chat/{id}', [ChatController::class, 'show']);
             Route::post('chats/create', [ChatController::class, 'store']);
+            Route::delete('chats/{id}', [ChatController::class, 'destroy']);
 
 
             Route::get('admins/activitydata/{id}', [AdminController::class, 'adminActivity']);

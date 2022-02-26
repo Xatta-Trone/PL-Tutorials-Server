@@ -3,7 +3,9 @@
 use Goutte\Client;
 use App\Models\Role;
 use App\Models\User\User;
+use App\Models\Admin\Chat;
 use App\Models\Admin\Post;
+use App\Events\SendMessage;
 use App\Models\Admin\Admin;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -12,12 +14,13 @@ use App\Mail\AdminWelcomeMsg;
 use App\Mail\UserLoginDetails;
 use Illuminate\Support\Carbon;
 use App\Models\Admin\LevelTerm;
+use App\Events\SendMessageToAdmin;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
-use App\Http\Services\CustomVueTable2Service;
 use App\Mail\UserPasswordResetNotification;
+use App\Http\Services\CustomVueTable2Service;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,7 +91,9 @@ function returnDeptBatchString($batchDept = '')
 
 Route::get('/', function () {
 
-    $user = User::where('student_id', '1404194')->get()->first();
+    $user = User::where('student_id', '14041444')->get()->first();
+    $chat = Chat::find(1);
+    event(new SendMessage($chat, $user->id));
 
     Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
 

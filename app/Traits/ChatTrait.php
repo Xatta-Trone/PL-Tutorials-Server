@@ -6,6 +6,7 @@ trait ChatTrait
 {
 
     public static $CHAT_CREATED = 'CHAT_CREATED';
+    public static $MESSAGE_SENT = 'MESSAGE_SENT';
     public static $CHAT_CREATION_ERROR = 'CHAT_CREATION_ERROR';
 
     public static $CHAT_NOT_FOUND = 'CHAT_NOT_FOUND';
