@@ -14,7 +14,7 @@ class SearchControlller extends Controller
     {
         $query = request()->get('q');
         $l_t = request()->get('l_t');
-        $dept = request()->get('department');
+        $dept = request()->get('dept');
         $course_id = request()->get('course_id');
         $content_type = request()->get('content_type');
         $page = request()->get('page', 1);
