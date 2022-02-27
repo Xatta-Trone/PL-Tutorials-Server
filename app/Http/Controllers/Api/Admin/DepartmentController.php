@@ -23,7 +23,7 @@ class DepartmentController extends Controller
     {
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Department(), [
-            'id', 'name', 'slug', 'code'
+            'id', 'name', 'slug', 'code', 'can_be_accessed_by'
         ]);
     }
 

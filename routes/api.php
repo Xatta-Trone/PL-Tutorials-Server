@@ -70,7 +70,6 @@ Route::prefix('v1')->group(function () {
     Route::post('submit-activity', [ActivitySaveController::class, 'index']);
 
     Route::get('books', [UserBookController::class, 'index']);
-    Route::get('search', [SearchControlller::class, 'search']);
 
     //departments
     Route::get('departments', [MaterialController::class, 'departments']);
@@ -92,6 +91,8 @@ Route::prefix('v1')->group(function () {
         Route::get('logout', [AuthController::class, 'logout']);
         Route::post('reset-user-password', [AuthController::class, 'changeUserPassword']);
         Route::get('user-activity', [UserInfoControler::class, 'getUserActivity']);
+        // search
+        Route::get('search', [SearchControlller::class, 'search']);
 
         //book
         Route::get('softwares', [UserSoftwareController::class, 'index']);

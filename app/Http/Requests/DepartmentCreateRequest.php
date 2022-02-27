@@ -29,6 +29,7 @@ class DepartmentCreateRequest extends FormRequest
             'code' => ['required'],
             'slug' => ['required'],
             'image' => ['required'],
+            'can_be_accessed_by' => ['required'],
         ];
     }
 }

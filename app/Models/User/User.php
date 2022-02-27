@@ -4,6 +4,7 @@ namespace App\Models\User;
 
 use App\Models\Admin\Activity;
 use App\Models\Admin\BanHistory;
+use App\Models\Admin\Department;
 use App\Traits\UserTrait;
 use App\Models\Admin\Post;
 use App\Models\Admin\UserTrace;
