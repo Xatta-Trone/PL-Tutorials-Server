@@ -28,6 +28,6 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('local')) {
             Mail::alwaysTo('monzurul.ce.buet@gmail.com');
         }
-        Schema::defaultStringLength(191);
+        // Schema::defaultStringLength(191);
     }
 }
