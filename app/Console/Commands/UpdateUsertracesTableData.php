@@ -40,15 +40,16 @@ class UpdateUsertracesTableData extends Command
     {
         UserTrace::chunkById(500, function ($usertraces) {
             foreach ($usertraces as $trace) {
-                $location_data = json_decode($trace->location_info);
+                // $location_data = json_decode($trace->location_info);
                 $device_data = json_decode($trace->browser_info);
 
-                $location = $location_data->isp.','.$location_data->city.','.$location_data->country;
-                $device = $device_data->browserName.' on '.$device_data->platformName;
+                // $location = $location_data->isp.','.$location_data->city.','.$location_data->country;
+                // $device = $device_data->browserName.' on '.$device_data->platformName;
+                $device = $device_data->userAgent;
 
                 $data = [
-                    'location' => $location,
-                    'device' => $device,
+                    // 'location' => $location,
+                    'user_agent' => $device,
                 ];
                 // dd($device);
 

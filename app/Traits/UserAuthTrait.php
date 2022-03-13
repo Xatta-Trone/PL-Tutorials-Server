@@ -24,6 +24,7 @@ trait UserAuthTrait
             'browser_info' => json_encode($browser_info),
             'fingerprint' => $fingerprint,
             'location' => $this->getLocation($location_info),
+            'user_agent' => request()->server('HTTP_USER_AGENT'),
             // 'browser' => $this->getBrowser($browser_info)
         ];
 
