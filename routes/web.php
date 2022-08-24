@@ -11,17 +11,18 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Models\Admin\Course;
 use App\Mail\AdminWelcomeMsg;
+use App\Models\Admin\Contact;
 use App\Mail\UserLoginDetails;
 use Illuminate\Support\Carbon;
 use App\Models\Admin\LevelTerm;
 use App\Events\SendMessageToAdmin;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Mail\UserPasswordResetNotification;
 use App\Http\Services\CustomVueTable2Service;
-use App\Models\Admin\Contact;
 
 /*
 |--------------------------------------------------------------------------
@@ -331,13 +332,25 @@ function getinfo($link)
 
 Route::get('/change-email', function () {
 
-
-
-    User::chunkById(
+    Contact::chunkById(
         500,
         function ($records) {
             foreach ($records as $record) {
-                $record->update(['email' => Str::snake(Str::remove(".", Str::lower($record->name)), '-')  . $record->student_id . "@example.com"]);
+                $record->update(['email' => Str::snake(Str::remove(".", Str::lower($record->name)), '-')  .  "@example.com"]);
+            }
+        },
+        $column = 'id'
+    );
+});
+
+Route::get('/change-password', function () {
+    $password = Hash::make('password');
+
+    Admin::chunkById(
+        500,
+        function ($records) use ($password) {
+            foreach ($records as $record) {
+                $record->update(['password' => $password]);
             }
         },
         $column = 'id'
