@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 use App\Mail\UserPasswordResetNotification;
 use App\Http\Services\CustomVueTable2Service;
+use App\Models\Admin\Contact;
 
 /*
 |--------------------------------------------------------------------------
@@ -91,11 +92,11 @@ function returnDeptBatchString($batchDept = '')
 
 Route::get('/', function () {
 
-    $user = User::where('student_id', '14041444')->get()->first();
-    $chat = Chat::find(1);
-    event(new SendMessage($chat, $user->id));
+    // $user = User::where('student_id', '14041444')->get()->first();
+    // $chat = Chat::find(1);
+    // event(new SendMessage($chat, $user->id));
 
-    Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
+    // Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
 
     // return new UserPasswordResetNotification($user, 'asdfasdf');
 
@@ -327,3 +328,18 @@ function getinfo($link)
     });
     // dd($crawler->filter('a')->link());
 }
+
+Route::get('/change-email', function () {
+
+
+
+    User::chunkById(
+        500,
+        function ($records) {
+            foreach ($records as $record) {
+                $record->update(['email' => Str::snake(Str::remove(".", Str::lower($record->name)), '-')  . $record->student_id . "@example.com"]);
+            }
+        },
+        $column = 'id'
+    );
+});
