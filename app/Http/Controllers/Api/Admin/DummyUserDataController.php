@@ -10,6 +10,7 @@ use App\Models\Admin\DummyUserData;
 use App\Traits\DummyUserDataTrait;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Maatwebsite\Excel\Facades\Excel;
 
 class DummyUserDataController extends Controller
@@ -62,6 +63,8 @@ class DummyUserDataController extends Controller
         try {
             DummyUserData::truncate();
             Excel::import(new DummyUserDataImport(), public_path('storage/files/' . $fileName));
+
+            Artisan::call('names:ucwords', ['table' => 'dummy_user_data']);
 
             return response()->json([
                 'message' => self::$USERDATA_CREATED,

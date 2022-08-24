@@ -11,11 +11,13 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Models\Admin\Course;
 use App\Mail\AdminWelcomeMsg;
+use App\Models\Admin\Contact;
 use App\Mail\UserLoginDetails;
 use Illuminate\Support\Carbon;
 use App\Models\Admin\LevelTerm;
 use App\Events\SendMessageToAdmin;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
@@ -91,11 +93,11 @@ function returnDeptBatchString($batchDept = '')
 
 Route::get('/', function () {
 
-    $user = User::where('student_id', '14041444')->get()->first();
-    $chat = Chat::find(1);
-    event(new SendMessage($chat, $user->id));
+    // $user = User::where('student_id', '14041444')->get()->first();
+    // $chat = Chat::find(1);
+    // event(new SendMessage($chat, $user->id));
 
-    Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
+    // Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
 
     // return new UserPasswordResetNotification($user, 'asdfasdf');
 
@@ -327,3 +329,30 @@ function getinfo($link)
     });
     // dd($crawler->filter('a')->link());
 }
+
+Route::get('/change-email', function () {
+
+    Contact::chunkById(
+        500,
+        function ($records) {
+            foreach ($records as $record) {
+                $record->update(['email' => Str::snake(Str::remove(".", Str::lower($record->name)), '-')  .  "@example.com"]);
+            }
+        },
+        $column = 'id'
+    );
+});
+
+Route::get('/change-password', function () {
+    $password = Hash::make('password');
+
+    Admin::chunkById(
+        500,
+        function ($records) use ($password) {
+            foreach ($records as $record) {
+                $record->update(['password' => $password]);
+            }
+        },
+        $column = 'id'
+    );
+});
