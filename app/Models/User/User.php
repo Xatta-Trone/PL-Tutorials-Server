@@ -60,6 +60,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    protected $appends = ['department'];
 
     public function posts()
     {
@@ -82,5 +83,11 @@ class User extends Authenticatable
     public function banhistories()
     {
         return $this->hasMany(BanHistory::class);
+    }
+
+
+    public function getDepartmentAttribute()
+    {
+        return Department::select('slug')->where('code', substr($this->student_id, 2, 2))->get()->first()->slug;
     }
 }

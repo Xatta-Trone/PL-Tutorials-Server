@@ -15,6 +15,7 @@ use App\Models\Admin\Contact;
 use App\Mail\UserLoginDetails;
 use Illuminate\Support\Carbon;
 use App\Models\Admin\LevelTerm;
+use App\Models\Admin\Department;
 use App\Events\SendMessageToAdmin;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -92,6 +93,17 @@ function returnDeptBatchString($batchDept = '')
 }
 
 Route::get('/', function () {
+    $user = User::where('student_id', '1404143')->get()->first();
+
+    // dd(substr($user->student_id, 2, 2));
+
+    $d =  Department::select('slug')->where('code', substr($user->student_id, 2, 2))->get()->first();
+
+    dd($user, $d->slug);
+
+
+
+
 
     // $user = User::where('student_id', '14041444')->get()->first();
     // $chat = Chat::find(1);
