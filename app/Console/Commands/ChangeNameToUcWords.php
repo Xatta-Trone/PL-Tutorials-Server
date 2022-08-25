@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Admin\Book;
 use App\Models\Admin\DummyUserData;
+use App\Models\Admin\Software;
 use App\Models\admin\UserData;
 use App\Models\User\User;
 use Illuminate\Console\Command;
@@ -46,8 +48,14 @@ class ChangeNameToUcWords extends Command
             $this->updateUsers();
             $this->updateUserData();
             $this->updateDummyUserData();
+            $this->updateBooks();
+            $this->updateSoftwares();
         } else if ($table == 'users') {
             $this->updateUsers();
+        } else if ($table == 'books') {
+            $this->updateBooks();
+        } else if ($table == 'softwares') {
+            $this->updateSoftwares();
         } else if ($table == 'user_data') {
             $this->updateUserData();
         } else if ($table == 'dummy_user_data') {
@@ -68,11 +76,38 @@ class ChangeNameToUcWords extends Command
         );
     }
 
+    public function updateSoftwares()
+    {
+        Software::chunkById(
+            500,
+            function ($records) {
+                foreach ($records as $record) {
+                    $record->update(['name' => $this->sentenceCase($record->name), 'author' =>  $this->sentenceCase($record->author)]);
+                }
+            },
+            $column = 'id'
+        );
+    }
+
+    public function updateBooks()
+    {
+        Book::chunkById(
+            500,
+            function ($records) {
+                foreach ($records as $record) {
+                    $record->update(['name' => $this->sentenceCase($record->name), 'author' =>  $this->sentenceCase($record->author)]);
+                }
+            },
+            $column = 'id'
+        );
+    }
+
     public function updateUserData()
     {
         UserData::chunkById(
             500,
             function ($records) {
+
                 foreach ($records as $record) {
                     $record->update(['student_name' => $this->sentenceCase($record->student_name)]);
                 }
@@ -94,7 +129,7 @@ class ChangeNameToUcWords extends Command
         );
     }
 
-    public function sentenceCase($string)
+    public function sentenceCase($string): string
     {
         return ucwords(strtolower($string));
     }
