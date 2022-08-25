@@ -33,6 +33,15 @@ class MaterialController extends Controller
 
     public function infos($deptSlug, $ltSlug = null, $courseSlug = null)
     {
+        // check if can access dept
+        $dept  = Department::select('can_be_accessed_by')->where('slug', $deptSlug)->first();
+        $canBeAccessedBy = explode(',', $dept->can_be_accessed_by);
+
+        if (!in_array(auth()->user()->department, $canBeAccessedBy)) {
+            return $this->errorResponse('NOT_AUTHORIZED_TO_ACCESS_THIS_DEPARTMENT', []);
+        }
+
+
         if ($courseSlug) {
             $data = Course::select('id', 'course_name', 'slug')->with('active_posts:id,name,course_id,link')->where('slug', $courseSlug)->get()->first();
             return $this->successResponse('COURSES_FOUND', $data);
@@ -50,7 +59,7 @@ class MaterialController extends Controller
             return $this->successResponse('LEVEL_TERMS_FOUND', $data);
         }
 
-        $data = Department::select('id', 'name')->with('levelterms:id,name,slug,department_id')->where('slug', $deptSlug)->first();
+        $data = Department::select('id', 'name', 'can_be_accessed_by')->with('levelterms:id,name,slug,department_id')->where('slug', $deptSlug)->first();
         return $this->successResponse('DEPARTMENTS_FOUND', $data);
     }
 

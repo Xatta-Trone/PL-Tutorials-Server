@@ -21,6 +21,7 @@ use App\Http\Requests\UserPasswordResetRequest;
 class AuthController extends Controller
 {
     use UserAuthTrait, UserRegisterTrait, UserTrait;
+
     public function register(RegisterRequest $request)
     {
         $validatedData = $request->validated();
@@ -30,7 +31,7 @@ class AuthController extends Controller
         $merit = sprintf("%04d", $validatedData['merit_position']);
 
         //check if already registered
-        $checkinUsers = User::where('student_id', 'like', '%' . $student_id_without_prefix . '%')->orWhere('email', '=', $request->email)->get()->first();
+        $checkinUsers = User::where('student_id',  $student_id_without_prefix)->orWhere('email', '=', $request->email)->get()->first();
         if ($checkinUsers) {
             return response()->json([
                 'message' => self::$USER_ALREADY_REGISTERED,
@@ -40,9 +41,9 @@ class AuthController extends Controller
 
         //check in our db
 
-        $checkForStudentInDB = UserData::select('student_name', 'student_id', 'id', 'status')
-            ->where([['student_id', 'like', '%' . $student_id_without_prefix . '%'], ['merit', '=', $merit], ['hall_name', '=', $validatedData['hall_name']]])
-            ->orWhere([['student_id', 'like',  $student_id_without_prefix], ['merit', '=', $merit], ['student_name', 'like', '%' . $validatedData['name'] . '%']])
+        $checkForStudentInDB = UserData::select('student_name', 'student_id', 'id', 'status', 'merit')
+            ->where([['student_id', 'like', '%' . $student_id_without_prefix . '%'], ['hall_name', '=', $validatedData['hall_name']]])
+            ->orWhere([['student_id', 'like',  '%' . $student_id_without_prefix . '%'], ['student_name',  $validatedData['name']]])
             ->get()->first();
 
         if (!$checkForStudentInDB) {
@@ -52,6 +53,13 @@ class AuthController extends Controller
             ], 422);
         }
 
+
+        if ($this->formatMeritPosition($checkForStudentInDB->merit) != $request->merit_position) {
+            return response()->json([
+                'message' => 'DATA_NOT_MATCHING',
+                'status' => 'false',
+            ], 422);
+        }
 
         if ($checkForStudentInDB && $checkForStudentInDB->status == 1) {
             return response()->json([

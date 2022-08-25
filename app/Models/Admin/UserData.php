@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class UserData extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'status',
-    ];
+
+    protected $guarded = [];
 }

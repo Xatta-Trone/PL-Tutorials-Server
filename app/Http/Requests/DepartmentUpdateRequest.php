@@ -32,4 +32,16 @@ class DepartmentUpdateRequest extends FormRequest
             'can_be_accessed_by' => ['required'],
         ];
     }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        // $this->merge([
+        //     'can_be_accessed_by' => array,
+        // ]);
+    }
 }

@@ -77,7 +77,7 @@ Route::prefix('v1')->group(function () {
     Route::get('courses',
         [MaterialController::class, 'courses']
     );
-    Route::get('departments/{deptSlug}/{ltSlug?}/{courseSlug?}', [MaterialController::class, 'infos']);
+
 
     // Auth routes
     Route::post('register', [AuthController::class, 'register']);
@@ -93,6 +93,7 @@ Route::prefix('v1')->group(function () {
         Route::get('user-activity', [UserInfoControler::class, 'getUserActivity']);
         // search
         Route::get('search', [SearchControlller::class, 'search']);
+        Route::get('departments/{deptSlug}/{ltSlug?}/{courseSlug?}', [MaterialController::class, 'infos']);
 
         //book
         Route::get('softwares', [UserSoftwareController::class, 'index']);
