@@ -48,7 +48,7 @@ class GeneralDataController extends Controller
 
     public function socialLinks()
     {
-        $data = Settings::whereIn('key', ['facebook', 'messenger', 'youtube', 'email'])->get(['key', 'value', 'fa4_icon']);
+        $data = Settings::whereIn('key', ['facebook', 'messenger', 'youtube', 'email','android-url'])->get(['key', 'value', 'fa4_icon']);
         return $data != null ? $this->successResponse('LINKS_FOUND', $data) : $this->errorResponse('LINKS_NOT_FOUND', $data);
     }
 

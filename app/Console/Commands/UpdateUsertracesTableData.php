@@ -44,12 +44,13 @@ class UpdateUsertracesTableData extends Command
                 $device_data = json_decode($trace->browser_info);
 
                 // $location = $location_data->isp.','.$location_data->city.','.$location_data->country;
-                // $device = $device_data->browserName.' on '.$device_data->platformName;
+                $deviceName = $device_data->browserName . ' on ' . $device_data->platformName;
                 $device = $device_data->userAgent;
 
                 $data = [
                     // 'location' => $location,
                     'user_agent' => $device,
+                    'device' => $deviceName,
                 ];
                 // dd($device);
 
