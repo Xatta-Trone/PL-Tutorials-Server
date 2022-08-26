@@ -25,7 +25,7 @@ trait UserAuthTrait
             'fingerprint' => $fingerprint,
             'location' => $this->getLocation($location_info),
             'user_agent' => request()->server('HTTP_USER_AGENT'),
-            // 'browser' => $this->getBrowser($browser_info)
+            'device' => $this->getBrowser($browser_info)
         ];
 
         UserTrace::create($data);
@@ -36,7 +36,7 @@ trait UserAuthTrait
     public function getBrowser($browser_info)
     {
 
-        $device_data = $browser_info;
+        $device_data = json_decode(json_encode($browser_info));
 
 
         return $device_data->browserName . ' on ' . $device_data->platformName;

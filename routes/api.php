@@ -91,6 +91,7 @@ Route::prefix('v1')->group(function () {
         Route::get('logout', [AuthController::class, 'logout']);
         Route::post('reset-user-password', [AuthController::class, 'changeUserPassword']);
         Route::get('user-activity', [UserInfoControler::class, 'getUserActivity']);
+        Route::get('user-logins', [UserInfoControler::class, 'getUserLogins']);
         // search
         Route::get('search', [SearchControlller::class, 'search']);
         Route::get('departments/{deptSlug}/{ltSlug?}/{courseSlug?}', [MaterialController::class, 'infos']);

@@ -60,7 +60,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    protected $appends = ['department'];
+    // protected $appends = ['department'];
 
     public function posts()
     {
