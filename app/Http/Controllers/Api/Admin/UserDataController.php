@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\admin;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\admin\UserData;
+use App\Models\Admin\UserData;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserDataAddRequest;
 use App\Http\Services\VueTable2Service;

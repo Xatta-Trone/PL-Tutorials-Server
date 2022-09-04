@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use App\Mail\UserLoginDetails;
 use App\Mail\UserPasswordUpdate;
-use App\Models\admin\UserData;
+use App\Models\Admin\UserData;
 use App\Models\User\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;

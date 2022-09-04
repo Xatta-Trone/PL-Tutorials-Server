@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Admin\Book;
 use App\Models\Admin\DummyUserData;
 use App\Models\Admin\Software;
-use App\Models\admin\UserData;
+use App\Models\Admin\UserData;
 use App\Models\User\User;
 use Illuminate\Console\Command;
 

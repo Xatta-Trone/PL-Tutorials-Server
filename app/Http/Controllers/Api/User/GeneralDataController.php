@@ -12,7 +12,7 @@ use App\Models\Admin\Faq;
 use App\Models\Admin\Page;
 use App\Models\Admin\Settings;
 use App\Models\Admin\Testimonial;
-use App\Models\admin\UserData;
+use App\Models\Admin\UserData;
 
 class GeneralDataController extends Controller
 {

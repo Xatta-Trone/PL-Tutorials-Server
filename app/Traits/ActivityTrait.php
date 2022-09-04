@@ -16,7 +16,7 @@ use App\Models\Admin\Activity;
 use App\Models\Admin\Book;
 use App\Models\Admin\Settings;
 use App\Models\Admin\Software;
-use App\Models\admin\UserData;
+use App\Models\Admin\UserData;
 use App\Models\Admin\LevelTerm;
 use App\Models\Admin\Department;
 use App\Models\Admin\Faq;

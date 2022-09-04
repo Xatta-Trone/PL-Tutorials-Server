@@ -10,7 +10,7 @@ use App\Models\Admin\Faq;
 use App\Models\Admin\Post;
 use App\Models\Admin\Software;
 use App\Models\Admin\Testimonial;
-use App\Models\admin\UserData;
+use App\Models\Admin\UserData;
 use App\Models\User\User;
 use App\Traits\DashboardTrait;
 use Carbon\Carbon;

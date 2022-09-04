@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Hamcrest\Type\IsNumeric;
-use App\Models\admin\UserData;
+use App\Models\Admin\UserData;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 

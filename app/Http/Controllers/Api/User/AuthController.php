@@ -8,7 +8,7 @@ use App\Traits\UserTrait;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Traits\UserAuthTrait;
-use App\Models\admin\UserData;
+use App\Models\Admin\UserData;
 use App\Models\Admin\UserTrace;
 use App\Traits\UserRegisterTrait;
 use App\Http\Requests\LoginRequest;

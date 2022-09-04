@@ -7,7 +7,7 @@ use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Services\VueTable2Service;
 use App\Models\Admin\Activity;
-use App\Models\admin\UserData;
+use App\Models\Admin\UserData;
 use App\Models\Admin\UserTrace;
 use App\Models\User\User;
 use App\Traits\UserTrait;
