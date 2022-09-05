@@ -88,7 +88,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $validatedData = $request->validated();
-        // dd($validatedData);
+        // dd($validatedData, $request->platform);
 
 
         $user = User::where('email', $validatedData['email'])->get()->first();
@@ -124,7 +124,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token', ['type:user'])->plainTextToken;
 
-        $this->saveUserTrace($user->id, $request->fingerprint);
+        $this->saveUserTrace($user->id, $request->fingerprint, $request->deviceName, $request->platform);
 
         return response()->json([
             'access_token' => $token,

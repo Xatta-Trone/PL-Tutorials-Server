@@ -27,6 +27,8 @@ class LoginRequest extends FormRequest
             'email' => 'required|string|email',
             'password' => 'required|',
             'fingerprint' => 'required|',
+            'deviceName' => ['sometimes', 'required', 'string'],
+            'platform' => ['sometimes', 'required', 'string'],
         ];
     }
 }
