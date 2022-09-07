@@ -83,7 +83,7 @@ Route::prefix('v1')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login'])->name('loginapi');
     Route::post('request-password', [UserPasswordResetController::class, 'requestPassword']);
-    Route::post('reset-password', [PasswordResetController::class, 'resetPassword']);
+    Route::post('reset-password', [UserPasswordResetController::class, 'resetPassword']);
     // logged in user
     Route::middleware(['auth:sanctum', 'type.user'])->group(function () {
         Route::get('me', [AuthController::class, 'me']);

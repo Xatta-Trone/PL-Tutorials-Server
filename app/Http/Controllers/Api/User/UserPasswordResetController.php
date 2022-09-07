@@ -49,12 +49,13 @@ class UserPasswordResetController extends Controller
         //create token
         $plainToken = $this->createToken($email);
         $hashedToken = Hash::make($plainToken);
+        $resetCode = $this->generateResetCodeFromToken($hashedToken);
 
-        $insertData = DB::table('password_resets')->insert(['email' => $email, 'token' => $hashedToken, 'created_at' => now()]);
+        $insertData = DB::table('password_resets')->insert(['email' => $email, 'token' => $hashedToken, 'reset_code' => $resetCode, 'created_at' => now()]);
 
         // Send email
 
-        Mail::to($email)->send(new UserPasswordResetNotification($check, $hashedToken));
+        Mail::to($email)->send(new UserPasswordResetNotification($check, $hashedToken, $resetCode));
 
         if (!$insertData) {
             return response()->json([
@@ -86,9 +87,11 @@ class UserPasswordResetController extends Controller
         $token = $request->input('token');
         $password = $request->input('password');
 
-        //check the time
+        $isInt = filter_var($token, FILTER_VALIDATE_INT);
 
-        $data = DB::table('password_resets')->where('email', $email)->where('token', $token)->get()->first();
+
+        //check the time
+        $data = DB::table('password_resets')->where('email', $email)->where($isInt ? 'reset_code' : 'token', $token)->get()->first();
 
         if (!$data) {
             return response()->json([
@@ -130,7 +133,7 @@ class UserPasswordResetController extends Controller
         };
 
         if ($admin->update(['password' => Hash::make($password)])) {
-            DB::table('password_resets')->where('email', $email)->where('token', $token)->delete();
+            DB::table('password_resets')->where('email', $email)->where($isInt ? 'reset_code' : 'token', $token)->delete();
             return response()->json([
                 'message' => self::$PASSWORD_UPDATED_SUCCESSFULLY,
                 'status' => 'true',

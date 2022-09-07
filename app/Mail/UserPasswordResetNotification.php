@@ -13,16 +13,18 @@ class UserPasswordResetNotification extends Mailable
 
     public $user;
     public $token;
+    public $resetCode;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user, $token)
+    public function __construct($user, $token, $resetCode)
     {
         $this->user = $user;
         $this->token = $token;
+        $this->resetCode = $resetCode;
     }
 
     /**

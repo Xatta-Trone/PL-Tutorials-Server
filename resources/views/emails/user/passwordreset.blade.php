@@ -11,6 +11,9 @@ Click the button below to reset your password [expires in {{config('auth.passwor
 Reset password
 @endcomponent
 
+@component('mail::panel')
+   Reset code for android app: {{$resetCode}}
+@endcomponent
 
 
 If the button doesn't work, click on the link below.

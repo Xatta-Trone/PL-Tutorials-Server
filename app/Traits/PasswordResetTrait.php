@@ -22,4 +22,10 @@ trait PasswordResetTrait
     {
         return $email . '|' . time();
     }
+
+
+    public function generateResetCodeFromToken(String $token): int
+    {
+        return (int) substr(base_convert(md5($token), 16, 10), -6);
+    }
 }
