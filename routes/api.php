@@ -21,7 +21,7 @@ use App\Http\Controllers\Api\User\MaterialController;
 use App\Http\Controllers\Api\Admin\ActivityController;
 use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Admin\SoftwareController;
-use App\Http\Controllers\Api\admin\UserDataController;
+use App\Http\Controllers\Api\Admin\UserDataController;
 use App\Http\Controllers\Api\Admin\AdminAuthController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\LevelTermController;
