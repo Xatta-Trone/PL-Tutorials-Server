@@ -15,7 +15,7 @@ class MaterialController extends Controller
 {
     public function departments()
     {
-        $data = DepartmentResource::collection(Department::orderBy('name')->get(['name', 'slug', 'image', 'id']));
+        $data = DepartmentResource::collection(Department::orderBy('name')->get(['name', 'slug', 'image', 'id', 'can_be_accessed_by']));
         return $data != null ? $this->successResponse('DEPARTMENTS_FOUND', $data) : $this->errorResponse('DEPARTMENTS_NOT_FOUND', $data);
     }
 
