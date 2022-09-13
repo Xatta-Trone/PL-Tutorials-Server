@@ -19,7 +19,8 @@ class DepartmentResource extends JsonResource
             'name' => $this->name,
             'slug' => $this->slug,
             'image' => url('/storage/departments/' . $this->image),
-            'id'=> $this->id
+            'id' => $this->id,
+            'can_be_accessed_by' => $this->can_be_accessed_by
 
         ];
     }
