@@ -23,9 +23,11 @@ class SearchControlller extends Controller
         $page = request()->get('page', 1);
         $per_page = request()->get('per_page', 25);
 
-        $softwares = Software::query();
-        $books = Book::query();
-        $posts = Post::query();
+        $columns = ['id', 'name', 'author', 'department_slug', 'level_term_slug', 'course_id', 'post_type', 'link', 'description', 'created_at'];
+
+        $softwares = Software::query()->select($columns);
+        $books = Book::query()->select($columns);
+        $posts = Post::query()->select($columns);
         // return $content_type;
 
         if (empty($query) && empty($l_t) && empty($dept) && empty($course_id) && empty($content_type)) {
