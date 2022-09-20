@@ -26,6 +26,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\TouchUserDevice::class,
     ];
 
     /**
@@ -49,6 +50,7 @@ class Kernel extends HttpKernel
             // \App\Http\Middleware\Cors::class,
             UpdateSanctumConfigForCustomGuard::class,
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
@@ -74,5 +76,7 @@ class Kernel extends HttpKernel
         'type.admin' => AdminGuardMiddleware::class,
         'type.user' => UserGuardMiddleware::class,
         'cors' => CORSMiddleware::class,
+        'touch-user-device' =>
+        \App\Http\Middleware\TouchUserDevice::class,
     ];
 }

@@ -48,7 +48,7 @@ class UserInfoControler extends Controller
         $byColumn = request()->input('byColumn', 1);
 
 
-        $activiey = UserTrace::query()->select(['id', 'user_ip', 'location', 'device', 'fingerprint', 'created_at'])->where('user_id', auth()->user()->id);
+        $activiey = UserTrace::query()->select(['id', 'user_ip', 'location', 'device', 'fingerprint', 'updated_at'])->where('user_id', auth()->user()->id);
 
         $count = $activiey->count();
 

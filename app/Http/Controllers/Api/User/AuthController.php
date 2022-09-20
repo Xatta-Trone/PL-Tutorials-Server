@@ -124,7 +124,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token', ['type:user'])->plainTextToken;
 
-        $this->saveUserTrace($user->id, $request->fingerprint, $request->deviceName, $request->platform);
+        $this->saveUserTrace($user->id, $request->fingerprint, $request->deviceName, $request->platform, $token);
 
         return response()->json([
             'access_token' => $token,

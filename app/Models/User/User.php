@@ -80,6 +80,15 @@ class User extends Authenticatable
         return $this->hasMany(UserTrace::class);
     }
 
+    public function currentDevice()
+    {
+        return $this->hasOne(UserTrace::class)->ofMany([
+            'id' => 'max',
+        ], function ($query) {
+            $query->where('pat_id', $this->currentAccessToken()->id);
+        });
+    }
+
     public function banhistories()
     {
         return $this->hasMany(BanHistory::class);
@@ -90,4 +99,6 @@ class User extends Authenticatable
     {
         return Department::select('slug')->where('code', substr($this->student_id, 2, 2))->get()->first()->slug;
     }
+
+
 }

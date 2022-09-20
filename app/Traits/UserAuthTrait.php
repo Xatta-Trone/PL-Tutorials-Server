@@ -10,7 +10,7 @@ use hisorange\BrowserDetect\Parser;
 trait UserAuthTrait
 {
 
-    public function saveUserTrace($userId, $fingerprint, $deviceName = null, $platform = 'web')
+    public function saveUserTrace($userId, $fingerprint, $deviceName = null, $platform = 'web', $token)
     {
         $location_info = $this->getLocationInfo(request()->ip());
         $location_info = $this->getLocationInfo('92.202.150.106');
@@ -27,6 +27,7 @@ trait UserAuthTrait
             'user_agent' => request()->server('HTTP_USER_AGENT'),
             'device' => $deviceName ?? $this->getBrowser($browser_info),
             'platform' => $platform ?? 'web',
+            'pat_id' => explode('|', $token)[0],
         ];
 
         UserTrace::create($data);
