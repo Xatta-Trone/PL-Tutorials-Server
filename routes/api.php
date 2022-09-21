@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\BanController;
 use App\Http\Controllers\Api\Admin\FaqController;
 use App\Http\Controllers\Api\User\AuthController;
+use App\Http\Controllers\Api\User\BugsController;
 use App\Http\Controllers\Api\Admin\BookController;
 use App\Http\Controllers\Api\Admin\ChatController;
 use App\Http\Controllers\Api\Admin\PostController;
@@ -18,6 +19,7 @@ use App\Http\Controllers\Api\User\UserInfoControler;
 use App\Http\Controllers\Api\Admin\BanDaysController;
 use App\Http\Controllers\Api\Admin\ContactController;
 use App\Http\Controllers\Api\User\MaterialController;
+use App\Http\Controllers\Api\User\UserChatController;
 use App\Http\Controllers\Api\Admin\ActivityController;
 use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Admin\SoftwareController;
@@ -39,7 +41,6 @@ use App\Http\Controllers\Api\Admin\PasswordResetController;
 use App\Http\Controllers\Api\User\UserPasswordResetController;
 use App\Http\Controllers\Api\User\BookController as UserBookController;
 use App\Http\Controllers\Api\User\SoftwareController as UserSoftwareController;
-use App\Http\Controllers\Api\User\UserChatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,6 +78,10 @@ Route::prefix('v1')->group(function () {
     Route::get('courses',
         [MaterialController::class, 'courses']
     );
+
+    // bug report
+    Route::post('report-bug', [BugsController::class, 'store']);
+
 
 
     // Auth routes
