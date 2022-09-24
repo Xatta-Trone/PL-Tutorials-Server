@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\Util\PublicInfoController;
 use App\Http\Controllers\Api\Admin\DepartmentController;
 use App\Http\Controllers\Api\Admin\PermissionController;
 use App\Http\Controllers\Api\User\GeneralDataController;
+use App\Http\Controllers\Api\User\UserDevicesController;
 use App\Http\Controllers\Api\Admin\TestimonialController;
 use App\Http\Controllers\Api\User\ActivitySaveController;
 use App\Http\Controllers\Api\Admin\BanHistoriesController;
@@ -105,7 +106,6 @@ Route::prefix('v1')->group(function () {
             // request()->user()->currentDevice()->touch();
 
             // return request()->user()->currentDevice;
-
             return response()->json(request()->user()->currentDevice);
         });
 
@@ -116,6 +116,12 @@ Route::prefix('v1')->group(function () {
         Route::get('chats', [UserChatController::class, 'show']);
         Route::post('chats/create', [UserChatController::class, 'store']);
         Route::delete('chats/{id}', [UserChatController::class, 'destroy']);
+
+
+        // user devices
+        Route::post('user-device-update/{id}', [UserDevicesController::class, 'updateDevice']);
+        Route::resource('user-devices', UserDevicesController::class);
+
     });
 
     // Admin

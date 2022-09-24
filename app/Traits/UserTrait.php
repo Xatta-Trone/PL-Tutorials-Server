@@ -2,12 +2,18 @@
 
 namespace App\Traits;
 
-use App\Mail\UserLoginDetails;
-use App\Mail\UserPasswordUpdate;
-use App\Models\Admin\UserData;
 use App\Models\User\User;
 use Illuminate\Support\Str;
+use App\Mail\UserLoginDetails;
+use App\Models\Admin\UserData;
+use App\Models\User\UserDevice;
+use App\Mail\UserPasswordUpdate;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Requests\UserDeviceCreateRequest;
+use App\Http\Requests\UserDeviceUpdateRequest;
+use GuzzleHttp\Psr7\Request;
+use hisorange\BrowserDetect\Parser as Browser;
+
 
 trait UserTrait
 {
@@ -36,6 +42,15 @@ trait UserTrait
     public static $ACCOUNT_NOT_ACTIVE = 'ACCOUNT_NOT_ACTIVE';
 
 
+    public static $DEVICE_SAVED = 'DEVICE_SAVED';
+    public static $DEVICE_SAVE_ERROR = 'DEVICE_SAVE_ERROR';
+    public static $DEVICE_UPDATED = 'DEVICE_UPDATED';
+    public static $DEVICE_UPDATE_ERROR = 'DEVICE_UPDATE_ERROR';
+    public static $DEVICE_FOUND = 'DEVICE_FOUND';
+    public static $DEVICE_NOT_FOUND = 'DEVICE_NOT_FOUND';
+    public static $DEVICE_DELETED = 'DEVICE_DELETED';
+    public static $DEVICE_DELETE_ERROR = 'DEVICE_DELETE_ERROR';
+    public static $ERROR_MAXIMUM_DEVICE_REACHED = 'ERROR_MAXIMUM_DEVICE_REACHED';
 
 
 
@@ -45,22 +60,24 @@ trait UserTrait
         return (substr($student_id, 0, 1) == 's') ? substr($student_id, 3) : $student_id;
     }
 
-    public function createNewAccount($userdata,  $updateUserdata = null)
+    public function createNewAccount($userData,  $updateUserData = null)
     {
+        // add max user devices
+        $userData = array_merge($userData, ['max_devices' => config('user.allowed_device_number')]);
 
         $userPassword = $this->randomPassword();
-        $userdata['password'] = bcrypt($userPassword);
-        $userdata['student_id'] = $this->studentIdWithoutPrefix($userdata['student_id']);
-        $userdata['user_letter'] = $this->userLetter($userdata['name']);
-        $user = User::create($userdata);
+        $userData['password'] = bcrypt($userPassword);
+        $userData['student_id'] = $this->studentIdWithoutPrefix($userData['student_id']);
+        $userData['user_letter'] = $this->userLetter($userData['name']);
+        $user = User::create($userData);
         $user->password = $userPassword;
 
         if ($user) {
-            if ($updateUserdata != null) {
+            if ($updateUserData != null) {
 
-                $updateUserdatau = UserData::where('id', $updateUserdata)->get()->first();
-                $updateUserdatau->update(['status' => 1]);
-                // dd($updateUserdatau);
+                $updateUserDataStat = UserData::where('id', $updateUserData)->get()->first();
+                $updateUserDataStat->update(['status' => 1]);
+                // dd($updateUserDataStat);
             }
 
             Mail::to($user['email'])->send(new UserLoginDetails($user));
@@ -127,5 +144,57 @@ trait UserTrait
             'message' => self::$USER_NOT_PASSWORD_RESET,
             'status' => 'false'
         ], 422);
+    }
+
+    public function saveDevice(UserDeviceCreateRequest $request)
+    {
+        $maxAllowedDevices = $request->user()->max_devices ??= config('user.allowed_device_number');
+
+        if (count($request->user()->devices) >= $maxAllowedDevices) {
+            return $this->errorResponse(self::$ERROR_MAXIMUM_DEVICE_REACHED);
+        }
+
+        $browser_info = (new Browser())->detect();
+        $deviceName = $request->has('deviceName') ? $request->deviceName : $this->getBrowser($browser_info);
+        // dummy api for local dev
+        $ipAddress = request()->ip() == "127.0.0.1" ? '92.202.150.106' : request()->ip();
+        $location_info = $this->getLocationInfo($ipAddress);
+
+        $data = [
+            'fingerprint' => $request->fingerprint,
+            'device' => $deviceName,
+            'device_ua' => request()->server('HTTP_USER_AGENT'),
+            'ip_address' => $request->ip(),
+            'location_json' => json_encode($location_info),
+            'location' => $this->getLocation($location_info),
+            'user_id' => $request->user()->id
+        ];
+
+        return UserDevice::create($data);
+    }
+
+    public function deviceUpdate(UserDeviceUpdateRequest $request, UserDevice $userDevice)
+    {
+
+        // $userDevice =  UserDevice::where('id', $id)->get()->first();
+        if ($userDevice->fingerprint != $request->fingerprint) {
+            return false;
+        }
+
+        $browser_info = (new Browser())->detect();
+        $deviceName = $request->has('deviceName') ? $request->deviceName : $this->getBrowser($browser_info);
+        // dummy api for local dev
+        $ipAddress = request()->ip() == "127.0.0.1" ? '92.202.150.106' : request()->ip();
+        $location_info = $this->getLocationInfo($ipAddress);
+
+        $data = [
+            'device' => $deviceName,
+            'device_ua' => request()->server('HTTP_USER_AGENT'),
+            'ip_address' => $request->ip(),
+            'location_json' => json_encode($location_info),
+            'location' => $this->getLocation($location_info),
+        ];
+
+        return $userDevice->update($data);
     }
 }
