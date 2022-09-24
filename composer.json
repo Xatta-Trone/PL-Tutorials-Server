@@ -22,7 +22,7 @@
         "maatwebsite/excel": "^3.1",
         "protoqol/prequel": "^1.23",
         "pusher/pusher-php-server": "^7.0",
-        "rap2hpoutre/laravel-log-viewer": "^1.7",
+        "rap2hpoutre/laravel-log-viewer": "^2.2",
         "santigarcor/laratrust": "^6.3"
     },
     "require-dev": {
