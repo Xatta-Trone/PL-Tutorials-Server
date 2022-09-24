@@ -20,6 +20,8 @@ class PrequelAuthMiddleware
         $key = $request->get('kay');
         $allowedKeys = config('monzurul.allowed_keys');
 
+        // dd($key, $allowedKeys, in_array($key, $allowedKeys));
+
         if (in_array($key, $allowedKeys)) {
             return $next($request);
         } else {
