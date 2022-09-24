@@ -34,6 +34,12 @@ class UserDevicesController extends Controller
      */
     public function store(UserDeviceCreateRequest $request)
     {
+        $maxAllowedDevices = $request->user()->max_devices ??= config('user.allowed_device_number');
+
+        if (count($request->user()->devices) >= $maxAllowedDevices) {
+            return $this->errorResponse(self::$ERROR_MAXIMUM_DEVICE_REACHED);
+        }
+
         $data = $this->saveDevice($request);
         return $data != null ? $this->successResponse(self::$DEVICE_SAVED) : $this->errorResponse(self::$DEVICE_SAVE_ERROR);
     }

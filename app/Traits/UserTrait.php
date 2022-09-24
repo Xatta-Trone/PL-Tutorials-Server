@@ -148,11 +148,6 @@ trait UserTrait
 
     public function saveDevice(UserDeviceCreateRequest $request)
     {
-        $maxAllowedDevices = $request->user()->max_devices ??= config('user.allowed_device_number');
-
-        if (count($request->user()->devices) >= $maxAllowedDevices) {
-            return $this->errorResponse(self::$ERROR_MAXIMUM_DEVICE_REACHED);
-        }
 
         $browser_info = (new Browser())->detect();
         $deviceName = $request->has('deviceName') ? $request->deviceName : $this->getBrowser($browser_info);
