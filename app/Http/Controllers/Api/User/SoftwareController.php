@@ -13,7 +13,7 @@ class SoftwareController extends Controller
     {
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Software(), [
-            'id', 'name', 'description', 'status', 'link'
+            'id', 'name', 'description', 'status', 'link', 'author'
         ], [], 1);
     }
 }
