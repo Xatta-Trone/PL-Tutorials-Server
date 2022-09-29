@@ -140,7 +140,9 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
+        $this->saveLogoutEvent($request->user()->id, $request->user()->currentAccessToken()->id);
         return $request->user()->currentAccessToken()->delete();
+
     }
 
     public function logout_all(Request $request)

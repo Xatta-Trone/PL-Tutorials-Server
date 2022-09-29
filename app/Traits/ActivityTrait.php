@@ -21,6 +21,7 @@ use App\Models\Admin\LevelTerm;
 use App\Models\Admin\Department;
 use App\Models\Admin\Faq;
 use App\Models\Admin\Testimonial;
+use App\Models\Admin\UserTrace;
 
 trait ActivityTrait
 {
@@ -107,6 +108,9 @@ trait ActivityTrait
                 break;
             case 'faq':
                 return get_class(new Faq());
+                break;
+            case 'usertrace':
+                return get_class(new UserTrace());
                 break;
 
             default:

@@ -2,13 +2,15 @@
 
 namespace App\Traits;
 
+use App\Models\Admin\Activity;
 use App\Models\Admin\UserTrace;
-use hisorange\BrowserDetect\Parser as Browser;
 use hisorange\BrowserDetect\Parser;
+use hisorange\BrowserDetect\Parser as Browser;
 
 
 trait UserAuthTrait
 {
+    use ActivityTrait;
 
     public function saveUserTrace($userId, $fingerprint, $deviceName = null, $platform = 'web', $token = null)
     {
@@ -32,7 +34,13 @@ trait UserAuthTrait
             'pat_id' => explode('|', $token)[0],
         ];
 
-        UserTrace::create($data);
+        $userTrace =  UserTrace::create($data);
+
+        $data['user_trace_id'] = $userTrace->id;
+
+        $this->saveAuthEvent($data);
+
+
 
         // call artisan to parse data
     }
@@ -62,5 +70,40 @@ trait UserAuthTrait
         //     $loc = file_get_contents("https://extreme-ip-lookup.com/json/" . $ip_address);
         // }
         return $loc;
+    }
+
+    public function saveAuthEvent(array $data, string $type = 'login',)
+    {
+
+        $label = (string) $data['pat_id'] . "::" . (string) $data['device'] . " :: " . (string) $data['location'];
+        $data = [
+            'causer_type' => $this->getpostclass('user'),
+            'causer_id' => $data['user_id'],
+            'activity' => $type,
+            'model_id' => $data['user_trace_id'],
+            'model_type' => $this->getpostclass('usertrace'),
+            'label' => $label,
+        ];
+
+        Activity::create($data);
+    }
+
+    public function saveLogoutEvent(int $userId, int $tokenId)
+    {
+
+        $label = (string) $tokenId . ":: logout :: " . request()->server('HTTP_USER_AGENT');
+
+        $userTrace = UserTrace::select('id')->where('pat_id', $tokenId)->first();
+
+        $data = [
+            'causer_type' => $this->getpostclass('user'),
+            'causer_id' => $userId,
+            'activity' => 'logout',
+            'model_id' => $userTrace ? $userTrace->id : null,
+            'model_type' => $this->getpostclass('usertrace'),
+            'label' => $label,
+        ];
+
+        Activity::create($data);
     }
 }

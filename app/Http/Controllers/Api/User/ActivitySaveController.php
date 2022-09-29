@@ -14,6 +14,7 @@ class ActivitySaveController extends Controller
     public function index(Request $request)
     {
 
+        // also in the auth controller login and logout method logs the activity
 
         $data = [
             'causer_type' => $this->getpostclass('user'),
