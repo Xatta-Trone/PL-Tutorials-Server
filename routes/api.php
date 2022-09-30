@@ -83,6 +83,10 @@ Route::prefix('v1')->group(function () {
     // bug report
     Route::post('report-bug', [BugsController::class, 'store']);
 
+    Route::get('get-token', function () {
+        dd(explode("|", request()->bearerToken())[0]);
+    });
+
 
 
     // Auth routes
@@ -103,7 +107,8 @@ Route::prefix('v1')->group(function () {
         Route::get('departments/{deptSlug}/{ltSlug?}/{courseSlug?}', [MaterialController::class, 'infos']);
 
         Route::get('get-user', function () {
-            // request()->user()->currentDevice()->touch();
+            // return request()->
+            // return dd(request()->user()->currentAccessToken()->id);
 
             // return request()->user()->currentDevice;
             return response()->json(request()->user()->currentDevice);

@@ -38,7 +38,7 @@ trait UserAuthTrait
 
         $data['user_trace_id'] = $userTrace->id;
 
-        $this->saveAuthEvent($data);
+        $this->saveAuthEvent($data, explode('|', $token)[0]);
 
 
 
@@ -72,7 +72,7 @@ trait UserAuthTrait
         return $loc;
     }
 
-    public function saveAuthEvent(array $data, string $type = 'login',)
+    public function saveAuthEvent(array $data, string $pat_id, string $type = 'login',)
     {
 
         $label = (string) $data['pat_id'] . "::" . (string) $data['device'] . " :: " . (string) $data['location'];
@@ -83,7 +83,7 @@ trait UserAuthTrait
             'model_id' => $data['user_trace_id'],
             'model_type' => $this->getpostclass('usertrace'),
             'label' => $label,
-            'pat_id' => $this->getUserTokenId(),
+            'pat_id' => $pat_id,
         ];
 
         Activity::create($data);

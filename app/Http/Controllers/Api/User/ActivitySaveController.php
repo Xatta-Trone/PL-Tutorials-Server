@@ -27,6 +27,7 @@ class ActivitySaveController extends Controller
         ];
 
         $data = Activity::create($data);
+
         return $data != null ? $this->successResponse('ACTIVITY_SAVED') : $this->errorResponse('ACTIVITY_SAVED_NOT');
 
 
@@ -34,5 +35,5 @@ class ActivitySaveController extends Controller
         //
     }
 
-    
+
 }

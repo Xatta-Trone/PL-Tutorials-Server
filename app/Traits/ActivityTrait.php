@@ -35,6 +35,7 @@ trait ActivityTrait
             'model_id' => $model_id,
             'label' => $label,
             'data' => $data,
+            'pat_id' => $this->getUserTokenId(),
         ];
         Activity::create($data);
     }
@@ -121,10 +122,10 @@ trait ActivityTrait
 
     private function getUserTokenId()
     {
-        if (request()->user() != null) {
-            return request()->user()->currentAccessToken()->id;
-        }
+        if (request()->bearerToken() != null) {
 
+            return explode("|", request()->bearerToken())[0];
+        }
         return null;
     }
 }
