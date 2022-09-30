@@ -120,6 +120,7 @@ Route::prefix('v1')->group(function () {
 
         // user devices
         Route::post('user-device-update/{id}', [UserDevicesController::class, 'updateDevice']);
+        Route::get('check-device', [UserDevicesController::class, 'checkDevice']);
         Route::resource('user-devices', UserDevicesController::class);
 
     });

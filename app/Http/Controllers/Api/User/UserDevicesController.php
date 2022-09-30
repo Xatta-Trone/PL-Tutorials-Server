@@ -94,6 +94,34 @@ class UserDevicesController extends Controller
         ], 422);
     }
 
+
+    public function checkDevice()
+    {
+        // dd(request()->server('HTTP_USER_AGENT'));
+        $deviceFingerprint = request()->get('fingerprint', null);
+
+        if ($deviceFingerprint == null) {
+            return response()->json([
+                'message' => self::$DEVICE_NOT_FOUND,
+                'status' => false,
+            ], 200);
+        }
+
+        $user_device  =  UserDevice::select('id')->where('fingerprint', $deviceFingerprint)->exists();
+
+        if ($user_device) {
+            return response()->json([
+                'message' => self::$DEVICE_FOUND,
+                'status' => true,
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => self::$DEVICE_NOT_FOUND,
+                'status' => false,
+            ], 200);
+        }
+    }
+
     /**
      * Remove the specified resource from storage.
      *

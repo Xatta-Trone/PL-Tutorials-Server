@@ -118,4 +118,13 @@ trait ActivityTrait
                 break;
         }
     }
+
+    private function getUserTokenId()
+    {
+        if (request()->user() != null) {
+            return request()->user()->currentAccessToken()->id;
+        }
+
+        return null;
+    }
 }

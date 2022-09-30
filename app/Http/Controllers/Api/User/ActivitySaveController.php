@@ -23,6 +23,7 @@ class ActivitySaveController extends Controller
             'model_id' => $request->input('model_id', 0),
             'model_type' => $this->getpostclass($request->input('model_type')),
             'label' => $request->input('label', ''),
+            'pat_id' => $this->getUserTokenId(),
         ];
 
         $data = Activity::create($data);
@@ -32,4 +33,6 @@ class ActivitySaveController extends Controller
 
         //
     }
+
+    
 }

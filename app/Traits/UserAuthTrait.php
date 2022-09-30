@@ -83,6 +83,7 @@ trait UserAuthTrait
             'model_id' => $data['user_trace_id'],
             'model_type' => $this->getpostclass('usertrace'),
             'label' => $label,
+            'pat_id' => $this->getUserTokenId(),
         ];
 
         Activity::create($data);
@@ -102,6 +103,7 @@ trait UserAuthTrait
             'model_id' => $userTrace ? $userTrace->id : null,
             'model_type' => $this->getpostclass('usertrace'),
             'label' => $label,
+            'pat_id' => $this->getUserTokenId(),
         ];
 
         Activity::create($data);
