@@ -54,7 +54,7 @@ class DailyQuote extends Command
             $data = [
                 'quote' => $response_data['contents']->quotes[0]->quote,
                 'author' => $response_data['contents']->quotes[0]->author,
-                'rawdata' => json_encode($response_data)
+                // 'rawdata' => json_encode($response_data)
             ];
             // dd($data);
             Quote::create($data);
