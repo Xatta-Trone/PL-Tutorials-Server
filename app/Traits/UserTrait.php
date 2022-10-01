@@ -51,6 +51,7 @@ trait UserTrait
     public static $DEVICE_DELETED = 'DEVICE_DELETED';
     public static $DEVICE_DELETE_ERROR = 'DEVICE_DELETE_ERROR';
     public static $ERROR_MAXIMUM_DEVICE_REACHED = 'ERROR_MAXIMUM_DEVICE_REACHED';
+    public static $DEVICE_ALREADY_ADDED = 'DEVICE_ALREADY_ADDED';
 
 
 

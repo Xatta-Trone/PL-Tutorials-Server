@@ -40,6 +40,10 @@ class UserDevicesController extends Controller
             return $this->errorResponse(self::$ERROR_MAXIMUM_DEVICE_REACHED);
         }
 
+        if (UserDevice::where('user_id', $request->user()->id)->where('fingerprint', $request->fingerprint)->exists()) {
+            return $this->errorResponse(self::$DEVICE_ALREADY_ADDED);
+        }
+
         $data = $this->saveDevice($request);
         return $data != null ? $this->successResponse(self::$DEVICE_SAVED) : $this->errorResponse(self::$DEVICE_SAVE_ERROR);
     }
