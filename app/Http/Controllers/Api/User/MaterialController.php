@@ -27,7 +27,7 @@ class MaterialController extends Controller
 
     public function courses()
     {
-        $data = Course::with(['levelterm:id,slug'])->orderBy('course_name')->get(['course_name', 'slug', 'id', 'department_id', 'level_term_id']);
+        $data = Course::with(['levelterm:id,slug', 'department:id,slug'])->orderBy('course_name')->get(['course_name', 'slug', 'id', 'department_id', 'level_term_id']);
         return $data != null ? $this->successResponse('LEVEL_TERM_FOUND', $data) : $this->errorResponse('LEVEL_NOT_FOUND', $data);
     }
 
