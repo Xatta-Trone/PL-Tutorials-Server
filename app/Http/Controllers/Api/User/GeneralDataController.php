@@ -60,7 +60,7 @@ class GeneralDataController extends Controller
             return $this->errorResponse('LINKS_NOT_FOUND', '', 404);
         }
 
-        $data = Settings::where('key', request()->get('key'))->get(['key', 'value']);
+        $data = Settings::where('key', request()->get('key'))->get(['key', 'value'])->first();
         return $data != null ? $this->successResponse('LINKS_FOUND', $data) : $this->errorResponse('LINKS_NOT_FOUND', $data);
     }
 
