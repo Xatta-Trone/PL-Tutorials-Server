@@ -65,6 +65,7 @@ Route::prefix('v1')->group(function () {
     Route::get('count-data', [GeneralDataController::class, 'countData']);
     Route::get('testimonials', [GeneralDataController::class, 'testimonials']);
     Route::get('social-links', [GeneralDataController::class, 'socialLinks']);
+    Route::get('get-value', [GeneralDataController::class, 'getSettingValue']);
     Route::get('faqs', [GeneralDataController::class, 'faq']);
     Route::get('pages', [GeneralDataController::class, 'pages']);
     Route::get('page/{slug}', [GeneralDataController::class, 'pageBySlug']);

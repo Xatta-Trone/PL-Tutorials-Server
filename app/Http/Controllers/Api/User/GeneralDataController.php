@@ -52,6 +52,18 @@ class GeneralDataController extends Controller
         return $data != null ? $this->successResponse('LINKS_FOUND', $data) : $this->errorResponse('LINKS_NOT_FOUND', $data);
     }
 
+    public function getSettingValue()
+    {
+        $key = request()->get('key');
+
+        if (!$key) {
+            return $this->errorResponse('LINKS_NOT_FOUND', '', 404);
+        }
+
+        $data = Settings::where('key', request()->get('key'))->get(['key', 'value']);
+        return $data != null ? $this->successResponse('LINKS_FOUND', $data) : $this->errorResponse('LINKS_NOT_FOUND', $data);
+    }
+
     public function faq()
     {
         $data = Faq::where('status', 1)->get(['title', 'body', 'id']);
