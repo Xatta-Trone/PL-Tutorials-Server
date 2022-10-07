@@ -32,7 +32,7 @@ trait DepartmentTrait
             $fileNameWithExt    =  request()->file('image')->getClientOriginalName();
             $fileNameWithoutExt = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
             $extension          = request()->file('image')->getClientOriginalExtension();
-            $NewFileToStore     = request()->slug . '_' . request()->code . $extension;
+            $NewFileToStore     = request()->slug . '_' . request()->code . "." . $extension;
             //save new data
             $path               = request()->file('image')->storeAs('public/departments', $NewFileToStore);
         } else {
