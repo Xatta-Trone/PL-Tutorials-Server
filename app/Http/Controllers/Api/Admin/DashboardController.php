@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Admin\Activity;
-use App\Models\Admin\Book;
-use App\Models\Admin\Contact;
-use App\Models\Admin\Faq;
-use App\Models\Admin\Post;
-use App\Models\Admin\Software;
-use App\Models\Admin\Testimonial;
-use App\Models\Admin\UserData;
-use App\Models\User\User;
-use App\Traits\DashboardTrait;
 use Carbon\Carbon;
+use App\Models\User\Bug;
+use App\Models\Admin\Faq;
+use App\Models\User\User;
+use App\Models\Admin\Book;
+use App\Models\Admin\Post;
+use App\Models\Admin\Contact;
+use App\Models\Admin\Activity;
+use App\Models\Admin\Software;
+use App\Models\Admin\UserData;
+use App\Traits\DashboardTrait;
+use App\Models\Admin\Testimonial;
+use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
@@ -34,6 +35,7 @@ class DashboardController extends Controller
         $total_faq = Faq::count();
         $new_user_today = User::whereDate('created_at', Carbon::today())->count();
         $new_user_thisweek = User::where('created_at', '>=', Carbon::today()->subDays(7))->count();
+        $bugs = Bug::count();
 
         $data = [
             'online_users' => $user->allOnline()->count(),
@@ -49,6 +51,7 @@ class DashboardController extends Controller
             'total_faq' => $total_faq,
             'new_user_today' => $new_user_today,
             'new_user_thisweek' => $new_user_thisweek,
+            'bugs' => $bugs,
         ];
 
         return response()->json($data);
