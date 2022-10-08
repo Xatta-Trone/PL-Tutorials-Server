@@ -166,6 +166,10 @@ Route::prefix('v1')->group(function () {
             Route::get('users/resetpass/{id}', [UserController::class, 'passwordReset']);
             Route::get('users/activitydata/{id}', [UserController::class, 'userActivity']);
             Route::get('users/locationdata/{id}', [UserController::class, 'userLocation']);
+            Route::get('users/saved-devices/{userId}', [UserController::class, 'userSavedDevices']);
+            Route::get('users/device-data/{deviceId}', [UserController::class, 'userActivityByDeviceId']);
+            Route::get('users/ip-data/{ipAddress}', [UserController::class, 'userActivityByIpAddress']);
+            Route::get('users/activity-by-login/{patId}', [UserController::class, 'userActivityByLogin']);
             //chat with user
             Route::get('users/chat/{id}', [ChatController::class, 'show']);
             Route::post('chats/create', [ChatController::class, 'store']);

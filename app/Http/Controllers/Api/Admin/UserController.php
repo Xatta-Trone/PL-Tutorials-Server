@@ -10,6 +10,7 @@ use App\Models\Admin\Activity;
 use App\Models\Admin\UserData;
 use App\Models\Admin\UserTrace;
 use App\Models\User\User;
+use App\Models\User\UserDevice;
 use App\Traits\UserTrait;
 use Illuminate\Http\Request;
 
@@ -223,7 +224,7 @@ class UserController extends Controller
         $ascending = request()->input('ascending', 0);
         $byColumn = request()->input('byColumn', 1);
 
-        $activiey = Activity::query()->where('causer_type', 'App\Models\User\User')->where('causer_id', $id)->select(['id', 'activity', 'label', 'created_at']);
+        $activiey = Activity::query()->where('causer_type', 'App\Models\User\User')->where('causer_id', $id)->select(['id', 'activity', 'label', 'created_at', 'pat_id']);
 
         if ($query != null) {
             $activiey = $activiey->where('activity', 'LIKE', "%{$query}%");
@@ -247,7 +248,7 @@ class UserController extends Controller
         $ascending = request()->input('ascending', 0);
         $byColumn = request()->input('byColumn', 1);
 
-        $columns = ['id', 'user_ip', 'location', 'device', 'fingerprint', 'created_at','user_id'];
+        $columns = ['id', 'user_ip', 'location', 'device', 'fingerprint', 'created_at', 'user_id', 'pat_id'];
 
         $activiey = UserTrace::query()->select($columns);
 
@@ -266,6 +267,120 @@ class UserController extends Controller
         return response()->json([
             'data' => $activiey->toArray(),
             'count' => UserTrace::where('user_id', $id)->count(),
+        ]);
+    }
+
+    public function userActivityByDeviceId($deviceId)
+    {
+        $query = request()->input('query', null);
+        $limit = request()->input('limit', 10);
+        $page = request()->input('page', 1);
+        $orderBy = request()->input('orderBy', 'id');
+        $ascending = request()->input('ascending', 0);
+        $byColumn = request()->input('byColumn', 1);
+
+        $columns = ['id', 'user_ip', 'location', 'device', 'fingerprint', 'created_at', 'user_id', 'pat_id'];
+
+        $activiey = UserTrace::query()->select($columns)->with('user:id,name,student_id');
+
+        if ($query != null) {
+            foreach ($columns as $key => $value) {
+                if ($key == 0) {
+                    $activiey = $activiey->where($value, 'LIKE', "%{$query}%");
+                } else {
+                    $activiey = $activiey->orWhere($value, 'LIKE', "%{$query}%");
+                }
+            }
+        }
+
+        $activiey = $activiey->where('fingerprint', $deviceId);
+
+        $total = $activiey->count();
+
+        $activiey = $activiey->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
+
+        return response()->json([
+            'data' => $activiey->toArray(),
+            'count' => $total,
+        ]);
+    }
+
+    public function userActivityByIpAddress($ipAddress)
+    {
+        $query = request()->input('query', null);
+        $limit = request()->input('limit', 10);
+        $page = request()->input('page', 1);
+        $orderBy = request()->input('orderBy', 'id');
+        $ascending = request()->input('ascending', 0);
+        $byColumn = request()->input('byColumn', 1);
+
+        $columns = ['id', 'user_ip', 'location', 'device', 'fingerprint', 'created_at', 'user_id', 'pat_id'];
+
+        $activiey = UserTrace::query()->select($columns)->with('user:id,name,student_id');
+
+        if ($query != null) {
+            foreach ($columns as $key => $value) {
+                if ($key == 0) {
+                    $activiey = $activiey->where($value, 'LIKE', "%{$query}%");
+                } else {
+                    $activiey = $activiey->orWhere($value, 'LIKE', "%{$query}%");
+                }
+            }
+        }
+
+        $activiey = $activiey->where('user_ip', $ipAddress)->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
+
+        return response()->json([
+            'data' => $activiey->toArray(),
+            'count' => UserTrace::where('user_ip', $ipAddress)->count(),
+        ]);
+    }
+
+    public function userActivityByLogin($patId)
+    {
+        $query = request()->input('query', null);
+        $limit = request()->input('limit', 10);
+        $page = request()->input('page', 1);
+        $orderBy = request()->input('orderBy', 'id');
+        $ascending = request()->input('ascending', 1);
+        $byColumn = request()->input('byColumn', 1);
+
+        $activiey = Activity::query()->where('causer_type', 'App\Models\User\User')->where('pat_id', $patId)->select(['id', 'activity', 'label', 'created_at', 'causer_id']);
+
+        if ($query != null) {
+            $activiey = $activiey->where('activity', 'LIKE', "%{$query}%");
+            $activiey = $activiey->orWhere('label', 'LIKE', "%{$query}%");
+        }
+
+        $activiey = $activiey->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
+
+        return response()->json([
+            'data' => $activiey->toArray(),
+            'count' => Activity::where('causer_type', get_class(new User()))->where('pat_id', $patId)->count(),
+        ]);
+    }
+
+    public function userSavedDevices($userId)
+    {
+        $query = request()->input('query', null);
+        $limit = request()->input('limit', 10);
+        $page = request()->input('page', 1);
+        $orderBy = request()->input('orderBy', 'id');
+        $ascending = request()->input('ascending', 1);
+        $byColumn = request()->input('byColumn', 1);
+
+        $activiey = UserDevice::query()->where('user_id', $userId)->select(['id','ip_address', 'location', 'device', 'fingerprint', 'platform', 'created_at']);
+
+        if ($query != null) {
+            $activiey = $activiey->where('activity', 'LIKE', "%{$query}%");
+            $activiey = $activiey->orWhere('label', 'LIKE', "%{$query}%");
+        }
+
+        $activiey = $activiey->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
+
+        return response()->json([
+            'data' => $activiey->toArray(),
+            'count' => UserDevice::query()->where('user_id', $userId)->count(),
         ]);
     }
 }

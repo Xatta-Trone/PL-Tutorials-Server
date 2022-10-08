@@ -1,16 +1,20 @@
 {
 	"folders": [
 		{
-			"path": "E:\\JS projects\\pl-tutorials-user"
+			"name": "pl-tutorials-user",
+			"path": "E:/JS projects/pl-tutorials-user"
 		},
 		{
+			"name": "pltutorials8",
 			"path": "."
 		},
 		{
-			"path": "E:\\JS projects\\mazer-static-nuxt"
+			"name": "plandroid",
+			"path": "D:/androidApps/plandroid"
 		},
 		{
-			"path": "D:/androidApps/plandroid"
+			"name": "mazer-static-nuxt",
+			"path": "E:/JS projects/mazer-static-nuxt"
 		}
 	],
 	"settings": {}
