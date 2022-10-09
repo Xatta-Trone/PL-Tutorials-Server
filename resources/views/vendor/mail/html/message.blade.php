@@ -36,7 +36,7 @@ Thanks,<br>
 ----
 ## Get the android app
 
-| Click the link   |      Or scan the QR code     |
+| Click on the link   |      Or scan the QR code     |
 |:----------:|:-------------:|
 | <a href="https://play.google.com/store/apps/details?id=com.pltutorials.plandroid" rel="Get the android app" target="_blank" title="Get the android app"><img src="{{ config('app.url').'/images/googleplay.png'  }}" alt="https://play.google.com/store/apps/details?id=com.pltutorials.plandroid" width="250px" title="Get the android app" style="margin-bottom: 5px;" /></a> |  ![Bilby Stampede](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://play.google.com/store/apps/details?id=com.pltutorials.plandroid) |
 

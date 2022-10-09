@@ -112,7 +112,7 @@ Route::get('/', function () {
     // Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
 
     // return new UserPasswordResetNotification($user, 'asdfasdf');
-    return new UserLoginDetails($user);
+    return new UserPasswordResetNotification($user, 'token', 'resetcode');
 
 
     // // return Course::with(['levelterm','department'])->find(1);
