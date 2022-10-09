@@ -7,6 +7,7 @@ use App\Models\Admin\Chat;
 use App\Models\Admin\Post;
 use App\Events\SendMessage;
 use App\Models\Admin\Admin;
+use App\Models\Admin\Reply;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Models\Admin\Course;
@@ -16,11 +17,13 @@ use App\Mail\UserLoginDetails;
 use Illuminate\Support\Carbon;
 use App\Models\Admin\LevelTerm;
 use App\Models\Admin\Department;
+use App\Mail\SendContactResponse;
 use App\Events\SendMessageToAdmin;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use App\Mail\PasswordResetNotificatoin;
 use Illuminate\Support\Facades\Artisan;
 use App\Mail\UserPasswordResetNotification;
 use App\Http\Services\CustomVueTable2Service;
@@ -111,8 +114,10 @@ Route::get('/', function () {
 
     // Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
 
+    $response = Reply::latest()->first();
+
     // return new UserPasswordResetNotification($user, 'asdfasdf');
-    return new UserPasswordResetNotification($user, 'token', 'resetcode');
+    return new SendContactResponse($response, Contact::find(2));
 
 
     // // return Course::with(['levelterm','department'])->find(1);

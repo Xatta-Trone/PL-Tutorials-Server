@@ -17,9 +17,11 @@ class SendContactResponse extends Mailable
      * @return void
      */
     public $response;
-    public function __construct($response)
+    public $contact;
+    public function __construct($response, $contact)
     {
         $this->response = $response;
+        $this->contact = $contact;
     }
 
     /**

@@ -75,7 +75,7 @@ class ContactController extends Controller
     {
         $post =  Reply::create(array_merge($request->validated(), ['replied_by' => auth()->id()]));
 
-        Mail::to($request->input('mailto'))->send(new SendContactResponse($post));
+        Mail::to($request->input('mailto'))->send(new SendContactResponse($post, Contact::find($id)));
 
 
         Contact::find($id)->update(['status' => 1, 'replied' => '1']);

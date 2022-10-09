@@ -32,7 +32,7 @@ class PasswordResetNotificatoin extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.passwords.resetnotification')->subject('PL Tutorials: Reset password')
+        return $this->markdown('emails.passwords.resetnotification')->subject('PL Tutorials: Reset password admin')
             ->from('pltutorialsbuet@gmail.com')
             ->replyTo('pltutorialsbuet@gmail.com');
     }
