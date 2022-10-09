@@ -42,6 +42,7 @@ use App\Http\Controllers\Api\Admin\PasswordResetController;
 use App\Http\Controllers\Api\User\UserPasswordResetController;
 use App\Http\Controllers\Api\User\BookController as UserBookController;
 use App\Http\Controllers\Api\User\SoftwareController as UserSoftwareController;
+use App\Models\Admin\Department;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,6 +89,30 @@ Route::prefix('v1')->group(function () {
         dd(explode("|", request()->bearerToken())[0]);
     });
 
+    Route::get('sitemaps', function () {
+
+        $links = [];
+
+        $depts = Department::select('id', 'slug')->with(['levelterms' => function ($lt) use ($links) {
+            $lt->select('id', 'slug', 'department_id');
+            $lt->with(['course' => function ($c) {
+                $c->select('id', 'slug', 'level_term_id');
+            }]);
+        }])->get()->each(function ($dept) use ($links) {
+
+
+
+            $links[] = "departments/" . $dept->slug;
+            // dd(
+            //     // $dept,
+            //     "departments/{$dept->slug}",
+            //     $links
+            // );
+        });
+
+        dd($links, $depts);
+    });
+
 
 
     // Auth routes
@@ -114,6 +139,8 @@ Route::prefix('v1')->group(function () {
             // return request()->user()->currentDevice;
             return response()->json(request()->user()->currentDevice);
         });
+
+
 
         //book
         Route::get('softwares', [UserSoftwareController::class, 'index']);
