@@ -53,6 +53,8 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'client_url' => env('CLIENT_DOMAIN', 'http://localhost:3000'),
+    'admin_url' => env('ADMIN_DOMAIN', 'http://localhost:3000'),
 
     'asset_url' => env('ASSET_URL', null),
 

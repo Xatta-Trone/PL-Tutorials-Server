@@ -95,11 +95,11 @@ function returnDeptBatchString($batchDept = '')
 Route::get('/', function () {
     $user = User::where('student_id', '1404143')->get()->first();
 
-    // dd(substr($user->student_id, 2, 2));
+    // // dd(substr($user->student_id, 2, 2));
 
-    $d =  Department::select('slug')->where('code', substr($user->student_id, 2, 2))->get()->first();
+    // $d =  Department::select('slug')->where('code', substr($user->student_id, 2, 2))->get()->first();
 
-    dd($user, $d->slug);
+    // dd($user, $d->slug);
 
 
 
@@ -112,6 +112,7 @@ Route::get('/', function () {
     // Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
 
     // return new UserPasswordResetNotification($user, 'asdfasdf');
+    return new UserLoginDetails($user);
 
 
     // // return Course::with(['levelterm','department'])->find(1);
