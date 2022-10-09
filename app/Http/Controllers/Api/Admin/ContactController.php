@@ -47,8 +47,8 @@ class ContactController extends Controller
      */
     public function show($id)
     {
-        $post = Contact::with(['replies.repliedby', 'admin'])->where('id', $id)->get()->first();
         Contact::find($id)->update(['replied_by' => auth()->id()]);
+        $post = Contact::with(['replies.repliedby', 'admin'])->where('id', $id)->get()->first();
         if ($post) {
             return response()->json([
                 'message' => self::$CONTACT_FOUND,

@@ -94,8 +94,8 @@ class RoleController extends Controller
     public function update(RoleUpdateRequest $request, $id)
     {
         $post = Role::findOrFail($id);
+        $permisssions = Permission::find($request->permissions);
         $post->update(Arr::except($request->validated(), 'permissions'));
-        $permisssions = Permission::find($request->permisssions);
         $post->syncPermissions($permisssions);
         // dd($post);
         if ($post) {

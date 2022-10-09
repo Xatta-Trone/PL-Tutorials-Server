@@ -21,7 +21,7 @@ class SettingsController extends Controller
     {
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Settings(), [
-            'id', 'key', 'value', 'fa4_icon', 'fa5_icon'
+            'id', 'key', 'value',
         ]);
     }
 

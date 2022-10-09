@@ -68,7 +68,7 @@ class UserController extends Controller
             ], 422);
         }
 
-        $userdata = $checkForStudentInDB != null ? array_merge($request->validated(), ['name' => $checkForStudentInDB->student_name, 'student_id' => $student_id_without_prefix]) : array_merge($request->validated(), ['student_id' => $student_id_without_prefix]);
+        $userdata = $checkForStudentInDB != null ? array_merge($request->validated(), ['name' => $checkForStudentInDB->student_name, 'student_id' => $student_id_without_prefix, 'max_devices' => config('user.allowed_device_number')]) : array_merge($request->validated(), ['student_id' => $student_id_without_prefix, 'max_devices' => config('user.allowed_device_number')]);
 
         return $this->createNewAccount($userdata, $checkForStudentInDB != null ? $checkForStudentInDB->id : null);
     }

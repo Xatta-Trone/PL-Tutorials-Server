@@ -19,7 +19,7 @@ class UserTraceController extends Controller
         $vs = new CustomVueTable2Service();
 
         return  $vs->get(new UserTrace(), [
-            'id', 'user_ip', 'location', 'device', 'user_id', 'fingerprint', 'created_at'
+            'id', 'user_ip', 'location', 'device', 'user_id', 'fingerprint', 'created_at','pat_id'
         ], ['user:id,name,student_id:foreign_key=user_id']);
     }
 

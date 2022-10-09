@@ -24,7 +24,7 @@ class ActivityController extends Controller
         $byColumn = request()->input('byColumn', 1);
 
 
-        $activiey = Activity::query()->select(['id', 'causer_type', 'causer_id', 'activity', 'label']);
+        $activiey = Activity::query()->select(['id', 'causer_type', 'causer_id', 'activity', 'label', 'pat_id']);
 
         if ($query != null) {
             $activiey = $activiey->where('activity', 'LIKE', "%{$query}%");
@@ -36,11 +36,9 @@ class ActivityController extends Controller
             //         $q->where('name', 'LIKE', "%{$query}%");
             //     });
             // }]);
-        } else {
-            $activiey = $activiey->with('causer');
         }
 
-        $activiey = $activiey->with('causer')->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
+        $activiey = $activiey->with('causer:id,name,student_id')->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
 
 
 

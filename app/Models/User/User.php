@@ -23,6 +23,18 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens;
     use UsersOnlineTrait;
 
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->max_devices = config('user.allowed_device_number');
+        });
+    }
+
+
+
     /**
      * The attributes that are mass assignable.
      *
@@ -36,7 +48,8 @@ class User extends Authenticatable
         'user_letter',
         'whitelisted',
         'deleted_at',
-        'status'
+        'status',
+        'max_devices'
     ];
 
     protected $guarded = [];
