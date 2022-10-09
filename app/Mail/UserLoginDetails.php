@@ -29,7 +29,7 @@ class UserLoginDetails extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.users')->subject('PL Tutorials: Login Details')
+        return $this->markdown('emails.users')->subject('[PL Tutorials]: Login Details')
             ->replyTo('pltutorialsbuet@gmail.com');
     }
 }

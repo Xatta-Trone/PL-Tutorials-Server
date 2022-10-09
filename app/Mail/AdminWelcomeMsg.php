@@ -29,7 +29,7 @@ class AdminWelcomeMsg extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.admins.welcome')->subject('PL Tutorials: Admin Login Details')
+        return $this->markdown('emails.admins.welcome')->subject('[PL Tutorials]: Admin login details')
             ->replyTo('pltutorialsbuet@gmail.com');
     }
 }
