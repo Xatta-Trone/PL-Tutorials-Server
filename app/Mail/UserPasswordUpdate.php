@@ -30,7 +30,7 @@ class UserPasswordUpdate extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.users.userpasswordreset')->subject('PL Tutorials: Password Updated')
+        return $this->markdown('emails.users.userpasswordreset')->subject('[PL Tutorials]: Password Updated')
             ->replyTo('pltutorialsbuet@gmail.com');
     }
 }

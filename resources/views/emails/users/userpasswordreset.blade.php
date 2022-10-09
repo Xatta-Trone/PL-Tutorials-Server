@@ -1,12 +1,15 @@
 @component('mail::message')
-# Hello, {{ $user->name }}
+## Hello, {{ $user->name }}
 
-The body of your message. {{ $user->password }}
+You password has been changed by one of our admins. Your new password is given below.
 
-@component('mail::button', ['url' => ''])
-Button Text
+@component('mail::panel')
+E-mail: {{ $user->email}} <br>
+Password: {{ $user->password }}
 @endcomponent
 
-Thanks,<br>
-{{ config('app.name') }}
+@component('mail::button', ['color'=> 'green','url' => config('app.client_url').'/login'])
+Login
+@endcomponent
+
 @endcomponent
