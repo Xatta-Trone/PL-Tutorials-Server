@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Services\CustomVueTable2Service;
-use App\Models\Admin\Activity;
+use App\Models\User\Bug;
+use Illuminate\Http\Request;
 
-class ActivityController extends Controller
+class BugsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,32 +19,24 @@ class ActivityController extends Controller
         $limit = request()->input('limit', 10);
         $page = request()->input('page', 1);
         $orderBy = request()->input('orderBy', 'id');
-        $ascending = request()->input('ascending', 0);
+        $ascending = request()->input('ascending', 1);
         $byColumn = request()->input('byColumn', 1);
 
 
-        $activiey = Activity::query()->select(['id', 'causer_type', 'causer_id', 'activity', 'label', 'pat_id']);
+        $bugs = Bug::query()->selectRaw("id, SUBSTRING(message, 1, 30) AS msg,is_seen,updated_at");
 
         if ($query != null) {
-            $activiey = $activiey->where('activity', 'LIKE', "%{$query}%");
-            $activiey = $activiey->orWhere('label', 'LIKE', "%{$query}%");
-            // $activiey = $activiey->whereHas('causer');
-            // $activiey = $activiey->orWhere('label', 'LIKE', "%{$query}%");
-            // $activiey = $activiey->with(['causer' => function ($q) use ($query) {
-            //     $q->where(function ($q) {
-            //         $q->where('name', 'LIKE', "%{$query}%");
-            //     });
-            // }]);
+            $bugs = $bugs->where('message', 'LIKE', "%{$query}%");
         }
 
-        $activiey = $activiey->with('causer:id,name,student_id')->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
+        $bugs = $bugs->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
 
 
 
 
         return response()->json([
-            'data' => $activiey->toArray(),
-            'count' => Activity::count(),
+            'data' => $bugs->toArray(),
+            'count' => Bug::count(),
         ]);
     }
 
@@ -68,7 +59,22 @@ class ActivityController extends Controller
      */
     public function show($id)
     {
-        //
+        Bug::find($id)->update(['is_seen' => true]);
+
+        $post = Bug::find($id);
+        if ($post) {
+            return response()->json([
+                'message' => 'BUG_FOUND',
+                'status' => 'true',
+                'data' => $post,
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'BUG_NOT_FOUND',
+            'status' => 'false',
+            'post' => null,
+        ], 404);
     }
 
     /**

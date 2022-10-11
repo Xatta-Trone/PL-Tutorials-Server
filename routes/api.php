@@ -36,6 +36,7 @@ use App\Http\Controllers\Api\User\UserDevicesController;
 use App\Http\Controllers\Api\Admin\TestimonialController;
 use App\Http\Controllers\Api\User\ActivitySaveController;
 use App\Http\Controllers\Api\Admin\BanHistoriesController;
+use App\Http\Controllers\Api\Admin\BugsController as AdminBugsController;
 use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 use App\Http\Controllers\Api\Admin\DummyUserDataController;
 use App\Http\Controllers\Api\Admin\PasswordResetController;
@@ -226,6 +227,7 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('bandays', BanDaysController::class);
             Route::apiResource('banhistory', BanHistoriesController::class);
             Route::apiResource('pages', PagesController::class);
+            Route::apiResource('bugs', AdminBugsController::class);
 
 
             Route::apiResource('dummyuserdata', DummyUserDataController::class);

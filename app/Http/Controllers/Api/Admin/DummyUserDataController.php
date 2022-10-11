@@ -69,7 +69,7 @@ class DummyUserDataController extends Controller
             return response()->json([
                 'message' => self::$USERDATA_CREATED,
                 'status' => 'true',
-                'count' => DummyUserData::all()->count(),
+                'count' => DummyUserData::count(),
             ], 201);
         } catch (QueryException $e) {
             if ($this->isDuplicateEntryException($e)) {

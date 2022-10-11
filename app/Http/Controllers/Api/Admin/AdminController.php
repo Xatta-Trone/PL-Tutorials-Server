@@ -57,7 +57,7 @@ class AdminController extends Controller
 
         return response()->json([
             'data' => $activiey->toArray(),
-            'count' => Admin::all()->count(),
+            'count' => Admin::count(),
         ]);
     }
 

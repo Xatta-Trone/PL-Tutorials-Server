@@ -35,7 +35,7 @@ class DashboardController extends Controller
         $total_faq = Faq::count();
         $new_user_today = User::whereDate('created_at', Carbon::today())->count();
         $new_user_thisweek = User::where('created_at', '>=', Carbon::today()->subDays(7))->count();
-        $bugs = Bug::count();
+        $bugs = Bug::where('is_seen', false)->count();
 
         $data = [
             'online_users' => $user->allOnline()->count(),
