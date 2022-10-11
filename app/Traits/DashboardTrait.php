@@ -36,18 +36,44 @@ trait DashboardTrait
             array_combine(array_column($u, 'date'), $u),
             array_combine(array_column($dates, 'date'), $dates)
         );
-        $finalData = [];
-        $fomattedDates = [];
-        $downloads = [];
-        $users = [];
-        $activities = [];
 
-        foreach ($c as $key => $value) {
-            // $keys = ['users', 'activities', 'downloads'];
-            array_key_exists('downloads', $value) ? $downloads[] = $value['downloads'] : $downloads[] = 0;
-            array_key_exists('activities', $value) ? $activities[] = $value['activities'] : $activities[] = 0;
-            array_key_exists('users', $value) ? $users[] = $value['users'] : $users[] = 0;
+        $activity_rearranged = array_combine(
+            array_column($a, 'date'),
+            $a
+        );
+        $user_data_rearranged = array_combine(
+            array_column($u, 'date'),
+            $u
+        );
+        $dates_rearranged = array_combine(
+            array_column($dates, 'date'),
+            $dates
+        );
+
+        $activityFinalData = [];
+        $downloadsFinalData = [];
+        $usersFinalData = [];
+
+
+        foreach ($dates_rearranged as $date => $value) {
+            // activity data
+            if (array_key_exists($date, $activity_rearranged)) {
+                $activityFinalData[] = (int) $activity_rearranged[$date]['activities'];
+                $downloadsFinalData[] = (int) $activity_rearranged[$date]['downloads'];
+            } else {
+                $activityFinalData[] = 0;
+                $downloadsFinalData[] = 0;
+            }
+
+            if (array_key_exists($date, $user_data_rearranged)) {
+                $usersFinalData[] = (int) $user_data_rearranged[$date]['users'];
+            } else {
+                $usersFinalData[] = 0;
+            }
         }
+
+
+        $fomattedDates = [];
 
         foreach ($dates as $key => $value) {
             $fomattedDates[] = Carbon::parse($value['date'])->format('M d');
@@ -56,15 +82,15 @@ trait DashboardTrait
         return ['date' => $fomattedDates, 'data' => [
             [
                 'name' => 'downloads',
-                'data' => $downloads,
+                'data' =>  $downloadsFinalData,
             ],
             [
                 'name' => 'activities',
-                'data' => $activities,
+                'data' => $activityFinalData,
             ],
             [
                 'name' => 'users',
-                'data' => $users,
+                'data' => $usersFinalData,
             ],
         ]];
     }
@@ -72,11 +98,11 @@ trait DashboardTrait
     public function getPieUserDataByBatchNDept()
     {
         $pieUserDatas = DB::table('users')
-                        ->selectRaw('substr(`student_id`,1,4) as total, count(`id`) as number')
-                        ->where(DB::raw('substr(`student_id`,1,4)'), '<>', '0000')
-                        ->groupBy(DB::raw('substr(`student_id`,1,4)'))
-                        ->orderBy('total', 'desc')
-                        ->get()->toArray();
+            ->selectRaw('substr(`student_id`,1,4) as total, count(`id`) as number')
+            ->where(DB::raw('substr(`student_id`,1,4)'), '<>', '0000')
+            ->groupBy(DB::raw('substr(`student_id`,1,4)'))
+            ->orderBy('total', 'desc')
+            ->get()->toArray();
 
         foreach ($pieUserDatas as $pieUser) {
             $pieUser->dept_batch = $this->returnDeptBatchString($pieUser->total);
@@ -106,7 +132,7 @@ trait DashboardTrait
 
         $dept_status_or_slug = ($single_department != null) ? strtoupper($single_department->slug) : 'Not Found';
 
-        return $dept_status_or_slug."'".$batch;
+        return $dept_status_or_slug . "'" . $batch;
 
         //return $batch.'+'.$dept;
     }

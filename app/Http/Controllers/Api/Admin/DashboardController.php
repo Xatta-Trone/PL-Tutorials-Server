@@ -59,7 +59,9 @@ class DashboardController extends Controller
 
     public function chartdata()
     {
-        $data = $this->getDataBetweenDates(Carbon::now()->subDays(30), Carbon::now());
+        $today = Carbon::now()->endOfDay();
+        $pastDate  = Carbon::now()->startOfDay()->subMonth();
+        $data = $this->getDataBetweenDates($pastDate, $today);
 
         return response()->json($data);
     }
