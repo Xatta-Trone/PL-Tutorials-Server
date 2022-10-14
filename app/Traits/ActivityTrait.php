@@ -28,10 +28,10 @@ trait ActivityTrait
     private function saveActivity($causer = 'user', $causer_id, $activity, $model, $model_id, $label, $data = null)
     {
         $data = [
-            'causer' => $this->getuserclass($causer),
+            'causer_type' => $this->getuserclass($causer),
             'causer_id' => $causer_id,
             'activity' => $activity,
-            'model' => $this->getpostclass($model),
+            'model_type' => $this->getpostclass($model),
             'model_id' => $model_id,
             'label' => $label,
             'data' => $data,
@@ -115,7 +115,7 @@ trait ActivityTrait
                 break;
 
             default:
-                return '';
+                return $posttype;
                 break;
         }
     }
