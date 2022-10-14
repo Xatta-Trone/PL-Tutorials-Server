@@ -3,8 +3,10 @@
 namespace App\Traits;
 
 use App\Models\Admin\Activity;
+use App\Models\Admin\Department;
 use App\Models\User\User;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 trait DashboardTrait
@@ -104,8 +106,10 @@ trait DashboardTrait
             ->orderBy('total', 'desc')
             ->get()->toArray();
 
+        $departments = Department::select('code', 'slug')->get();
+
         foreach ($pieUserDatas as $pieUser) {
-            $pieUser->dept_batch = $this->returnDeptBatchString($pieUser->total);
+            $pieUser->dept_batch = $this->returnDeptBatchString($pieUser->total, $departments);
         }
 
         return $pieUserDatas;
@@ -123,12 +127,12 @@ trait DashboardTrait
         ];
     }
 
-    public function returnDeptBatchString($batchDept = '')
+    public function returnDeptBatchString($batchDept = '', Collection $departments)
     {
         $batch = substr($batchDept, 0, 2);
         $dept = substr($batchDept, 2, 2);
 
-        $single_department = DB::table('departments')->where('code', $dept)->first();
+        $single_department = $departments->where('code', $dept)->first();
 
         $dept_status_or_slug = ($single_department != null) ? strtoupper($single_department->slug) : 'Not Found';
 
