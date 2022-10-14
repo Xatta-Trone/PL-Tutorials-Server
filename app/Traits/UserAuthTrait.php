@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\Admin\Activity;
 use App\Models\Admin\UserTrace;
+use App\Models\Admin\UserTraceData;
 use hisorange\BrowserDetect\Parser;
 use hisorange\BrowserDetect\Parser as Browser;
 
@@ -24,8 +25,8 @@ trait UserAuthTrait
         $data = [
             'user_id' => $userId,
             'user_ip' => request()->ip(),
-            'location_info' => json_encode($location_info),
-            'browser_info' => json_encode($browser_info),
+            // 'location_info' => json_encode($location_info),
+            // 'browser_info' => json_encode($browser_info),
             'fingerprint' => $fingerprint,
             'location' => $this->getLocation($location_info),
             'user_agent' => request()->server('HTTP_USER_AGENT'),
@@ -37,6 +38,13 @@ trait UserAuthTrait
         $userTrace =  UserTrace::create($data);
 
         $data['user_trace_id'] = $userTrace->id;
+
+        $userTrace =  UserTraceData::create([
+            'location_info' => $location_info,
+            'browser_info' => $browser_info,
+            'user_trace_id' => $userTrace->id
+        ]);
+
 
         $this->saveAuthEvent($data, explode('|', $token)[0]);
 
