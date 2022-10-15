@@ -20,6 +20,10 @@ class BanDaysController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('ban_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new BanDays(), [
             'id', 'level', 'days'
@@ -34,6 +38,10 @@ class BanDaysController extends Controller
      */
     public function store(BanDaysCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('ban_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  BanDays::create($request->validated());
 
 
@@ -58,6 +66,11 @@ class BanDaysController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('ban_show')) {
+            return  $this->noPermissionResponse();
+        }
+
+
         $post = BanDays::find($id);
         if ($post) {
             return response()->json([
@@ -83,6 +96,10 @@ class BanDaysController extends Controller
      */
     public function update(BanDaysUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('ban_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = BanDays::findOrFail($id);
 
         $post->update($request->validated());
@@ -108,6 +125,10 @@ class BanDaysController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('ban_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = BanDays::find($id);
 
         if ($post == null) {

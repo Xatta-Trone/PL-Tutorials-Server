@@ -52,6 +52,10 @@ class DummyUserDataController extends Controller
      */
     public function store(Request $request)
     {
+        if (!request()->user()->hasPermission('userdata_import')) {
+            return  $this->noPermissionResponse();
+        }
+
         $this->validate($request, [
             'file' => 'required',
         ]);

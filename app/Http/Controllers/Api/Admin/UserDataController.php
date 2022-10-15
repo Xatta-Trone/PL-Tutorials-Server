@@ -21,6 +21,9 @@ class UserDataController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('userdata_show')) {
+            return $this->noIndexPermissionResponse();
+        }
 
 
         $u = UserData::query();
@@ -62,6 +65,10 @@ class UserDataController extends Controller
      */
     public function update(UserDataAddRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('user_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $user = UserData::find($id);
         $userdata = ['name' => $user->student_name, 'student_id' => $user->student_id, 'email' => $request->input('email')];
 

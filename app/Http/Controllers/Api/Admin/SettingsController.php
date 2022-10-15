@@ -19,6 +19,10 @@ class SettingsController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('utilities_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Settings(), [
             'id', 'key', 'value',
@@ -33,7 +37,9 @@ class SettingsController extends Controller
      */
     public function store(SettingsCreateRequest $request)
     {
-        // return $request->validated();
+        if (!request()->user()->hasPermission('utilities_update')) {
+            return  $this->noPermissionResponse();
+        }
 
 
 
@@ -58,6 +64,10 @@ class SettingsController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('utilities_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Settings::find($id);
         if ($post) {
             return response()->json([
@@ -83,6 +93,10 @@ class SettingsController extends Controller
      */
     public function update(SettingsCreateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('utilities_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Settings::findOrFail($id);
 
         $post->update($request->validated());
@@ -108,6 +122,10 @@ class SettingsController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('utilities_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Settings::find($id);
 
         if ($post == null) {

@@ -23,6 +23,10 @@ class ContactController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('contact_view')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Contact(), [
             'id', 'name', 'email', 'subject', 'created_at', 'status', 'replied'
@@ -47,6 +51,10 @@ class ContactController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('contact_view')) {
+            return  $this->noPermissionResponse();
+        }
+
         Contact::find($id)->update(['replied_by' => auth()->id()]);
         $post = Contact::with(['replies.repliedby', 'admin'])->where('id', $id)->get()->first();
         if ($post) {
@@ -73,6 +81,10 @@ class ContactController extends Controller
      */
     public function update(ContactReplyRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('contact_reply')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  Reply::create(array_merge($request->validated(), ['replied_by' => auth()->id()]));
 
         Mail::to($request->input('mailto'))->send(new SendContactResponse($post, Contact::find($id)));
@@ -102,6 +114,10 @@ class ContactController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('contact_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Contact::find($id);
 
         if ($post == null) {

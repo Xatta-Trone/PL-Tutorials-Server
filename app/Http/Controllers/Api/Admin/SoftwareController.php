@@ -21,6 +21,10 @@ class SoftwareController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('software_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Software(), [
             'id', 'name', 'department_slug', 'level_term_slug', 'status', 'user_id',
@@ -35,6 +39,10 @@ class SoftwareController extends Controller
      */
     public function store(SoftwareCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('software_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  Software::create(array_merge($request->validated(), ['image' => $this->upload(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
 
 
@@ -59,6 +67,10 @@ class SoftwareController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('software_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Software::find($id);
         if ($post) {
             return response()->json([
@@ -84,6 +96,10 @@ class SoftwareController extends Controller
      */
     public function update(SoftwareUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('software_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         // return $request->all();
         $post = Software::findOrFail($id);
 
@@ -114,6 +130,10 @@ class SoftwareController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('software_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Software::find($id);
 
         if ($post == null) {

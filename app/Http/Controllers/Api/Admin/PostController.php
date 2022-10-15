@@ -23,6 +23,10 @@ class PostController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('post_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
 
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Post(), [
@@ -38,6 +42,10 @@ class PostController extends Controller
      */
     public function store(PostCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('post_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         // return $request->validated();
         $post =  Post::create(array_merge($request->validated(), ['image' => $this->upload(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
 
@@ -63,6 +71,10 @@ class PostController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('post_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Post::find($id);
         if ($post) {
             return response()->json([
@@ -88,6 +100,10 @@ class PostController extends Controller
      */
     public function update(PostUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('post_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         // return $request->validated();
         $post = Post::findOrFail($id);
 
@@ -114,6 +130,10 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('post_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Post::find($id);
 
         if ($post == null) {

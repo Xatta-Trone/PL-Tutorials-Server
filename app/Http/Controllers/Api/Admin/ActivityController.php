@@ -6,9 +6,20 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Services\CustomVueTable2Service;
 use App\Models\Admin\Activity;
+use Facade\FlareClient\Http\Response;
 
 class ActivityController extends Controller
 {
+    /**
+     * Create the controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        // $this->authorizeResource(Activity::class, 'activities');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -16,6 +27,15 @@ class ActivityController extends Controller
      */
     public function index()
     {
+
+        if (!request()->user()->hasPermission('activities_show')) {
+            return response()->json([
+                'data' => [],
+                'count' => 0,
+            ]);
+        }
+
+
         $query = request()->input('query', null);
         $limit = request()->input('limit', 10);
         $page = request()->input('page', 1);

@@ -26,6 +26,11 @@ class AdminController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('admin_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
+
         $query = request()->input('query', null);
         $limit = request()->input('limit', 10);
         $page = request()->input('page', 1);
@@ -35,28 +40,27 @@ class AdminController extends Controller
         $cols = ['id', 'name', 'student_id', 'email', 'status'];
 
 
-        $activiey = Admin::query()->select($cols);
+        $activity = Admin::query()->select($cols);
 
         if ($query != null) {
 
             foreach ($cols as $key => $value) {
                 if ($key == 0) {
-                    $activiey = $activiey->where($value, 'LIKE', "%{$query}%");
+                    $activity = $activity->where($value, 'LIKE', "%{$query}%");
                 } else {
-                    $activiey = $activiey->orWhere($value, 'LIKE', "%{$query}%");
+                    $activity = $activity->orWhere($value, 'LIKE', "%{$query}%");
                 }
             }
         } else {
-            $activiey = $activiey->with('roles:id,name');
+            $activity = $activity->with('roles:id,name');
         }
 
-        $activiey = $activiey->with('roles:id,name')->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
+        $activity = $activity->with('roles:id,name')->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
 
 
 
 
-        return response()->json([
-            'data' => $activiey->toArray(),
+        return response()->json(['data' => $activity->toArray(),
             'count' => Admin::count(),
         ]);
     }
@@ -69,6 +73,9 @@ class AdminController extends Controller
      */
     public function store(AdminCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('admin_create')) {
+            return  $this->noPermissionResponse();
+        }
 
 
         $student_id_without_prefix = $request->student_id = $this->studentIdWithoutPrefix($request->student_id);
@@ -109,6 +116,10 @@ class AdminController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('admin_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $user = Admin::with('roles:id,name')->find($id);
         if ($user) {
             return response()->json([
@@ -134,6 +145,10 @@ class AdminController extends Controller
      */
     public function update(AdminUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('admin_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $user = Admin::findOrFail($id);
         $role = Role::find($request->roles);
         $user->syncRoles($role);
@@ -162,6 +177,10 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('admin_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $user = Admin::query();
 
         $user = $user->find($id);
@@ -202,17 +221,16 @@ class AdminController extends Controller
         $ascending = request()->input('ascending', 0);
         $byColumn = request()->input('byColumn', 1);
 
-        $activiey = Activity::query()->where('causer_type', 'App\Models\Admin\Admin')->where('causer_id', $id)->select(['id', 'activity', 'label', 'created_at']);
+        $activity = Activity::query()->where('causer_type', 'App\Models\Admin\Admin')->where('causer_id', $id)->select(['id', 'activity', 'label', 'created_at']);
 
         if ($query != null) {
-            $activiey = $activiey->where('activity', 'LIKE', "%{$query}%");
-            $activiey = $activiey->orWhere('label', 'LIKE', "%{$query}%");
+            $activity = $activity->where('activity', 'LIKE', "%{$query}%");
+            $activity = $activity->orWhere('label', 'LIKE', "%{$query}%");
         }
 
-        $activiey = $activiey->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
+        $activity = $activity->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
 
-        return response()->json([
-            'data' => $activiey->toArray(),
+        return response()->json(['data' => $activity->toArray(),
             'count' => Activity::where('causer_type', get_class(new Admin()))->where('causer_id', $id)->count(),
         ]);
     }

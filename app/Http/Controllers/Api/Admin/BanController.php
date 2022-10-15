@@ -20,6 +20,10 @@ class BanController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('ban_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Ban(), [
             'id', 'location',
@@ -34,6 +38,10 @@ class BanController extends Controller
      */
     public function store(BanLocationCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('ban_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  Ban::create($request->validated());
 
 
@@ -58,6 +66,10 @@ class BanController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('ban_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Ban::find($id);
         if ($post) {
             return response()->json([
@@ -83,6 +95,10 @@ class BanController extends Controller
      */
     public function update(BanLocationUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('ban_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Ban::findOrFail($id);
 
         $post->update($request->validated());
@@ -108,6 +124,10 @@ class BanController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('ban_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Ban::find($id);
 
         if ($post == null) {

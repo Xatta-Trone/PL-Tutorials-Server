@@ -21,6 +21,10 @@ class DepartmentController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('department_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Department(), [
             'id', 'name', 'slug', 'code', 'can_be_accessed_by'
@@ -35,6 +39,10 @@ class DepartmentController extends Controller
      */
     public function store(DepartmentCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('department_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  Department::create(array_merge($request->validated(), ['image' => $this->upload()]));
 
 
@@ -59,6 +67,10 @@ class DepartmentController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('department_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Department::find($id);
         if ($post) {
             return response()->json([
@@ -84,6 +96,10 @@ class DepartmentController extends Controller
      */
     public function update(DepartmentUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('department_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Department::findOrFail($id);
 
         $post->update(array_merge($request->validated(), ['image' => $this->updateimage()]));
@@ -109,6 +125,10 @@ class DepartmentController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('department_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Department::query();
         $post = $post->withTrashed()->find($id);
 

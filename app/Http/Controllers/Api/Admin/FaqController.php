@@ -20,6 +20,10 @@ class FaqController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('faq_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Faq(), [
             'id', 'title', 'status',
@@ -34,6 +38,10 @@ class FaqController extends Controller
      */
     public function store(FaqCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('faq_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  Faq::create($request->validated());
 
 
@@ -58,6 +66,10 @@ class FaqController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('faq_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Faq::find($id);
         if ($post) {
             return response()->json([
@@ -83,6 +95,10 @@ class FaqController extends Controller
      */
     public function update(FaqUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('faq_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Faq::findOrFail($id);
 
 
@@ -110,6 +126,9 @@ class FaqController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('faq_delete')) {
+            return  $this->noPermissionResponse();
+        }
         $post = Faq::find($id);
 
         if ($post == null) {

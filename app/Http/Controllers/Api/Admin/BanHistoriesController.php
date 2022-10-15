@@ -20,6 +20,10 @@ class BanHistoriesController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new BanHistory(), [
             'id', 'ban_from', 'ban_upto', 'reason'
@@ -34,6 +38,10 @@ class BanHistoriesController extends Controller
      */
     public function store(BanHistoryCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('user_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  BanHistory::create($request->validated());
 
 
@@ -58,6 +66,10 @@ class BanHistoriesController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = BanHistory::find($id);
         if ($post) {
             return response()->json([
@@ -83,6 +95,10 @@ class BanHistoriesController extends Controller
      */
     public function update(BanHistoryUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('user_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = BanHistory::findOrFail($id);
 
         $post->update($request->validated());
@@ -108,6 +124,9 @@ class BanHistoriesController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('user_delete')) {
+            return  $this->noPermissionResponse();
+        }
         $post = BanHistory::find($id);
 
         if ($post == null) {

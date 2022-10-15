@@ -22,6 +22,10 @@ class RoleController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('role_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Role(), [
             'id', 'name',
@@ -36,7 +40,9 @@ class RoleController extends Controller
      */
     public function store(RoleCreateRequest $request)
     {
-        // return $request->permisssions;
+        if (!request()->user()->hasPermission('role_create')) {
+            return  $this->noPermissionResponse();
+        }
 
         $permisssions = Permission::find($request->permisssions);
 
@@ -68,6 +74,10 @@ class RoleController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('role_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Role::with('permissions')->find($id);
         if ($post) {
             return response()->json([
@@ -93,6 +103,10 @@ class RoleController extends Controller
      */
     public function update(RoleUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('role_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Role::findOrFail($id);
         $permisssions = Permission::find($request->permissions);
         $post->update(Arr::except($request->validated(), 'permissions'));
@@ -119,6 +133,10 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('role_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Role::find($id);
 
 

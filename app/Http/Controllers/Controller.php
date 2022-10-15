@@ -28,4 +28,20 @@ class Controller extends BaseController
             'data' => $data
         ], $statusCode);
     }
+
+    public function noPermissionResponse($permissionResponseName = 'YOU_DO_NOT_HAVE_PERMISSION', $statusCode = 422)
+    {
+        return response()->json([
+            'message' => $permissionResponseName,
+            'status' => 'false',
+        ], $statusCode);
+    }
+
+    public function noIndexPermissionResponse($permissionResponseName = 'YOU_DO_NOT_HAVE_PERMISSION', $statusCode = 422)
+    {
+        return response()->json([
+            'data' => [],
+            'count' => 0,
+        ]);
+    }
 }

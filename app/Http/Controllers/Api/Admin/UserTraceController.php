@@ -16,6 +16,10 @@ class UserTraceController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
 
         return  $vs->get(new UserTrace(), [

@@ -25,6 +25,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $u = User::query();
 
         if (request()->input('type') == 'deleted') {
@@ -47,6 +51,10 @@ class UserController extends Controller
      */
     public function store(UserCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('user_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         // return $request->validated();
         $student_id_without_prefix = $request->student_id = $this->studentIdWithoutPrefix($request->student_id);
 
@@ -82,6 +90,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return  $this->noPermissionResponse();
+        }
+
+
         $user = User::find($id);
         if ($user) {
             return response()->json([
@@ -108,6 +121,11 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('user_update')) {
+            return  $this->noPermissionResponse();
+        }
+
+
         $user = User::findOrFail($id);
 
         $user->update($request->validated());
@@ -134,6 +152,11 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('user_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
+
         $user = User::query();
 
         if (request()->input('forcedelete') == 'true') {
@@ -177,6 +200,11 @@ class UserController extends Controller
 
     public function restore($id)
     {
+        if (!request()->user()->hasPermission('user_update')) {
+            return  $this->noPermissionResponse();
+        }
+
+
         $user = User::withTrashed()->find($id);
 
         if ($user == null) {
@@ -203,6 +231,11 @@ class UserController extends Controller
 
     public function passwordReset($id)
     {
+        if (!request()->user()->hasPermission('user_password')) {
+            return  $this->noPermissionResponse();
+        }
+
+
         $user = User::find($id);
 
         if ($user == null) {
@@ -217,6 +250,10 @@ class UserController extends Controller
 
     public function userActivity($id)
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $query = request()->input('query', null);
         $limit = request()->input('limit', 10);
         $page = request()->input('page', 1);
@@ -241,6 +278,10 @@ class UserController extends Controller
 
     public function userLocation($id)
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $query = request()->input('query', null);
         $limit = request()->input('limit', 10);
         $page = request()->input('page', 1);
@@ -272,6 +313,10 @@ class UserController extends Controller
 
     public function userActivityByDeviceId($deviceId)
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $query = request()->input('query', null);
         $limit = request()->input('limit', 10);
         $page = request()->input('page', 1);
@@ -307,6 +352,10 @@ class UserController extends Controller
 
     public function userActivityByIpAddress($ipAddress)
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $query = request()->input('query', null);
         $limit = request()->input('limit', 10);
         $page = request()->input('page', 1);
@@ -338,6 +387,10 @@ class UserController extends Controller
 
     public function userActivityByLogin($patId)
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $query = request()->input('query', null);
         $limit = request()->input('limit', 10);
         $page = request()->input('page', 1);
@@ -362,6 +415,10 @@ class UserController extends Controller
 
     public function userSavedDevices($userId)
     {
+        if (!request()->user()->hasPermission('user_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $query = request()->input('query', null);
         $limit = request()->input('limit', 10);
         $page = request()->input('page', 1);

@@ -22,7 +22,9 @@ class LevelTermController extends Controller
      */
     public function index()
     {
-        //['admin:id,name:foreign_key=user_id'].
+        if (!request()->user()->hasPermission('level_term_show')) {
+            return $this->noIndexPermissionResponse();
+        }
 
         $vs = new CustomVueTable2Service();
         return  $vs->get(new LevelTerm(), [
@@ -39,8 +41,9 @@ class LevelTermController extends Controller
     public function store(LevelTermCreateRequest $request)
     {
 
-        // $post =  Department::find($request->department_id);
-        // return $request->all();
+        if (!request()->user()->hasPermission('level_term_create')) {
+            return  $this->noPermissionResponse();
+        }
 
         $post = LevelTerm::create($request->validated());
 
@@ -66,6 +69,10 @@ class LevelTermController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('level_term_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = LevelTerm::with('department:id,name')->find($id);
         if ($post) {
             return response()->json([
@@ -91,6 +98,10 @@ class LevelTermController extends Controller
      */
     public function update(LevelTermUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('level_term_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = LevelTerm::findOrFail($id);
 
         $post->update($request->validated());
@@ -116,6 +127,10 @@ class LevelTermController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('level_term_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = LevelTerm::find($id);
 
         if ($post == null) {

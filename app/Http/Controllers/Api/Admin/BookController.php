@@ -21,6 +21,10 @@ class BookController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('book_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Book(), [
             'id', 'name', 'author', 'status', 'user_id',
@@ -35,6 +39,10 @@ class BookController extends Controller
      */
     public function store(BookCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('book_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  Book::create(array_merge($request->validated(), ['image' => $this->upload(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
 
 
@@ -59,6 +67,9 @@ class BookController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('book_show')) {
+            return  $this->noPermissionResponse();
+        }
         $post = Book::find($id);
         if ($post) {
             return response()->json([
@@ -84,6 +95,9 @@ class BookController extends Controller
      */
     public function update(BookUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('book_update')) {
+            return  $this->noPermissionResponse();
+        }
         $post = Book::findOrFail($id);
 
         $post->update(array_merge($request->validated(), ['image' => $this->updateimage(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
@@ -109,6 +123,10 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('book_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Book::find($id);
 
         if ($post == null) {

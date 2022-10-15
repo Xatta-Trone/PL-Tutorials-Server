@@ -20,6 +20,10 @@ class PermissionController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('permission_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Permission(), [
             'id', 'name',
@@ -34,6 +38,10 @@ class PermissionController extends Controller
      */
     public function store(PermissionCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('permission_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  Permission::create($request->validated());
 
 
@@ -58,6 +66,10 @@ class PermissionController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('permission_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Permission::find($id);
         if ($post) {
             return response()->json([
@@ -83,6 +95,10 @@ class PermissionController extends Controller
      */
     public function update(PermissionUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('permission_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Permission::findOrFail($id);
 
 
@@ -110,6 +126,10 @@ class PermissionController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('permission_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Permission::find($id);
 
         if ($post == null) {

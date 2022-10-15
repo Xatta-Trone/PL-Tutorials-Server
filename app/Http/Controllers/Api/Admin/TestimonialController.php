@@ -21,6 +21,10 @@ class TestimonialController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('testimonial_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Testimonial(), [
             'id', 'name', 'dept_batch', 'status', 'user_letter'
@@ -35,6 +39,10 @@ class TestimonialController extends Controller
      */
     public function store(TestimonialCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('testimonial_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  Testimonial::create(array_merge($request->validated(), ['user_letter' => $this->userLetter($request->input('name'))]));
 
 
@@ -59,6 +67,10 @@ class TestimonialController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('testimonial_show')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Testimonial::find($id);
         if ($post) {
             return response()->json([
@@ -84,6 +96,10 @@ class TestimonialController extends Controller
      */
     public function update(TestimonialUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('testimonial_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Testimonial::findOrFail($id);
 
 
@@ -111,6 +127,10 @@ class TestimonialController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('testimonial_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Testimonial::find($id);
 
         if ($post == null) {

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Admin\Activity;
+use App\Policies\AdminActivitiesPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -12,9 +14,9 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
-    ];
+    // protected $policies = [
+    //     Activity::class => AdminActivitiesPolicy::class,
+    // ];
 
     /**
      * Register any authentication / authorization services.

@@ -20,6 +20,10 @@ class CourseController extends Controller
      */
     public function index()
     {
+        if (!request()->user()->hasPermission('course_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Course(), [
             'id', 'course_name', 'slug',
@@ -34,6 +38,10 @@ class CourseController extends Controller
      */
     public function store(CourseCreateRequest $request)
     {
+        if (!request()->user()->hasPermission('course_create')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post =  Course::create($request->validated());
 
 
@@ -58,6 +66,9 @@ class CourseController extends Controller
      */
     public function show($id)
     {
+        if (!request()->user()->hasPermission('course_show')) {
+            return  $this->noPermissionResponse();
+        }
         $post = Course::find($id);
         if ($post) {
             return response()->json([
@@ -83,6 +94,10 @@ class CourseController extends Controller
      */
     public function update(CourseUpdateRequest $request, $id)
     {
+        if (!request()->user()->hasPermission('course_update')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Course::findOrFail($id);
 
         $post->update($request->validated());
@@ -108,6 +123,10 @@ class CourseController extends Controller
      */
     public function destroy($id)
     {
+        if (!request()->user()->hasPermission('course_delete')) {
+            return  $this->noPermissionResponse();
+        }
+
         $post = Course::find($id);
 
         if ($post == null) {
