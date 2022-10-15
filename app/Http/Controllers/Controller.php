@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Traits\ActivityTrait;
+use App\Models\Admin\Activity;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests, ActivityTrait;
 
     public function successResponse($message, $data = '', $statusCode = 200)
     {
@@ -43,5 +45,42 @@ class Controller extends BaseController
             'data' => [],
             'count' => 0,
         ]);
+    }
+
+    public function saveAdminActivity($activity = 'updated', $modelId = 0, $modelType = 'user', $label = '', $jsonData = null)
+    {
+        $data = [
+            'causer_type' => $this->getpostclass('admin'),
+            'causer_id' => request()->user()->id,
+            'activity' => $activity,
+            'model_id' =>  $modelId,
+            'model_type' => $this->getpostclass($modelType),
+            'label' => $label,
+            'data' => json_encode($jsonData),
+            'pat_id' => $this->getUserTokenId(),
+        ];
+
+        return Activity::create($data);
+    }
+
+    public function saveAdminUpdateActivity($modelId = 0, $modelType = 'user', $label = '', $oldData = null, $newData = null)
+    {
+
+        $originalData = null;
+
+        if ($oldData) {
+            $originalData =
+                array_intersect_key(
+                    $oldData->toArray(),
+                    array_flip(array_keys($newData))
+                );
+        }
+
+        $this->saveAdminActivity('updated', $modelId, $modelType, $label, ['oldData' => $originalData, 'newData' => $newData]);
+    }
+
+    public function saveAdminDeleteActivity($modelId = 0, $modelType = 'user', $label = '', $oldData = null, $newData = null)
+    {
+        $this->saveAdminActivity('deleted', $modelId, $modelType, $label, ['oldData' => $oldData->toArray(), 'newData' => $newData]);
     }
 }

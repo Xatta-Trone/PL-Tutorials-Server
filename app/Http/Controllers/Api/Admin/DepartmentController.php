@@ -43,7 +43,13 @@ class DepartmentController extends Controller
             return  $this->noPermissionResponse();
         }
 
+
+
         $post =  Department::create(array_merge($request->validated(), ['image' => $this->upload()]));
+
+        // dd($request->validated(), $post->getChanges());
+
+        $this->saveAdminActivity('added', $post->id, 'department', $post->name, ['old' => null, 'updated' => $post->toArray()]);
 
 
         if ($post) {
@@ -101,8 +107,12 @@ class DepartmentController extends Controller
         }
 
         $post = Department::findOrFail($id);
+        $postOld =  $post->replicate();
 
         $post->update(array_merge($request->validated(), ['image' => $this->updateimage()]));
+
+        $this->saveAdminUpdateActivity($post->id, 'department', $post->name, $postOld, $post->getChanges());
+
         // dd($post);
         if ($post) {
             return response()->json([
@@ -129,9 +139,10 @@ class DepartmentController extends Controller
             return  $this->noPermissionResponse();
         }
 
+
+
         $post = Department::query();
         $post = $post->withTrashed()->find($id);
-
 
 
         if ($post == null) {
@@ -141,12 +152,16 @@ class DepartmentController extends Controller
             ], 422);
         }
 
+        $postOld =  $post->replicate();
 
+        $this->saveAdminDeleteActivity($post->id, 'department', $post->name, $postOld);
 
         if ($post->image) {
             $this->deleteimage($post->image);
         }
         $post->forceDelete();
+
+
 
 
 
