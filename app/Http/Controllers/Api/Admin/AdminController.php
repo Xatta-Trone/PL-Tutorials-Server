@@ -150,10 +150,12 @@ class AdminController extends Controller
         }
 
         $user = Admin::findOrFail($id);
+        $oldUser = $user->replicate();
         $role = Role::find($request->roles);
         $user->syncRoles($role);
 
         $user->update(Arr::except($request->validated(), ['roles']));
+        $this->saveAdminUpdateActivity($user->id, 'admin', 'Admin::' . $user->name . '::' . $user->student_id, $oldUser, $user->getChanges());
 
         // dd($user);
         if ($user) {
@@ -196,6 +198,9 @@ class AdminController extends Controller
                 'status' => 'false',
             ], 422);
         }
+
+        $postOld =  $user->replicate();
+        $this->saveAdminDeleteActivity($user->id, 'admin', 'Admin::' . $user->name . '::' . $user->student_id, $postOld);
 
 
 

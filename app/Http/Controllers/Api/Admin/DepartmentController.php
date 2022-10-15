@@ -49,7 +49,7 @@ class DepartmentController extends Controller
 
         // dd($request->validated(), $post->getChanges());
 
-        $this->saveAdminActivity('added', $post->id, 'department', $post->name, ['old' => null, 'updated' => $post->toArray()]);
+        $this->saveAdminActivity('added', $post->id, 'department', $post->name, ['oldData' => null, 'newData' => $post->toArray()]);
 
 
         if ($post) {

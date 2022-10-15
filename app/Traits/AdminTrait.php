@@ -46,6 +46,9 @@ trait AdminTrait
         $role = Role::find($roles);
         $user->syncRoles($role);
 
+        $this->saveAdminActivity('added', $user->id, 'admin', 'Admin::' . $user->name . '::' . $user->student_id, ['oldData' => null, 'newData' => $user->toArray()]);
+
+
         if ($user) {
 
             Mail::to($user['email'])->send(new AdminWelcomeMsg($user));
