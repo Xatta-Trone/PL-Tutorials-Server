@@ -226,7 +226,7 @@ class AdminController extends Controller
         $ascending = request()->input('ascending', 0);
         $byColumn = request()->input('byColumn', 1);
 
-        $activity = Activity::query()->where('causer_type', 'App\Models\Admin\Admin')->where('causer_id', $id)->select(['id', 'activity', 'label', 'created_at', 'model_type']);
+        $activity = Activity::query()->where('causer_type', 'App\Models\Admin\Admin')->where('causer_id', $id)->select(['id', 'activity', 'label', 'created_at', 'model_type', 'data']);
 
         if ($query != null) {
             $activity = $activity->where('activity', 'LIKE', "%{$query}%");
