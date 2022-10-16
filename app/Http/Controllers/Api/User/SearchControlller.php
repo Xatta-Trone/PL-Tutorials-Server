@@ -53,6 +53,7 @@ class SearchControlller extends Controller
             $res = $this->accessible_dept(request()->user()->student_id);
 
             if ($res !== "NA" && (strpos($res, $dept) !== false)) {
+                // $accessibleDeptArray = explode(',', $dept);
                 $posts->where('department_slug', $dept);
                 $books->where('department_slug', $dept);
                 $softwares->where('department_slug', $dept);
@@ -73,15 +74,16 @@ class SearchControlller extends Controller
 
         // filter dept materials
         $res = $this->accessible_dept(request()->user()->student_id);
+        $notAccessibleDeptArray = $this->getOtherDept($res);
 
         // return $res;
 
 
 
         // filter other dept data
-        $posts->whereNotIn('department_slug', $this->getOtherDept($res));
-        $softwares->whereNotIn('department_slug', $this->getOtherDept($res));
-        $books->whereNotIn('department_slug', $this->getOtherDept($res));
+        $posts->whereNotIn('department_slug', $notAccessibleDeptArray);
+        $softwares->whereNotIn('department_slug', $notAccessibleDeptArray);
+        $books->whereNotIn('department_slug', $notAccessibleDeptArray);
 
         $results = $posts->union($softwares)
             ->union($books);
