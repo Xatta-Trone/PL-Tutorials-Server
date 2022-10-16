@@ -91,6 +91,8 @@ class ContactController extends Controller
 
 
         Contact::find($id)->update(['status' => 1, 'replied' => '1']);
+        $this->saveAdminActivity('replied', $post->id, 'contact', $post->subject, ['oldData' => null, 'newData' => $post->toArray()]);
+
 
 
         if ($post) {
@@ -127,7 +129,9 @@ class ContactController extends Controller
             ], 422);
         }
 
+        $postOld =  $post->replicate();
 
+        $this->saveAdminDeleteActivity($post->id, 'contact', $post->subject, $postOld);
 
         if ($post->delete()) {
             return response()->json([

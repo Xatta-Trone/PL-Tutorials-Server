@@ -45,6 +45,7 @@ class SoftwareController extends Controller
 
         $post =  Software::create(array_merge($request->validated(), ['image' => $this->upload(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
 
+        $this->saveAdminActivity('added', $post->id, 'software', $post->name, ['oldData' => null, 'newData' => $post->toArray()]);
 
         if ($post) {
             return response()->json([
@@ -102,6 +103,7 @@ class SoftwareController extends Controller
 
         // return $request->all();
         $post = Software::findOrFail($id);
+        $postOld =  $post->replicate();
 
         if ($request->has('course_id') && ($request->input('course_id') == null || $request->input('course_id') == 'null' || $request->input('course_id') == '')) {
             $request->input('course_id') == null;
@@ -109,6 +111,8 @@ class SoftwareController extends Controller
 
         $post->update(array_merge($request->validated(), ['image' => $this->updateimage(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
         // dd($post);
+        $this->saveAdminUpdateActivity($post->id, 'software', $post->name, $postOld, $post->getChanges());
+
         if ($post) {
             return response()->json([
                 'message' => self::$SOFTWARE_UPDATED,
@@ -146,6 +150,9 @@ class SoftwareController extends Controller
         if ($post->image) {
             $this->deleteimage($post->image, $post->post_type);
         }
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'software', $post->name, $postOld);
 
         if ($post->delete()) {
             return response()->json([

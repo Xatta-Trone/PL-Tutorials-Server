@@ -43,6 +43,8 @@ class BanDaysController extends Controller
         }
 
         $post =  BanDays::create($request->validated());
+        $this->saveAdminActivity('added', $post->id, 'bandays', $post->level, ['oldData' => null, 'newData' => $post->toArray()]);
+
 
 
         if ($post) {
@@ -101,8 +103,10 @@ class BanDaysController extends Controller
         }
 
         $post = BanDays::findOrFail($id);
+        $postOld =  $post->replicate();
 
         $post->update($request->validated());
+        $this->saveAdminUpdateActivity($post->id, 'bandays', $post->level, $postOld, $post->getChanges());
         // dd($post);
         if ($post) {
             return response()->json([
@@ -137,6 +141,9 @@ class BanDaysController extends Controller
                 'status' => 'false',
             ], 422);
         }
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'bandays', $post->level, $postOld);
 
         if ($post->delete()) {
             return response()->json([

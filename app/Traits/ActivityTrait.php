@@ -13,6 +13,9 @@ use Illuminate\Support\Str;
 use App\Models\Admin\Course;
 use App\Models\Admin\Contact;
 use App\Models\Admin\Activity;
+use App\Models\Admin\Ban;
+use App\Models\Admin\BanDays;
+use App\Models\Admin\BanHistory;
 use App\Models\Admin\Book;
 use App\Models\Admin\Settings;
 use App\Models\Admin\Software;
@@ -20,6 +23,7 @@ use App\Models\Admin\UserData;
 use App\Models\Admin\LevelTerm;
 use App\Models\Admin\Department;
 use App\Models\Admin\Faq;
+use App\Models\Admin\Page;
 use App\Models\Admin\Testimonial;
 use App\Models\Admin\UserTrace;
 
@@ -112,6 +116,18 @@ trait ActivityTrait
                 break;
             case 'usertrace':
                 return get_class(new UserTrace());
+                break;
+            case 'ban':
+                return get_class(new Ban());
+                break;
+            case 'bandays':
+                return get_class(new BanDays());
+                break;
+            case 'banhistory':
+                return get_class(new BanHistory());
+                break;
+            case 'page':
+                return get_class(new Page());
                 break;
 
             default:

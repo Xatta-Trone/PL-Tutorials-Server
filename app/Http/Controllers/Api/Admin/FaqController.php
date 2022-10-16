@@ -43,6 +43,8 @@ class FaqController extends Controller
         }
 
         $post =  Faq::create($request->validated());
+        $this->saveAdminActivity('added', $post->id, 'faq', $post->title, ['oldData' => null, 'newData' => $post->toArray()]);
+
 
 
         if ($post) {
@@ -101,9 +103,11 @@ class FaqController extends Controller
 
         $post = Faq::findOrFail($id);
 
-
+        $postOld =  $post->replicate();
 
         $post->update($request->validated());
+        $this->saveAdminUpdateActivity($post->id, 'faq', $post->title, $postOld, $post->getChanges());
+
         // dd($post);
         if ($post) {
             return response()->json([
@@ -137,6 +141,9 @@ class FaqController extends Controller
                 'status' => 'false',
             ], 422);
         }
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'faq', $post->title, $postOld);
 
         if ($post->delete()) {
             return response()->json([

@@ -45,6 +45,8 @@ class BookController extends Controller
 
         $post =  Book::create(array_merge($request->validated(), ['image' => $this->upload(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
 
+        $this->saveAdminActivity('added', $post->id, 'book', $post->name, ['oldData' => null, 'newData' => $post->toArray()]);
+
 
         if ($post) {
             return response()->json([
@@ -99,8 +101,11 @@ class BookController extends Controller
             return  $this->noPermissionResponse();
         }
         $post = Book::findOrFail($id);
+        $postOld =  $post->replicate();
 
         $post->update(array_merge($request->validated(), ['image' => $this->updateimage(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
+
+        $this->saveAdminUpdateActivity($post->id, 'book', $post->name, $postOld, $post->getChanges());
         // dd($post);
         if ($post) {
             return response()->json([
@@ -139,6 +144,9 @@ class BookController extends Controller
         if ($post->image) {
             $this->deleteimage($post->image, $post->post_type);
         }
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'book', $post->name, $postOld);
 
         if ($post->delete()) {
             return response()->json([

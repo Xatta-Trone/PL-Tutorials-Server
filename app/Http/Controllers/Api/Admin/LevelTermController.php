@@ -46,6 +46,8 @@ class LevelTermController extends Controller
         }
 
         $post = LevelTerm::create($request->validated());
+        $this->saveAdminActivity('added', $post->id, 'levelterm', $post->name, ['oldData' => null, 'newData' => $post->toArray()]);
+
 
 
         if ($post) {
@@ -103,8 +105,10 @@ class LevelTermController extends Controller
         }
 
         $post = LevelTerm::findOrFail($id);
+        $postOld =  $post->replicate();
 
         $post->update($request->validated());
+        $this->saveAdminUpdateActivity($post->id, 'levelterm', $post->name, $postOld, $post->getChanges());
         // dd($post);
         if ($post) {
             return response()->json([
@@ -140,7 +144,9 @@ class LevelTermController extends Controller
             ], 422);
         }
 
+        $postOld =  $post->replicate();
 
+        $this->saveAdminDeleteActivity($post->id, 'levelterm', $post->name, $postOld);
 
         if ($post->delete()) {
             return response()->json([

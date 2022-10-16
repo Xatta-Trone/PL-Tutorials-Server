@@ -41,9 +41,11 @@ class SettingsController extends Controller
             return  $this->noPermissionResponse();
         }
 
+        $post = Settings::create($request->validated());
 
+        if ($post) {
+            $this->saveAdminActivity('added', $post->id, 'utilities', $post->key, ['oldData' => null, 'newData' => $post->toArray()]);
 
-        if (Settings::create($request->validated())) {
             return response()->json([
                 'message' => self::$SETTINGS_CREATED,
                 'status' => 'true'
@@ -98,8 +100,10 @@ class SettingsController extends Controller
         }
 
         $post = Settings::findOrFail($id);
+        $postOld =  $post->replicate();
 
         $post->update($request->validated());
+        $this->saveAdminUpdateActivity($post->id, 'utilities', $post->key, $postOld, $post->getChanges());
         // dd($post);
         if ($post) {
             return response()->json([
@@ -134,6 +138,9 @@ class SettingsController extends Controller
                 'status' => 'false',
             ], 422);
         }
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'utilities', $post->key, $postOld);
 
         if ($post->delete()) {
             return response()->json([

@@ -43,6 +43,7 @@ class BanController extends Controller
         }
 
         $post =  Ban::create($request->validated());
+        $this->saveAdminActivity('added', $post->id, 'ban', $post->location, ['oldData' => null, 'newData' => $post->toArray()]);
 
 
         if ($post) {
@@ -100,8 +101,11 @@ class BanController extends Controller
         }
 
         $post = Ban::findOrFail($id);
+        $postOld =  $post->replicate();
 
         $post->update($request->validated());
+
+        $this->saveAdminUpdateActivity($post->id, 'ban', $post->location, $postOld, $post->getChanges());
         // dd($post);
         if ($post) {
             return response()->json([
@@ -136,6 +140,9 @@ class BanController extends Controller
                 'status' => 'false',
             ], 422);
         }
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'ban', $post->location, $postOld);
 
         if ($post->delete()) {
             return response()->json([

@@ -43,6 +43,8 @@ class BanHistoriesController extends Controller
         }
 
         $post =  BanHistory::create($request->validated());
+        $this->saveAdminActivity('added', $post->id, 'banhistory', $post->user_id . $post->reason, ['oldData' => null, 'newData' => $post->toArray()]);
+
 
 
         if ($post) {
@@ -100,8 +102,11 @@ class BanHistoriesController extends Controller
         }
 
         $post = BanHistory::findOrFail($id);
+        $postOld =  $post->replicate();
 
         $post->update($request->validated());
+
+        $this->saveAdminUpdateActivity($post->id, 'banhistory', $post->user_id . $post->reason, $postOld, $post->getChanges());
         // dd($post);
         if ($post) {
             return response()->json([
@@ -135,6 +140,9 @@ class BanHistoriesController extends Controller
                 'status' => 'false',
             ], 422);
         }
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'banhistory', $post->user_id . $post->reason, $postOld);
 
         if ($post->delete()) {
             return response()->json([

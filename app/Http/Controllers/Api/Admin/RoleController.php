@@ -51,6 +51,8 @@ class RoleController extends Controller
 
         $post =  Role::create(Arr::except($request->validated(), 'permissions'));
         $post->syncPermissions($permisssions);
+        $this->saveAdminActivity('added', $post->id, 'role', $post->name, ['oldData' => null, 'newData' => $post->toArray()]);
+
 
 
         if ($post) {
@@ -108,9 +110,13 @@ class RoleController extends Controller
         }
 
         $post = Role::findOrFail($id);
+        $postOld =  $post->replicate();
         $permisssions = Permission::find($request->permissions);
         $post->update(Arr::except($request->validated(), 'permissions'));
         $post->syncPermissions($permisssions);
+
+        $this->saveAdminUpdateActivity($post->id, 'role', $post->name, $postOld, $post->getChanges());
+
         // dd($post);
         if ($post) {
             return response()->json([
@@ -148,8 +154,12 @@ class RoleController extends Controller
         }
 
         $post->syncPermissions([]);
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'role', $post->name, $postOld);
 
         if ($post->delete()) {
+
             return response()->json([
                 'message' => self::$ROLE_DELETED,
                 'status' => 'true',

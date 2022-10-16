@@ -44,6 +44,7 @@ class TestimonialController extends Controller
         }
 
         $post =  Testimonial::create(array_merge($request->validated(), ['user_letter' => $this->userLetter($request->input('name'))]));
+        $this->saveAdminActivity('added', $post->id, 'testimonial', $post->name, ['oldData' => null, 'newData' => $post->toArray()]);
 
 
         if ($post) {
@@ -102,9 +103,11 @@ class TestimonialController extends Controller
 
         $post = Testimonial::findOrFail($id);
 
-
+        $postOld =  $post->replicate();
 
         $post->update(array_merge($request->validated(), ['user_letter' => $this->userLetter($request->input('name'))]));
+        $this->saveAdminUpdateActivity($post->id, 'testimonial', $post->name, $postOld, $post->getChanges());
+
         // dd($post);
         if ($post) {
             return response()->json([
@@ -140,7 +143,9 @@ class TestimonialController extends Controller
             ], 422);
         }
 
+        $postOld =  $post->replicate();
 
+        $this->saveAdminDeleteActivity($post->id, 'testimonial', $post->name, $postOld);
 
         if ($post->delete()) {
             return response()->json([

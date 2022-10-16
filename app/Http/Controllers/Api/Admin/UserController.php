@@ -127,8 +127,10 @@ class UserController extends Controller
 
 
         $user = User::findOrFail($id);
+        $userOld =  $user->replicate();
 
         $user->update($request->validated());
+        $this->saveAdminUpdateActivity($user->id, 'user', $user->student_id, $userOld, $user->getChanges());
         // dd($user);
         if ($user) {
             return response()->json([
@@ -184,6 +186,10 @@ class UserController extends Controller
         } else {
             $user->update(['status' => 0, 'deleted_at' => now()]);
         }
+
+        $postOld =  $user->replicate();
+
+        $this->saveAdminDeleteActivity($user->id, 'user', $user->student_id, $postOld);
 
         if ($user) {
             return response()->json([

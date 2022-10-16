@@ -35,6 +35,8 @@ class PagesController extends Controller
     public function store(PageCreateRequest $request)
     {
         $post =  Page::create($request->validated());
+        $this->saveAdminActivity('added', $post->id, 'page', $post->title, ['oldData' => null, 'newData' => $post->toArray()]);
+
 
 
         if ($post) {
@@ -84,8 +86,10 @@ class PagesController extends Controller
     public function update(PageUpdateRequest $request, $id)
     {
         $post = Page::findOrFail($id);
+        $postOld =  $post->replicate();
 
         $post->update($request->validated());
+        $this->saveAdminUpdateActivity($post->id, 'page', $post->title, $postOld, $post->getChanges());
         // dd($post);
         if ($post) {
             return response()->json([
@@ -116,6 +120,9 @@ class PagesController extends Controller
                 'status' => 'false',
             ], 422);
         }
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'page', $post->title, $postOld);
 
 
 

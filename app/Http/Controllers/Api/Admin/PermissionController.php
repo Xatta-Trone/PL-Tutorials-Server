@@ -43,6 +43,8 @@ class PermissionController extends Controller
         }
 
         $post =  Permission::create($request->validated());
+        $this->saveAdminActivity('added', $post->id, 'permission', $post->name, ['oldData' => null, 'newData' => $post->toArray()]);
+
 
 
         if ($post) {
@@ -100,10 +102,11 @@ class PermissionController extends Controller
         }
 
         $post = Permission::findOrFail($id);
-
+        $postOld =  $post->replicate();
 
 
         $post->update($request->validated());
+        $this->saveAdminUpdateActivity($post->id, 'permission', $post->name, $postOld, $post->getChanges());
         // dd($post);
         if ($post) {
             return response()->json([
@@ -138,6 +141,9 @@ class PermissionController extends Controller
                 'status' => 'false',
             ], 422);
         }
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'permission', $post->name, $postOld);
 
         if ($post->delete()) {
             return response()->json([

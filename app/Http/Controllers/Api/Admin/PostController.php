@@ -49,6 +49,7 @@ class PostController extends Controller
         // return $request->validated();
         $post =  Post::create(array_merge($request->validated(), ['image' => $this->upload(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
 
+        $this->saveAdminActivity('added', $post->id, 'post', $post->name, ['oldData' => null, 'newData' => $post->toArray()]);
 
         if ($post) {
             return response()->json([
@@ -106,9 +107,12 @@ class PostController extends Controller
 
         // return $request->validated();
         $post = Post::findOrFail($id);
+        $postOld =  $post->replicate();
 
         $post->update(array_merge($request->validated(), ['image' => $this->updateimage(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
         // dd($post);
+        $this->saveAdminUpdateActivity($post->id, 'post', $post->name, $postOld, $post->getChanges());
+
         if ($post) {
             return response()->json([
                 'message' => self::$POST_UPDATED,
@@ -146,8 +150,12 @@ class PostController extends Controller
         if ($post->image) {
             $this->deleteimage($post->image, $post->post_type);
         }
+        $postOld =  $post->replicate();
+
+        $this->saveAdminDeleteActivity($post->id, 'post', $post->name, $postOld);
 
         if ($post->delete()) {
+
             return response()->json([
                 'message' => self::$POST_DELETED,
                 'status' => 'true',

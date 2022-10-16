@@ -82,6 +82,9 @@ trait UserTrait
             }
 
             Mail::to($user['email'])->send(new UserLoginDetails($user));
+            $this->saveAdminActivity('added', $user->id, 'user', $user->student_id, ['oldData' => null, 'newData' => $user->toArray()]);
+
+
             return response()->json([
                 'message' => self::$USER_CREATED,
                 'status' => 'true'
@@ -135,6 +138,8 @@ trait UserTrait
 
         if ($status) {
             Mail::to($user['email'])->send(new UserPasswordUpdate($user));
+            $this->saveAdminActivity('updated_password', $user->id, 'user', $user->student_id, ['oldData' => null, 'newData' => null]);
+
             return response()->json([
                 'message' => self::$USER_PASSWORD_RESET,
                 'status' => 'true'
