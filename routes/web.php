@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Mail\PasswordResetNotificatoin;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 use App\Mail\UserPasswordResetNotification;
 use App\Http\Services\CustomVueTable2Service;
 
@@ -94,6 +95,10 @@ function returnDeptBatchString($batchDept = '')
 
     //return $batch.'+'.$dept;
 }
+Route::get('drive-test', function () {
+    Storage::disk('google')->put('test.txt', 'Hello World');
+});
+
 
 Route::get('/', function () {
     $user = User::where('student_id', '1404143')->get()->first();

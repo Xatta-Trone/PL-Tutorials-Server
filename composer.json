@@ -20,6 +20,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "maatwebsite/excel": "^3.1",
+        "nao-pon/flysystem-google-drive": "~1.1",
         "protoqol/prequel": "^1.23",
         "pusher/pusher-php-server": "^7.0",
         "rap2hpoutre/laravel-log-viewer": "^2.2",
