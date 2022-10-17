@@ -8,6 +8,7 @@ use App\Http\Requests\SettingsCreateRequest;
 use App\Http\Services\CustomVueTable2Service;
 use App\Models\Admin\Settings;
 use App\Traits\SettingsTrait;
+use Google\Service\Calendar\Setting;
 
 class SettingsController extends Controller
 {
@@ -151,6 +152,38 @@ class SettingsController extends Controller
         }
         return response()->json([
             'message' => self::$SETTINGS_NOT_DELETED,
+            'status' => 'false',
+        ], 422);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function toggleUserBan()
+    {
+        if (!request()->user()->hasPermission('user_ban_check')) {
+            return  $this->noPermissionResponse();
+        }
+
+        $post = Settings::where('key', 'user-ban-check')->firstOrFail();
+        $postOld =  $post->replicate();
+
+        $post->value = !(int)$post->value;
+
+        $this->saveAdminUpdateActivity($post->id, 'utilities', $post->key, $postOld, $post->getChanges());
+
+        if ($post->save()) {
+            return response()->json([
+                'message' => self::$SETTINGS_UPDATED,
+                'status' => 'true',
+
+            ], 200);
+        }
+        return response()->json([
+            'message' => self::$SETTINGS_NOT_UPDATED,
             'status' => 'false',
         ], 422);
     }

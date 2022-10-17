@@ -550,6 +550,51 @@ class PermissionsTableSeeder extends Seeder
                 'created_at' => '2021-10-03 17:35:45',
                 'updated_at' => '2021-10-03 17:35:45',
             ),
+            59 => 
+            array (
+                'id' => 60,
+                'name' => 'ban_show',
+                'display_name' => NULL,
+                'description' => NULL,
+                'created_at' => '2022-10-15 15:28:58',
+                'updated_at' => '2022-10-15 15:28:58',
+            ),
+            60 => 
+            array (
+                'id' => 61,
+                'name' => 'ban_create',
+                'display_name' => NULL,
+                'description' => NULL,
+                'created_at' => '2022-10-15 15:29:08',
+                'updated_at' => '2022-10-15 15:29:08',
+            ),
+            61 => 
+            array (
+                'id' => 62,
+                'name' => 'ban_update',
+                'display_name' => NULL,
+                'description' => NULL,
+                'created_at' => '2022-10-15 15:29:16',
+                'updated_at' => '2022-10-15 15:29:16',
+            ),
+            62 => 
+            array (
+                'id' => 63,
+                'name' => 'ban_delete',
+                'display_name' => NULL,
+                'description' => NULL,
+                'created_at' => '2022-10-15 15:29:22',
+                'updated_at' => '2022-10-15 15:29:22',
+            ),
+            63 => 
+            array (
+                'id' => 64,
+                'name' => 'user_ban_check',
+                'display_name' => NULL,
+                'description' => NULL,
+                'created_at' => '2022-10-17 18:16:52',
+                'updated_at' => '2022-10-17 18:16:52',
+            ),
         ));
         
         

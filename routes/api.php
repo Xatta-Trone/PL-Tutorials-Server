@@ -237,6 +237,9 @@ Route::prefix('v1')->group(function () {
             Route::get('dashboard/chartdata', [DashboardController::class, 'chartdata']);
             Route::get('dashboard/deptbatchdatapie', [DashboardController::class, 'batchDeptDataPie']);
             Route::get('dashboard/deptbatchdatatable', [DashboardController::class, 'batchDeptDatatable']);
+
+            // user ban check toggle
+            Route::get('user-ban-toggle', [SettingsController::class, 'toggleUserBan']);
         });
     });
 });
