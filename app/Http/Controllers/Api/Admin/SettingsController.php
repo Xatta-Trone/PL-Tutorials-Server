@@ -133,12 +133,21 @@ class SettingsController extends Controller
 
         $post = Settings::find($id);
 
+
+
         if ($post == null) {
             return response()->json([
                 'message' => self::$SETTINGS_NOT_FOUND,
                 'status' => 'false',
             ], 422);
         }
+
+        if ($post->key == 'user-ban-check' && !request()->user()->hasPermission('user_ban_check')) {
+            return  $this->noPermissionResponse();
+        }
+
+
+
         $postOld =  $post->replicate();
 
         $this->saveAdminDeleteActivity($post->id, 'utilities', $post->key, $postOld);
