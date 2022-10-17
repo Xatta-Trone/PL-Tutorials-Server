@@ -124,11 +124,14 @@ class GeneralDataController extends Controller
 
     public function pageBySlug(string $slug)
     {
-        $expire = Carbon::now()->endOfDay()->addSecond();
-        return Cache::get('pages-' . $slug, $expire, function () use ($slug) {
-            $data = Page::where('slug', $slug)->where('status', 1)->get()->first();
-            return $data != null ? $this->successResponse('PAGE_FOUND', $data) : $this->errorResponse('PAGE_NOT_FOUND', $data);
-        });
+         $data = Page::where('slug', $slug)->where('status', 1)->get()->first();
+        return $data != null ? $this->successResponse('PAGE_FOUND', $data) : $this->errorResponse('PAGE_NOT_FOUND', $data);
+
+        // $expire = Carbon::now()->endOfDay()->addSecond();
+        // return Cache::get('pages-' . $slug, $expire, function () use ($slug) {
+        //     $data = Page::where('slug', $slug)->where('status', 1)->get()->first();
+        //     return $data != null ? $this->successResponse('PAGE_FOUND', $data) : $this->errorResponse('PAGE_NOT_FOUND', $data);
+        // });
 
     }
 }
