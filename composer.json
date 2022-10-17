@@ -24,7 +24,8 @@
         "protoqol/prequel": "^1.23",
         "pusher/pusher-php-server": "^7.0",
         "rap2hpoutre/laravel-log-viewer": "^2.2",
-        "santigarcor/laratrust": "^6.3"
+        "santigarcor/laratrust": "^6.3",
+        "spatie/laravel-backup": "7.*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",
