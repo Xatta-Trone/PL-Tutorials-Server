@@ -193,7 +193,10 @@ return [
         ],
 
         'discord' => [
-            'webhook_url' => 'https://discord.com/api/webhooks/1031616318627127376/JG-K6KI7WyG39L-ffN5u7c_4N0p0T3KJcYpD-U7xwi0nCD0w-Z3I29Sbmf8L7d2TQY2C',
+            'webhook_url' =>  env(
+                'DISCORD_BACKUP_WEBHOOK_URL',
+                'https://discord.com/api/webhooks/1031616318627127376/JG-K6KI7WyG39L-ffN5u7c_4N0p0T3KJcYpD-U7xwi0nCD0w-Z3I29Sbmf8L7d2TQY2C'
+            ),
 
             'username' => '',
 
@@ -209,7 +212,7 @@ return [
     'monitor_backups' => [
         [
             'name' => env('APP_NAME', 'laravel-backup'),
-            'disks' => ['local'],
+            'disks' => ['google'],
             'health_checks' => [
                 \Spatie\Backup\Tasks\Monitor\HealthChecks\MaximumAgeInDays::class => 1,
                 \Spatie\Backup\Tasks\Monitor\HealthChecks\MaximumStorageInMegabytes::class => 5000,
