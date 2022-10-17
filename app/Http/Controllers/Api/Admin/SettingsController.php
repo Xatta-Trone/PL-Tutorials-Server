@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use Illuminate\Http\Request;
+use App\Traits\SettingsTrait;
+use App\Models\Admin\Settings;
 use App\Http\Controllers\Controller;
+use Google\Service\Calendar\Setting;
 use App\Http\Requests\SettingsCreateRequest;
 use App\Http\Services\CustomVueTable2Service;
-use App\Models\Admin\Settings;
-use App\Traits\SettingsTrait;
-use Google\Service\Calendar\Setting;
+use Spatie\DiscordAlerts\Facades\DiscordAlert;
 
 class SettingsController extends Controller
 {
@@ -101,9 +102,18 @@ class SettingsController extends Controller
         }
 
         $post = Settings::findOrFail($id);
+
+        if ($post->key == 'user-ban-check' && !request()->user()->hasPermission('user_ban_check')) {
+            return  $this->noPermissionResponse();
+        }
+
         $postOld =  $post->replicate();
 
         $post->update($request->validated());
+
+        $this->sendAlert($postOld->value);
+
+
         $this->saveAdminUpdateActivity($post->id, 'utilities', $post->key, $postOld, $post->getChanges());
         // dd($post);
         if ($post) {
@@ -185,6 +195,8 @@ class SettingsController extends Controller
         $this->saveAdminUpdateActivity($post->id, 'utilities', $post->key, $postOld, $post->getChanges());
 
         if ($post->save()) {
+            $this->sendAlert($postOld->value);
+
             return response()->json([
                 'message' => self::$SETTINGS_UPDATED,
                 'status' => 'true',
@@ -195,5 +207,11 @@ class SettingsController extends Controller
             'message' => self::$SETTINGS_NOT_UPDATED,
             'status' => 'false',
         ], 422);
+    }
+
+    private function sendAlert($status)
+    {
+        $status = (int)$status == 0 ? "True" : "False";
+        DiscordAlert::to('banCheck')->message(request()->user()->name . " " . request()->user()->student_id . " changed user ban settings to " . $status);
     }
 }
