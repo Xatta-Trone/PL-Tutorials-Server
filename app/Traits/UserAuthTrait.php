@@ -2,10 +2,19 @@
 
 namespace App\Traits;
 
+use App\Models\Admin\Ban;
+use App\Models\User\User;
+use App\Models\Admin\BanDays;
 use App\Models\Admin\Activity;
+use App\Models\Admin\Settings;
+use Illuminate\Support\Carbon;
 use App\Models\Admin\UserTrace;
+use App\Models\Admin\BanHistory;
+use Illuminate\Support\Facades\DB;
 use App\Models\Admin\UserTraceData;
 use hisorange\BrowserDetect\Parser;
+use Google\Service\Calendar\Setting;
+use Illuminate\Support\Facades\Cache;
 use hisorange\BrowserDetect\Parser as Browser;
 
 
@@ -69,11 +78,19 @@ trait UserAuthTrait
         return $location_data->isp . ',' . $location_data->city . ',' . $location_data->country;
     }
 
+    public function getLocationIspFromIpAddress(string $ip_address)
+    {
+        $location_data = json_decode($this->getLocationInfo($ip_address));
+
+        // return $location_data->isp . ',' . $location_data->city . ',' . $location_data->country;
+        return $location_data->isp;
+    }
+
     public function getLocationInfo($ip_address)
     {
-
-        $loc = file_get_contents("http://ip-api.com/json/" . $ip_address);
-        $location_info = json_decode($loc);
+        $checkedIpAddress = $ip_address == "127.0.0.1" ? '92.202.150.106' : $ip_address;
+        $loc = file_get_contents("http://ip-api.com/json/" . $checkedIpAddress);
+        // $location_info = json_decode($loc);
         // if ($location_info->status == 'fail') {
         //     $loc = file_get_contents("https://extreme-ip-lookup.com/json/" . $ip_address);
         // }
@@ -115,5 +132,72 @@ trait UserAuthTrait
         ];
 
         Activity::create($data);
+    }
+
+    public function checkIfUserShouldBeBanned(User $user)
+    {
+        // check if user is whitelisted
+        if ($user->whitelisted) {
+            return false;
+        }
+
+        // check for settings
+        $shouldCheckBan = Settings::where('key', 'user-ban-checka')->first();
+
+        if ($shouldCheckBan != null && (int) $shouldCheckBan->value == 0) {
+            return false;
+        }
+
+        // check for ban locations
+        $userLocation = $this->getLocationIspFromIpAddress(request()->ip());;
+
+        $checkUserLocationShouldBeBanned = Ban::where('location', 'like', '%' . $userLocation . '%')->exists();
+
+        if ($checkUserLocationShouldBeBanned) {
+            return true;
+        }
+
+        // dd($userLocation, $banLocations, $checkUser, $banLocations->contains($userLocation));
+
+        return false;
+    }
+
+    public function banUser(User $user)
+    {
+        $msg = null;
+        // get latest ban level
+        $oldBanHistory = BanHistory::where('user_id', $user->id)->latest()->first();
+
+        $nextBanLevelShouldBeMoreThan = $oldBanHistory == null ? 1 : $this->getDaysBetweenTwoDates($oldBanHistory->ban_from, $oldBanHistory->ban_upto);
+
+        $nextBanLevel = BanDays::where('days', '>', $nextBanLevelShouldBeMoreThan)->first();
+
+        if ($nextBanLevel) {
+            $msg  = "Banned for $nextBanLevel->days days due to login form restricted location";
+            DB::transaction(function () use ($user, $nextBanLevel, $msg) {
+                // delete all tokens
+                DB::table('personal_access_tokens')->where('tokenable_type', User::class)->where('tokenable_id', $user->id)->delete();
+                // update all past records to todays date
+                BanHistory::where('user_id', $user->id)->where('ban_upto', '>=', Carbon::now()->startOfDay())->update(['ban_upto' => Carbon::now()]);
+                // update user status
+                $user->update(['status' => 0]);
+                // create a ban history record
+                BanHistory::create([
+                    'user_id' => $user->id,
+                    'ban_from' => Carbon::now()->startOfDay(),
+                    'ban_upto' => Carbon::now()->startOfDay()->addDays($nextBanLevel->days),
+                    'reason' => $msg
+                ]);
+            });
+        }
+        return $msg;
+    }
+
+    public function getDaysBetweenTwoDates($fromDate, $toDate)
+    {
+        $pastDate = Carbon::parse($fromDate);
+        $futureDate =  Carbon::parse($toDate);
+
+        return $pastDate->diffInDays($futureDate);
     }
 }

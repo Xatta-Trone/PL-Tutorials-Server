@@ -108,11 +108,16 @@ class AuthController extends Controller
             ], 401);
         }
 
-        // check max authorized devices
 
-        // $total_device  = UserTrace::distinct()->where('user_id', $user->id)->whereDate('created_at', '>=', Carbon::now()->subMonth())->get('fingerprint')->count();
+        $checkIfUserShouldBeBanned = $this->checkIfUserShouldBeBanned($user);
 
-        // return $total_device;
+
+        if ($checkIfUserShouldBeBanned) {
+            $response = $this->banUser($user);
+            return response()->json([
+                'message' => $response ?? 'Account banned due to login from restricted locations.',
+            ], 401);
+        }
 
 
         if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
