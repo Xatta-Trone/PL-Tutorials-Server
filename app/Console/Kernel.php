@@ -24,10 +24,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('books:scrapp')->daily();
-        $schedule->command('quote:daily')->daily();
-        $schedule->command('backup:run --only-db')->daily();
-        $schedule->command('backup:clean')->dailyAt("03:00");
+        // $schedule->command('books:scrapp')->daily();user:unban
+        $schedule->command('quote:daily')->daily()->withoutOverlapping();
+        $schedule->command('backup:run --only-db')->daily()->withoutOverlapping();
+        $schedule->command('backup:clean')->dailyAt("03:00")->withoutOverlapping();
+        $schedule->command('user:unban')->hourly()->withoutOverlapping();
     }
 
     /**
