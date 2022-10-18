@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Mail\SendBannedUserMail;
 use App\Models\Admin\Ban;
 use App\Models\User\User;
 use App\Models\Admin\BanDays;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Admin\UserTraceData;
 use hisorange\BrowserDetect\Parser;
 use Google\Service\Calendar\Setting;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
 use hisorange\BrowserDetect\Parser as Browser;
 
@@ -182,12 +184,16 @@ trait UserAuthTrait
                 // update user status
                 $user->update(['status' => 0]);
                 // create a ban history record
-                BanHistory::create([
+                $ban = BanHistory::create([
                     'user_id' => $user->id,
                     'ban_from' => Carbon::now()->startOfDay(),
                     'ban_upto' => Carbon::now()->startOfDay()->addDays($nextBanLevel->days),
                     'reason' => $msg
                 ]);
+
+                $banMailContent = BanHistory::with('user')->find($ban->id);
+
+                Mail::to($user->email)->send(new SendBannedUserMail($banMailContent));
             });
         }
         return $msg;
