@@ -164,7 +164,7 @@ trait UserAuthTrait
         return false;
     }
 
-    public function banUser(User $user)
+    public function banUser(User $user, $reason = null)
     {
         $msg = null;
         // get latest ban level
@@ -175,7 +175,8 @@ trait UserAuthTrait
         $nextBanLevel = BanDays::where('days', '>', $nextBanLevelShouldBeMoreThan)->first();
 
         if ($nextBanLevel) {
-            $msg  = "Banned for $nextBanLevel->days days due to login form restricted location";
+            $msg  = "Banned for $nextBanLevel->days days";
+            $msg  .= $reason ? $reason : " due to login form restricted location";
             DB::transaction(function () use ($user, $nextBanLevel, $msg) {
                 // delete all tokens
                 DB::table('personal_access_tokens')->where('tokenable_type', User::class)->where('tokenable_id', $user->id)->delete();
