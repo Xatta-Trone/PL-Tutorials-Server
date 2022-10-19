@@ -40,8 +40,9 @@ class UnbanBannedUsers extends Command
      */
     public function handle()
     {
-        $startOfDay = Carbon::now()->startOfDay()->addSecond();
-        BanHistory::where('ban_upto', '<', $startOfDay)
+        $startOfDay = Carbon::now()->startOfDay();
+        $endOfDay = Carbon::now()->endOfDay();
+        BanHistory::whereBetween('ban_upto', [$startOfDay, $endOfDay])
             ->lazyById(200, $column = 'id')
             ->each(function ($item) use ($startOfDay) {
                 $this->info('updating user id ' . $item->user_id);
