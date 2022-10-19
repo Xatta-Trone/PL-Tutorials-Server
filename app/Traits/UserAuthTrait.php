@@ -187,7 +187,7 @@ trait UserAuthTrait
                 $ban = BanHistory::create([
                     'user_id' => $user->id,
                     'ban_from' => Carbon::now()->startOfDay(),
-                    'ban_upto' => Carbon::now()->startOfDay()->addDays($nextBanLevel->days),
+                    'ban_upto' => Carbon::now()->startOfDay()->addMinute()->addDays($nextBanLevel->days),
                     'reason' => $msg
                 ]);
 
