@@ -42,6 +42,8 @@ class UnbanBannedUsers extends Command
     {
         $startOfDay = Carbon::now()->startOfDay();
         $endOfDay = Carbon::now()->endOfDay();
+        $this->info('$startOfDay ' . $startOfDay);
+        $this->info('$endOfDay ' . $endOfDay);
         BanHistory::whereBetween('ban_upto', [$startOfDay, $endOfDay])
             ->lazyById(200, $column = 'id')
             ->each(function ($item) use ($startOfDay) {
