@@ -33,11 +33,9 @@ class AppServiceProvider extends ServiceProvider
             }
         });
 
-
-
-        if ($this->app->environment('local')) {
-            Mail::alwaysTo('monzurul.ce.buet@gmail.com');
-        }
+        // if ($this->app->environment('local')) {
+        //     Mail::alwaysTo('monzurul.ce.buet@gmail.com');
+        // }
 
         if ($this->app->environment('local')) {
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
