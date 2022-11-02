@@ -82,7 +82,13 @@ trait UserTrait
             }
 
             Mail::to($user['email'])->send(new UserLoginDetails($user));
-            $this->saveAdminActivity('added', $user->id, 'user', $user->student_id, ['oldData' => null, 'newData' => $user->toArray()]);
+
+            if (request()->auth() != null) {
+                $this->saveAdminActivity('added', $user->id, 'user', $user->student_id, ['oldData' => null, 'newData' => $user->toArray()]);
+            }
+
+
+
 
 
             return response()->json([
