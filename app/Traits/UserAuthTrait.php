@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Mail\SendBannedUserMail;
 use App\Models\Admin\Ban;
 use App\Models\User\User;
 use App\Models\Admin\BanDays;
@@ -10,6 +9,7 @@ use App\Models\Admin\Activity;
 use App\Models\Admin\Settings;
 use Illuminate\Support\Carbon;
 use App\Models\Admin\UserTrace;
+use App\Mail\SendBannedUserMail;
 use App\Models\Admin\BanHistory;
 use Illuminate\Support\Facades\DB;
 use App\Models\Admin\UserTraceData;
@@ -18,6 +18,7 @@ use Google\Service\Calendar\Setting;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
 use hisorange\BrowserDetect\Parser as Browser;
+use Spatie\DiscordAlerts\Facades\DiscordAlert;
 
 
 trait UserAuthTrait
@@ -198,6 +199,8 @@ trait UserAuthTrait
                 $banMailContent = BanHistory::with('user')->find($ban->id);
 
                 Mail::to($user->email)->send(new SendBannedUserMail($banMailContent));
+
+                DiscordAlert::to('banCheck')->message("{$user->name}( {$user->student_id} ) ::{$msg}");
             });
         }
         return $msg;
