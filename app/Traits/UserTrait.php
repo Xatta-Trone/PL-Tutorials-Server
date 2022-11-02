@@ -18,7 +18,7 @@ use hisorange\BrowserDetect\Parser as Browser;
 trait UserTrait
 {
     public static $USER_ALREADY_REGISTERED = 'USER_ALREADY_REGISTERED';
-    public static $USER_CREATED = 'USER_CREATED';
+    public static $USER_CREATED = 'ACCOUNT_CREATED_CHECK_YOUR_EMAIL_FOR_PASSWORD';
     public static $USER_CREATION_ERROR = 'USER_CREATION_ERROR';
 
     public static $USER_NOT_FOUND = 'USER_NOT_FOUND';
@@ -61,7 +61,7 @@ trait UserTrait
         return (substr($student_id, 0, 1) == 's') ? substr($student_id, 3) : $student_id;
     }
 
-    public function createNewAccount($userData,  $updateUserData = null)
+    public function createNewAccount($userData,  $updateUserData = null, $isAddedByAdmin = false)
     {
         // add max user devices
         $userData = array_merge($userData, ['max_devices' => config('user.allowed_device_number')]);
@@ -83,13 +83,9 @@ trait UserTrait
 
             Mail::to($user['email'])->send(new UserLoginDetails($user));
 
-            if (request()->auth() != null) {
+            if ($isAddedByAdmin) {
                 $this->saveAdminActivity('added', $user->id, 'user', $user->student_id, ['oldData' => null, 'newData' => $user->toArray()]);
             }
-
-
-
-
 
             return response()->json([
                 'message' => self::$USER_CREATED,

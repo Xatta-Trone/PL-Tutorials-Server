@@ -73,7 +73,7 @@ class UserDataController extends Controller
         $userdata = ['name' => $user->student_name, 'student_id' => $user->student_id, 'email' => $request->input('email')];
 
 
-        return $this->createNewAccount($userdata,  $id);
+        return $this->createNewAccount($userdata,  $id, true);
     }
 
     /**
