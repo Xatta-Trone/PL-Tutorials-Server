@@ -77,7 +77,8 @@ trait UserAuthTrait
     {
         $location_data = json_decode($location_info);
 
-        return $location_data->isp . ',' . $location_data->city . ',' . $location_data->country;
+        // return $location_data->isp . ',' . $location_data->city . ',' . $location_data->country;
+        return $location_data->isp . ',' . $location_data->city . ',' . $location_data->country_name;
     }
 
     public function getLocationIspFromIpAddress(string $ip_address)
@@ -91,7 +92,8 @@ trait UserAuthTrait
     public function getLocationInfo($ip_address)
     {
         $checkedIpAddress = $ip_address == "127.0.0.1" ? '92.202.150.106' : $ip_address;
-        $loc = file_get_contents("http://ip-api.com/json/" . $checkedIpAddress);
+        // $loc = file_get_contents("http://ip-api.com/json/" . $checkedIpAddress);
+        $loc = file_get_contents("https://api.ipgeolocation.io/ipgeo?apiKey=e0f405abbe884c7eb6b6f37e79b4884b&ip=" . $checkedIpAddress);
         // $location_info = json_decode($loc);
         // if ($location_info->status == 'fail') {
         //     $loc = file_get_contents("https://extreme-ip-lookup.com/json/" . $ip_address);
