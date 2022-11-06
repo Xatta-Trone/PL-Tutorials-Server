@@ -42,8 +42,8 @@ class AuthController extends Controller
         //check in our db
 
         $checkForStudentInDB = UserData::select('student_name', 'student_id', 'id', 'status', 'merit')
-            ->where([['student_id', 'like', '%' . $student_id_without_prefix . '%'], ['hall_name', '=', $validatedData['hall_name']], ['merit', '=', $validatedData['merit']]])
-            ->orWhere([['student_id', 'like',  '%' . $student_id_without_prefix . '%'], ['student_name',  $validatedData['name']], ['merit', '=', $validatedData['merit']]])
+            ->where([['student_id', 'like', '%' . $student_id_without_prefix . '%'], ['hall_name', '=', $validatedData['hall_name']]])
+            ->orWhere([['student_id', 'like',  '%' . $student_id_without_prefix . '%'], ['student_name',  $validatedData['name']]])
             ->get()->first();
 
         if (!$checkForStudentInDB) {
