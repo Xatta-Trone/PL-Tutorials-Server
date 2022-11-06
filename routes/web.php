@@ -2,6 +2,7 @@
 
 use Goutte\Client;
 use App\Models\Role;
+use App\Mail\TestMail;
 use App\Models\User\User;
 use App\Models\Admin\Chat;
 use App\Models\Admin\Post;
@@ -101,7 +102,7 @@ Route::get('drive-test', function () {
 
 
 Route::get('/', function () {
-    $user = User::where('student_id', '1404143')->get()->first();
+    // $user = User::where('student_id', '1404143')->get()->first();
 
     // // dd(substr($user->student_id, 2, 2));
 
@@ -119,10 +120,10 @@ Route::get('/', function () {
 
     // Mail::to($user->email)->send(new UserPasswordResetNotification($user, 'asdfasdfsd'));
 
-    $response = Reply::latest()->first();
+    // $response = Reply::latest()->first();
 
     // return new UserPasswordResetNotification($user, 'asdfasdf');
-    return new SendContactResponse($response, Contact::find(2));
+    return new TestMail();
 
 
     // // return Course::with(['levelterm','department'])->find(1);
