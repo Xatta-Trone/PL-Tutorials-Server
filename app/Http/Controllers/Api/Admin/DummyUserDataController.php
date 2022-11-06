@@ -69,6 +69,7 @@ class DummyUserDataController extends Controller
             Excel::import(new DummyUserDataImport(), public_path('storage/files/' . $fileName));
 
             Artisan::call('names:ucwords', ['table' => 'dummy_user_data']);
+            // Artisan::call('merit:update');
 
             return response()->json([
                 'message' => self::$USERDATA_CREATED,

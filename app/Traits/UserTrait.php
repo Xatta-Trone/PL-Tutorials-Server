@@ -58,7 +58,7 @@ trait UserTrait
     public function studentIdWithoutPrefix($student_id)
     {
         $student_id = strtolower($student_id);
-        return (substr($student_id, 0, 1) == 's') ? substr($student_id, 3) : $student_id;
+        return (substr($student_id, 0, 1) == 's') ? substr($student_id, -7) : substr($student_id, -7);
     }
 
     public function createNewAccount($userData,  $updateUserData = null, $isAddedByAdmin = false)

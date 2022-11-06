@@ -3,12 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Traits\UserTrait;
-use Hamcrest\Type\IsNumeric;
 use App\Models\Admin\UserData;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
+use App\Models\Admin\DummyUserData;
 
-class UpdateMeritPosition extends Command
+class Update19BatchData extends Command
 {
     use UserTrait;
     /**
@@ -16,14 +15,14 @@ class UpdateMeritPosition extends Command
      *
      * @var string
      */
-    protected $signature = 'merit:update';
+    protected $signature = 'update19batch';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Changes the merit position to numeric only with padded zero at start.';
+    protected $description = 'Command description';
 
     /**
      * Create a new command instance.
@@ -42,14 +41,15 @@ class UpdateMeritPosition extends Command
      */
     public function handle()
     {
-        UserData::chunk(500, function ($users) {
+        DummyUserData::chunk(500, function ($users) {
             foreach ($users as $user) {
                 $this->info("Updating user $user->student_id");
-                if (!is_numeric($user->merit)) {
-                    $user->where('id', $user->id)->update(['merit' => sprintf("%04d", (int) substr($user->merit, 1))]);
-
-                }
-                $user->where('id', $user->id)->update(['student_id' => $this->studentIdWithoutPrefix($user->student_id)]);
+                $stid = $this->studentIdWithoutPrefix($user->student_id);
+                // if (!is_numeric($user->merit)) {
+                //     // $user->where('id', $user->id)->update(['merit' => sprintf("%04d", (int) substr($user->merit, 1))]);
+                // }
+                UserData::where('student_id', $stid)->update(['merit' => $user->merit]);
+                // $user->where('id', $user->id)->update(['student_id' => $this->studentIdWithoutPrefix($user->student_id)]);
             }
         });
     }
