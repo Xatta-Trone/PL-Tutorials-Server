@@ -32,7 +32,7 @@ class SendContactResponse extends Mailable
     public function build()
     {
         return $this->markdown('emails.contactresponse')->subject('[PL Tutorials]: ' . $this->response['subject'])
-            ->from('pltutorialsbuet@gmail.com')
+            // ->from('pltutorialsbuet@gmail.com')
             ->replyTo('pltutorialsbuet@gmail.com');
     }
 }

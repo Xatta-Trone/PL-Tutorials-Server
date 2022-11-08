@@ -31,7 +31,7 @@ class SendBannedUserMail extends Mailable
     public function build()
     {
         return $this->markdown('emails.user.bannedemail')->subject('[PL Tutorials]: Account restricted')
-            ->from('pltutorialsbuet@gmail.com')
+            // ->from('pltutorialsbuet@gmail.com')
             ->replyTo('pltutorialsbuet@gmail.com');
     }
 }

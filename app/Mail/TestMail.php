@@ -29,7 +29,7 @@ class TestMail extends Mailable
     public function build()
     {
         return $this->markdown('emails.orders.shipped')->subject('[PL Tutorials]: Test mail')
-            ->from('pltutorialsbuet@gmail.com')
+            // ->from('pltutorialsbuet@gmail.com')
             ->replyTo('pltutorialsbuet@gmail.com');
     }
 }

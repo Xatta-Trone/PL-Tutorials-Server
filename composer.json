@@ -26,7 +26,8 @@
         "rap2hpoutre/laravel-log-viewer": "^2.2",
         "santigarcor/laratrust": "^6.3",
         "spatie/laravel-backup": "7.*",
-        "spatie/laravel-discord-alerts": "^1.2"
+        "spatie/laravel-discord-alerts": "^1.2",
+        "vemcogroup/laravel-sparkpost-driver": "4.x"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",
