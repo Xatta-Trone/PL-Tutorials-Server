@@ -241,5 +241,7 @@ Route::prefix('v1')->group(function () {
             // user ban check toggle
             Route::get('user-ban-toggle', [SettingsController::class, 'toggleUserBan']);
         });
+
+
     });
 });
