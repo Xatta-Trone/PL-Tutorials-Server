@@ -69,7 +69,7 @@ class ImportOldUserTraceData extends Command
 
                     $data = [
                         'user_id' => $trace->user_id,
-                        'user_ip' => request()->ip(),
+                        'user_ip' => $trace->user_ip,
                         'fingerprint' => null,
                         'location' => $this->getLocation($location_info),
                         'user_agent' => $device_data->userAgent,
