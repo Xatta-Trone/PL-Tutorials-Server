@@ -45,7 +45,7 @@ class GeneralDataController extends Controller
             return DB::table('softwares')->count();
         });
         $activities =  Cache::remember('activities', 3600, function () {
-            DB::table('activities')->where('activity', 'downloaded')->count();
+             return DB::table('activities')->where('activity', 'downloaded')->count();
         });
 
         $data = [
