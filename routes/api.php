@@ -233,7 +233,7 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('dummyuserdata', DummyUserDataController::class);
 
             // Dashboard data
-            Route::get('dashboard/all', [DashboardController::class, 'index']);
+            Route::get('dashboard/all', [DashboardController::class, 'alldata']);
             Route::get('dashboard/chartdata', [DashboardController::class, 'chartdata']);
             Route::get('dashboard/deptbatchdatapie', [DashboardController::class, 'batchDeptDataPie']);
             Route::get('dashboard/deptbatchdatatable', [DashboardController::class, 'batchDeptDatatable']);

@@ -20,7 +20,7 @@ class DashboardController extends Controller
 {
     use DashboardTrait;
 
-    public function index()
+    public function alldata()
     {
         $user = new User();
         $user_total = User::count();
