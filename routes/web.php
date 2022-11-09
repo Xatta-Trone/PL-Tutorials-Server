@@ -41,61 +41,61 @@ use App\Http\Services\CustomVueTable2Service;
 |
 */
 
-function getModels($path)
-{
-    $out = [];
-    $results = scandir($path);
-    foreach ($results as $result) {
-        if ($result === '.' or $result === '..') {
-            continue;
-        }
-        $filename = $path . '/' . $result;
-        if (is_dir($filename)) {
-            $out = array_merge($out, getModels($filename));
-        } else {
-            $out[] = substr($filename, 0, -4);
-        }
-    }
+// function getModels($path)
+// {
+//     $out = [];
+//     $results = scandir($path);
+//     foreach ($results as $result) {
+//         if ($result === '.' or $result === '..') {
+//             continue;
+//         }
+//         $filename = $path . '/' . $result;
+//         if (is_dir($filename)) {
+//             $out = array_merge($out, getModels($filename));
+//         } else {
+//             $out[] = substr($filename, 0, -4);
+//         }
+//     }
 
-    return $out;
-}
+//     return $out;
+// }
 
-function getPieUserDataByBatchNDept()
-{
-    $pieUserDatas = DB::table('users')
-        ->selectRaw('substr(`student_id`,1,4) as total, count(`id`) as number')
-        ->where(DB::raw('substr(`student_id`,1,4)'), '<>', '0000')
-        ->groupBy(DB::raw('substr(`student_id`,1,4)'))
-        ->orderBy('total', 'desc')
-        ->get()->toArray();
+// function getPieUserDataByBatchNDept()
+// {
+//     $pieUserDatas = DB::table('users')
+//         ->selectRaw('substr(`student_id`,1,4) as total, count(`id`) as number')
+//         ->where(DB::raw('substr(`student_id`,1,4)'), '<>', '0000')
+//         ->groupBy(DB::raw('substr(`student_id`,1,4)'))
+//         ->orderBy('total', 'desc')
+//         ->get()->toArray();
 
-    foreach ($pieUserDatas as $pieUser) {
-        $pieUser->dept_batch = returnDeptBatchString($pieUser->total);
-    }
+//     foreach ($pieUserDatas as $pieUser) {
+//         $pieUser->dept_batch = returnDeptBatchString($pieUser->total);
+//     }
 
-    $data = [
-        'labels' => array_column($pieUserDatas, 'dept_batch'),
-        'data' => array_column($pieUserDatas, 'number'),
-    ];
+//     $data = [
+//         'labels' => array_column($pieUserDatas, 'dept_batch'),
+//         'data' => array_column($pieUserDatas, 'number'),
+//     ];
 
-    return $data;
+//     return $data;
 
-    // $rand_color = '#' . substr(md5(mt_rand()), 0, 6);
-}
+//     // $rand_color = '#' . substr(md5(mt_rand()), 0, 6);
+// }
 
-function returnDeptBatchString($batchDept = '')
-{
-    $batch = substr($batchDept, 0, 2);
-    $dept = substr($batchDept, 2, 2);
+// function returnDeptBatchString($batchDept = '')
+// {
+//     $batch = substr($batchDept, 0, 2);
+//     $dept = substr($batchDept, 2, 2);
 
-    $single_department = DB::table('departments')->where('code', $dept)->first();
+//     $single_department = DB::table('departments')->where('code', $dept)->first();
 
-    $dept_status_or_slug = ($single_department != null) ? strtoupper($single_department->slug) : 'Not Found';
+//     $dept_status_or_slug = ($single_department != null) ? strtoupper($single_department->slug) : 'Not Found';
 
-    return $dept_status_or_slug . "'" . $batch;
+//     return $dept_status_or_slug . "'" . $batch;
 
-    //return $batch.'+'.$dept;
-}
+//     //return $batch.'+'.$dept;
+// }
 Route::get('drive-test', function () {
     Storage::disk('google')->put('test.txt', 'Hello World');
 });
@@ -327,32 +327,32 @@ Route::get('/scrap', function () {
         echo $date . '\n';
 
         if ($datefomatted->isYesterday()) {
-            getinfo($href);
+            // getinfo($href);
         }
     });
 });
 
-function getinfo($link)
-{
-    $client = new Client();
-    $crawler = $client->request('GET', $link);
+// function getinfo($link)
+// {
+//     $client = new Client();
+//     $crawler = $client->request('GET', $link);
 
-    // get title
-    $title = $crawler->filter('.post-body h2')->first()->text();
-    // get author
-    $author = $crawler->filter('.post-body div')->eq(1)->filter('span')->eq(1)->text();
-    //get link
-    $crawler->filter('.post-body a')->each(function ($node) use ($title, $author) {
-        // dd($node->text() . "\n");
-        if ($node->text() == 'LINK') {
-            $href = $node->attr('href');
-            dd(compact('href', 'title', 'author'));
-        } else {
-            return 'none';
-        }
-    });
-    // dd($crawler->filter('a')->link());
-}
+//     // get title
+//     $title = $crawler->filter('.post-body h2')->first()->text();
+//     // get author
+//     $author = $crawler->filter('.post-body div')->eq(1)->filter('span')->eq(1)->text();
+//     //get link
+//     $crawler->filter('.post-body a')->each(function ($node) use ($title, $author) {
+//         // dd($node->text() . "\n");
+//         if ($node->text() == 'LINK') {
+//             $href = $node->attr('href');
+//             dd(compact('href', 'title', 'author'));
+//         } else {
+//             return 'none';
+//         }
+//     });
+//     // dd($crawler->filter('a')->link());
+// }
 
 Route::get('/change-email', function () {
 
