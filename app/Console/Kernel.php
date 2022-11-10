@@ -28,7 +28,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('quote:daily')->daily()->withoutOverlapping()->runInBackground();
         $schedule->command('backup:run --only-db')->daily()->withoutOverlapping()->runInBackground();
         $schedule->command('backup:clean')->dailyAt("03:00")->withoutOverlapping()->runInBackground();
-        $schedule->command('user:unban')->hourly()->withoutOverlapping()->runInBackground();
+        // $schedule->command('user:unban')->hourly()->withoutOverlapping()->runInBackground();
+
         $schedule->command('user:unban')->dailyAt("00:15")->withoutOverlapping()->runInBackground();
         $schedule->command('user:activityCheck')->hourly()->withoutOverlapping()->runInBackground();
 
