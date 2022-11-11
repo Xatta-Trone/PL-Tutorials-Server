@@ -380,3 +380,8 @@ Route::get('/change-password', function () {
         $column = 'id'
     );
 });
+
+
+Route::get('test-drive', function () {
+    Storage::disk('google')->put('test.txt', 'Hello World');
+});
