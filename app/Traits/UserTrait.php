@@ -170,7 +170,8 @@ trait UserTrait
             'ip_address' => $request->ip(),
             'location_json' => json_encode($location_info),
             'location' => $this->getLocation($location_info),
-            'user_id' => $request->user()->id
+            'user_id' => $request->user()->id,
+            'platform' => $request->platform ? $request->platform : 'web'
         ];
 
         return UserDevice::create($data);
