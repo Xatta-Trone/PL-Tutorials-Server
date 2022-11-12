@@ -44,7 +44,7 @@ class UserDevicesController extends Controller
             return $this->errorResponse(self::$DEVICE_ALREADY_ADDED);
         }
 
-        $data = $this->saveDevice($request);
+        $data = $this->saveDevice($request->validated());
         return $data != null ? $this->successResponse(self::$DEVICE_SAVED) : $this->errorResponse(self::$DEVICE_SAVE_ERROR);
     }
 
