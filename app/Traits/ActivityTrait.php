@@ -31,6 +31,7 @@ trait ActivityTrait
 {
     private function saveActivity($causer = 'user', $causer_id, $activity, $model, $model_id, $label, $data = null)
     {
+        $pat_id = $this->getUserTokenId();
         $data = [
             'causer_type' => $this->getuserclass($causer),
             'causer_id' => $causer_id,
@@ -39,8 +40,9 @@ trait ActivityTrait
             'model_id' => $model_id,
             'label' => $label,
             'data' => $data,
-            'pat_id' => $this->getUserTokenId(),
+            // 'pat_id' => $this->getUserTokenId(),
         ];
+        $data = array_merge($data, ($pat_id != null ? ['pat_id' => $pat_id] : []));
         Activity::create($data);
     }
 
