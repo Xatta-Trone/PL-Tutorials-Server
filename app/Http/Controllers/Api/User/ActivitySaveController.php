@@ -15,6 +15,7 @@ class ActivitySaveController extends Controller
     {
 
         // also in the auth controller login and logout method logs the activity
+        $pat_id = $this->getUserTokenId();
 
         $data = [
             'causer_type' => $this->getpostclass('user'),
@@ -23,8 +24,10 @@ class ActivitySaveController extends Controller
             'model_id' => $request->input('model_id', 0),
             'model_type' => $this->getpostclass($request->input('model_type')),
             'label' => $request->input('label', ''),
-            'pat_id' => $this->getUserTokenId(),
+            // 'pat_id' => $this->getUserTokenId(),
         ];
+
+        $data = array_merge($data, ($pat_id != null ? ['pat_id' => $pat_id] : []));
 
         $data = Activity::create($data);
 
