@@ -151,7 +151,9 @@ trait UserAuthTrait
         }
 
         // check for settings
-        $shouldCheckBan = Settings::where('key', 'user-ban-checka')->first();
+        $shouldCheckBan = Settings::where('key',
+            'user-ban-check'
+        )->first();
 
         if ($shouldCheckBan != null && (int) $shouldCheckBan->value == 0) {
             return false;
