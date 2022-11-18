@@ -42,7 +42,7 @@ class BanController extends Controller
             return  $this->noPermissionResponse();
         }
 
-        $post =  Ban::create($request->validated());
+        $post =  Ban::create($request->validated() + ['location' => strtolower($request->location)]);
         $this->saveAdminActivity('added', $post->id, 'ban', $post->location, ['oldData' => null, 'newData' => $post->toArray()]);
 
 
@@ -103,7 +103,7 @@ class BanController extends Controller
         $post = Ban::findOrFail($id);
         $postOld =  $post->replicate();
 
-        $post->update($request->validated());
+        $post->update($request->validated() + ['location' => strtolower($request->location)]);
 
         $this->saveAdminUpdateActivity($post->id, 'ban', $post->location, $postOld, $post->getChanges());
         // dd($post);
