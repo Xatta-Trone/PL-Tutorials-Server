@@ -13,6 +13,15 @@ class Post extends Model
     use HasFactory;
     protected $guarded = [];
 
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'department_slug' => 'ce',
+    ];
+
 
     public function user()
     {

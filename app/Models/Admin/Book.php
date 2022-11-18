@@ -10,6 +10,15 @@ class Book extends Model
     use HasFactory;
     protected $guarded = [];
 
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'department_slug' => 'ce',
+    ];
+
     public function admin()
     {
         return $this->belongsTo(Admin::class, 'user_id');

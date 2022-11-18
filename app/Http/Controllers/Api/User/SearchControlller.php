@@ -39,9 +39,21 @@ class SearchControlller extends Controller
         }
 
         if ($query != null) {
-            $posts->where('name', 'like', '%' . $query . '%')->orWhere('author', 'like', '%' . $query . '%')->orWhere('description', 'like', '%' . $query . '%');
-            $books->where('name', 'like', '%' . $query . '%')->orWhere('author', 'like', '%' . $query . '%')->orWhere('description', 'like', '%' . $query . '%');
-            $softwares->where('name', 'like', '%' . $query . '%')->orWhere('author', 'like', '%' . $query . '%')->orWhere('description', 'like', '%' . $query . '%');
+            $posts->where(function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%')->orWhere('author', 'like', '%' . $query . '%')->orWhere('description', 'like', '%' . $query . '%');
+            });
+
+            $books->where(function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%')->orWhere('author', 'like', '%' . $query . '%')->orWhere('description', 'like', '%' . $query . '%');
+            });
+
+            $softwares->where(function ($q) use ($query) {
+                $q->where('name', 'like', '%' . $query . '%')->orWhere('author', 'like', '%' . $query . '%')->orWhere('description', 'like', '%' . $query . '%');
+            });
+
+
+            // $books->where('name', 'like', '%' . $query . '%')->orWhere('author', 'like', '%' . $query . '%')->orWhere('description', 'like', '%' . $query . '%');
+            // $softwares->where('name', 'like', '%' . $query . '%')->orWhere('author', 'like', '%' . $query . '%')->orWhere('description', 'like', '%' . $query . '%');
         }
         if ($l_t != null) {
             $posts->where('level_term_slug', $l_t);
@@ -49,16 +61,9 @@ class SearchControlller extends Controller
             $softwares->where('level_term_slug', $l_t);
         }
 
-        if ($dept != null) {
-            $res = $this->accessible_dept(request()->user()->student_id);
 
-            if ($res !== "NA" && (strpos($res, $dept) !== false)) {
-                // $accessibleDeptArray = explode(',', $dept);
-                $posts->where('department_slug', $dept);
-                $books->where('department_slug', $dept);
-                $softwares->where('department_slug', $dept);
-            }
-        }
+
+
         if ($content_type != null) {
             $posts->where('post_type', $content_type);
             $books->where('post_type', $content_type);
@@ -70,23 +75,50 @@ class SearchControlller extends Controller
             $softwares->where('course_id', $course_id);
         }
 
-
+        // get accessible dept data
 
         // filter dept materials
         $res = $this->accessible_dept(request()->user()->student_id);
         $notAccessibleDeptArray = $this->getOtherDept($res);
 
+
+
         // return $res;
 
+        // filter dept
+        $books->where(function ($query) use ($notAccessibleDeptArray, $dept) {
+            $query->whereNotIn('department_slug', $notAccessibleDeptArray);
+            if ($dept != null) {
+                $query->where('department_slug', $dept);
+            }
+            $query->orWhere('department_slug', null);
+        });
+
+        $posts->where(function ($query) use ($notAccessibleDeptArray, $dept) {
+            $query->whereNotIn('department_slug', $notAccessibleDeptArray);
+            if ($dept != null) {
+                $query->where('department_slug', $dept);
+            }
+            $query->orWhere('department_slug', null);
+        });
+
+        $softwares->where(function ($query) use ($notAccessibleDeptArray, $dept) {
+            $query->whereNotIn('department_slug', $notAccessibleDeptArray);
+            if ($dept != null) {
+                $query->where('department_slug', $dept);
+            }
+            $query->orWhere('department_slug', null);
+        });
+
+        // get all accessible dept data
+        // $posts->whereNotIn('department_slug', $notAccessibleDeptArray);
+        // $softwares->whereNotIn('department_slug', $notAccessibleDeptArray);
 
 
-        // filter other dept data
-        $posts->whereNotIn('department_slug', $notAccessibleDeptArray);
-        $softwares->whereNotIn('department_slug', $notAccessibleDeptArray);
-        $books->whereNotIn('department_slug', $notAccessibleDeptArray);
 
         $results = $posts->union($softwares)
             ->union($books);
+
 
         return $results->orderBy('created_at', 'desc')->skip(($page - 1) * $per_page)->take($per_page)->get();
 
