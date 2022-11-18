@@ -145,6 +145,7 @@ trait UserAuthTrait
 
     public function checkIfUserShouldBeBanned(User $user)
     {
+
         // check if user is whitelisted
         if ($user->whitelisted) {
             return false;
@@ -155,14 +156,27 @@ trait UserAuthTrait
             'user-ban-check'
         )->first();
 
+
+
         if ($shouldCheckBan != null && (int) $shouldCheckBan->value == 0) {
             return false;
         }
 
         // check for ban locations
-        $userLocation = $this->getLocationIspFromIpAddress(request()->ip());;
+        $userLocation = strtolower($this->getLocationIspFromIpAddress(request()->ip()));
 
-        $checkUserLocationShouldBeBanned = Ban::where('location', 'like', '%' . $userLocation . '%')->exists();
+
+
+        $checkUserLocationShouldBeBanned = Ban::where('location', 'like', "%$userLocation%")->exists();
+        // $checkUserLocationShouldBeBanned = Ban::where('location', $userLocation)->get();
+
+        // dd(
+        //     $user->whitelisted,
+        //     $shouldCheckBan,
+        //     (int) $shouldCheckBan->value == 0,
+        //     $userLocation,
+        //     $checkUserLocationShouldBeBanned
+        // );
 
         if ($checkUserLocationShouldBeBanned) {
             return true;
