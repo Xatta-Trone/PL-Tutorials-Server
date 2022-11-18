@@ -204,6 +204,34 @@ class UserController extends Controller
         ], 422);
     }
 
+    public function deleteSavedDevice($id)
+    {
+        if (!request()->user()->hasPermission('user_update')) {
+            return  $this->noPermissionResponse();
+        }
+
+        $device = UserDevice::find($id);
+
+        if ($device == null) {
+            return response()->json([
+                'message' => self::$DEVICE_NOT_FOUND,
+                'status' => 'false',
+            ], 422);
+        }
+
+        if ($device->delete()) {
+            return response()->json([
+                'message' => self::$DEVICE_DELETED,
+                'status' => 'true',
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => self::$DEVICE_DELETE_ERROR,
+            'status' => 'false',
+        ], 422);
+    }
+
     public function restore($id)
     {
         if (!request()->user()->hasPermission('user_update')) {

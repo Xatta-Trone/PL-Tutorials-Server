@@ -195,6 +195,7 @@ Route::prefix('v1')->group(function () {
             Route::get('users/activitydata/{id}', [UserController::class, 'userActivity']);
             Route::get('users/locationdata/{id}', [UserController::class, 'userLocation']);
             Route::get('users/saved-devices/{userId}', [UserController::class, 'userSavedDevices']);
+            Route::delete('users/saved-device-delete/{id}', [UserController::class, 'deleteSavedDevice']);
             Route::get('users/device-data/{deviceId}', [UserController::class, 'userActivityByDeviceId']);
             Route::get('users/ip-data/{ipAddress}', [UserController::class, 'userActivityByIpAddress']);
             Route::get('users/activity-by-login/{patId}', [UserController::class, 'userActivityByLogin']);
