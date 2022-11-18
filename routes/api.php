@@ -122,7 +122,7 @@ Route::prefix('v1')->group(function () {
     Route::post('request-password', [UserPasswordResetController::class, 'requestPassword']);
     Route::post('reset-password', [UserPasswordResetController::class, 'resetPassword']);
     // logged in user
-    Route::middleware(['auth:sanctum', 'type.user', 'touch-user-device'])->group(function () {
+    Route::middleware(['auth:sanctum', 'type.user', 'check-restriction', 'touch-user-device'])->group(function () {
         Route::get('me', [AuthController::class, 'me']);
         Route::get('logout-all', [AuthController::class, 'logout_all']);
         Route::get('logout', [AuthController::class, 'logout']);

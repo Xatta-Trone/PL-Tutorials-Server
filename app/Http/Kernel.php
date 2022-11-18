@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\AdminGuardMiddleware;
+use App\Http\Middleware\CheckIfAccountRestricted;
 use App\Http\Middleware\CORSMiddleware;
 use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 use App\Http\Middleware\UserGuardMiddleware;
@@ -51,6 +52,7 @@ class Kernel extends HttpKernel
             // \App\Http\Middleware\Cors::class,
             UpdateSanctumConfigForCustomGuard::class,
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            // CheckIfAccountRestricted::class,
 
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
@@ -77,7 +79,7 @@ class Kernel extends HttpKernel
         'type.admin' => AdminGuardMiddleware::class,
         'type.user' => UserGuardMiddleware::class,
         'cors' => CORSMiddleware::class,
-        'touch-user-device' =>
-        \App\Http\Middleware\TouchUserDevice::class,
+        'touch-user-device' => \App\Http\Middleware\TouchUserDevice::class,
+        'check-restriction' => CheckIfAccountRestricted::class,
     ];
 }
