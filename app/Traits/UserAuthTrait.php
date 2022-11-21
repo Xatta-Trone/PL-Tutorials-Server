@@ -143,6 +143,44 @@ trait UserAuthTrait
         Activity::create($data);
     }
 
+    public function checkForVPN()
+    {
+        // check for settings
+        $shouldCheckBan = Settings::where(
+            'key',
+            'proxy-check'
+        )->first();
+
+        if ($shouldCheckBan != null && (int) $shouldCheckBan->value == 0) {
+            return false;
+        }
+
+        $email = config('mail.from.address', 'pltutorialsbuet@gmail.com');
+        $ip = config('app.env') != 'production' ? '92.202.150.106' : request()->ip();
+        $proxyKey = env('PROXY_API_KEY', '9f2024-9b7e38-11u232-nu5577');
+
+        $ipInfo = Http::get("http://check.getipintel.net/check.php?ip={$ip}&contact={$email}&format=json&flags=m");
+
+        $ipInfoRes = $ipInfo->json();
+
+        if ($ipInfoRes['status'] == 'success' && floatval($ipInfoRes['result']) > 0.9) {
+            return true;
+        }
+
+        $proxyCheck =  Http::get("https://proxycheck.io/v2/{$ip}?key={$proxyKey}&vpn=1&risk=1");
+
+        $result = $proxyCheck->json();
+
+        if ($result['status'] == "ok") {
+            if ($result[$ip]['proxy'] == "yes" && ((int) $result[$ip]['risk'] > 60)) {
+                return true;
+            }
+        }
+
+        // dd($result, $result['status'], $result[$ip], $result[$ip]['risk']);
+        return false;
+    }
+
     public function checkIfUserShouldBeBanned(User $user)
     {
 
@@ -152,7 +190,8 @@ trait UserAuthTrait
         }
 
         // check for settings
-        $shouldCheckBan = Settings::where('key',
+        $shouldCheckBan = Settings::where(
+            'key',
             'user-ban-check'
         )->first();
 

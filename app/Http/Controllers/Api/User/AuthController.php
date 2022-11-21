@@ -90,6 +90,12 @@ class AuthController extends Controller
         $validatedData = $request->validated();
         // dd($validatedData, $request->platform);
 
+        if ($this->checkForVPN()) {
+            return response()->json([
+                'message' => 'Please disable your VPN/Proxy server.',
+            ], 401);
+        }
+
 
         $user = User::where('email', $validatedData['email'])->get()->first();
 
