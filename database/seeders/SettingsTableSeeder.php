@@ -26,8 +26,8 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'pltutorialsbuet@gmail.com',
                 'fa5_icon' => 'fas fa-eye-slash',
                 'fa4_icon' => 'fa-envelope-open-o',
-                'created_at' => '2021-09-14 16:38:54',
-                'updated_at' => '2021-09-14 16:38:54',
+                'created_at' => '2021-09-14 13:38:54',
+                'updated_at' => '2021-09-14 13:38:54',
             ),
             1 => 
             array (
@@ -36,8 +36,8 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'https://www.facebook.com/thepltutorials/',
                 'fa5_icon' => NULL,
                 'fa4_icon' => NULL,
-                'created_at' => '2021-09-14 16:39:16',
-                'updated_at' => '2021-09-14 16:39:16',
+                'created_at' => '2021-09-14 13:39:16',
+                'updated_at' => '2021-09-14 13:39:16',
             ),
             2 => 
             array (
@@ -46,8 +46,8 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'https://m.me/thepltutorials',
                 'fa5_icon' => NULL,
                 'fa4_icon' => NULL,
-                'created_at' => '2021-09-14 16:39:26',
-                'updated_at' => '2021-09-14 16:39:26',
+                'created_at' => '2021-09-14 13:39:26',
+                'updated_at' => '2021-09-14 13:39:26',
             ),
             3 => 
             array (
@@ -56,8 +56,8 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'next pl in',
                 'fa5_icon' => NULL,
                 'fa4_icon' => NULL,
-                'created_at' => '2021-09-14 16:39:56',
-                'updated_at' => '2021-09-14 16:39:56',
+                'created_at' => '2021-09-14 13:39:56',
+                'updated_at' => '2021-09-14 13:39:56',
             ),
             4 => 
             array (
@@ -66,8 +66,8 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'https://www.youtube.com/c/PLTutorials',
                 'fa5_icon' => NULL,
                 'fa4_icon' => NULL,
-                'created_at' => '2021-09-14 16:40:10',
-                'updated_at' => '2021-09-14 16:40:10',
+                'created_at' => '2021-09-14 13:40:10',
+                'updated_at' => '2021-09-14 13:40:10',
             ),
             5 => 
             array (
@@ -76,8 +76,8 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'https://play.google.com/store/apps/details?id=com.pl-tutorials.app',
                 'fa5_icon' => NULL,
                 'fa4_icon' => NULL,
-                'created_at' => '2022-08-26 19:04:47',
-                'updated_at' => '2022-08-26 19:04:47',
+                'created_at' => '2022-08-26 16:04:47',
+                'updated_at' => '2022-08-26 16:04:47',
             ),
             6 => 
             array (
@@ -86,18 +86,18 @@ class SettingsTableSeeder extends Seeder
                 'value' => 'Currently we have only materials of CE and URP departments',
                 'fa5_icon' => NULL,
                 'fa4_icon' => NULL,
-                'created_at' => '2022-10-05 18:02:38',
-                'updated_at' => '2022-10-05 18:02:38',
+                'created_at' => '2022-10-05 15:02:38',
+                'updated_at' => '2022-10-05 15:02:38',
             ),
             7 => 
             array (
                 'id' => 12,
-                'key' => 'Sonya',
-                'value' => 'Desirae',
+                'key' => 'proxy-check',
+                'value' => '0',
                 'fa5_icon' => NULL,
                 'fa4_icon' => NULL,
-                'created_at' => '2022-10-09 18:02:52',
-                'updated_at' => '2022-10-09 18:02:52',
+                'created_at' => '2022-10-09 15:02:52',
+                'updated_at' => '2022-10-09 15:02:52',
             ),
             8 => 
             array (
@@ -106,8 +106,8 @@ class SettingsTableSeeder extends Seeder
                 'value' => '1',
                 'fa5_icon' => NULL,
                 'fa4_icon' => NULL,
-                'created_at' => '2022-10-17 18:16:09',
-                'updated_at' => '2022-10-17 18:16:24',
+                'created_at' => '2022-10-17 15:16:09',
+                'updated_at' => '2022-11-18 13:01:41',
             ),
         ));
         

@@ -44,7 +44,7 @@ class ActivityController extends Controller
         $byColumn = request()->input('byColumn', 1);
 
 
-        $activiey = Activity::query()->select(['id', 'causer_type', 'causer_id', 'activity', 'label', 'pat_id']);
+        $activiey = Activity::query()->select(['id', 'causer_type', 'causer_id', 'activity', 'label', 'pat_id', 'created_at']);
 
         if ($query != null) {
             $activiey = $activiey->where('activity', 'LIKE', "%{$query}%");

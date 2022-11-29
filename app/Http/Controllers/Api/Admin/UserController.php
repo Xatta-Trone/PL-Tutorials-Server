@@ -38,7 +38,7 @@ class UserController extends Controller
         $t = new VueTable2Service();
 
         return $t->get($u, [
-            'id', 'name', 'email', 'student_id', 'status', 'deleted_at',
+            'id', 'name', 'email', 'student_id', 'status', 'deleted_at', 'created_at'
         ]);
     }
 

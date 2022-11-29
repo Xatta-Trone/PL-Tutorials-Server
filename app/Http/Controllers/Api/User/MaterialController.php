@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Models\Admin\Post;
 use App\Models\Admin\Course;
 use Illuminate\Http\Request;
+use App\Models\Admin\Software;
 use App\Models\Admin\LevelTerm;
 use App\Models\Admin\Department;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DepartmentResource;
 use App\Http\Services\CustomVueTable2Service;
-use App\Models\Admin\Software;
 
 class MaterialController extends Controller
 {
@@ -55,6 +56,10 @@ class MaterialController extends Controller
                 ->with(['course:id,course_name,slug,level_term_id', 'department:id,name'])
                 ->where([['slug', '=', $ltSlug], ['department_id', '=', $dept->id]])
                 ->first();
+
+            // $additionalData = Post::where('status', 1)->whereNull('course_id')->where([['level_term_slug', '=', $ltSlug], ['department_slug', '=', $deptSlug]])->get();
+
+            // $data->additional_data = $additionalData;
 
             return $this->successResponse('LEVEL_TERMS_FOUND', $data);
         }
