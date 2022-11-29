@@ -175,7 +175,7 @@ Route::prefix('v1')->group(function () {
 
         Route::middleware(['auth:sanctum', UpdateSanctumConfigForCustomGuard::class, 'type.admin'])->group(function () {
             Route::get('me', [AdminAuthController::class, 'me']);
-            Route::get('permissions', [AdminAuthController::class, 'permissions']);
+            Route::get('admin-permissions', [AdminAuthController::class, 'permissions']);
             Route::get('logout-all', [AdminAuthController::class, 'logout_all']);
             Route::get('logout', [AdminAuthController::class, 'logout']);
 

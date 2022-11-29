@@ -77,6 +77,8 @@ class AdminAuthController extends Controller
     public function permissions(Request $request)
     {
         // return auth()->guard('admin')->user();
+        // $id = $request->user();
+        // return $id;
         return $request->user()->allPermissions()->pluck('name');
     }
 
