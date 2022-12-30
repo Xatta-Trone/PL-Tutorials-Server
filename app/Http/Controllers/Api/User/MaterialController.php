@@ -57,9 +57,21 @@ class MaterialController extends Controller
                 ->where([['slug', '=', $ltSlug], ['department_id', '=', $dept->id]])
                 ->first();
 
-            // $additionalData = Post::where('status', 1)->whereNull('course_id')->where([['level_term_slug', '=', $ltSlug], ['department_slug', '=', $deptSlug]])->get();
+            // check api version for additional data
+            if ((int) request()->header('API-V') > 1) {
+                // api version 2
+                $additionalData = Post::query()
+                    ->select('id', 'name', 'link')
+                    ->where('status', 1)
+                    ->whereNull('course_id')
+                    ->where([['level_term_slug', '=', $ltSlug], ['department_slug', '=', $deptSlug]])->get();
 
-            // $data->additional_data = $additionalData;
+                $data->additional_data = $additionalData;
+            }
+
+
+
+
 
             return $this->successResponse('LEVEL_TERMS_FOUND', $data);
         }
