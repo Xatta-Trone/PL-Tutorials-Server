@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Models\Admin\Post;
+use App\Models\User\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\PostCreateRequest;
-use App\Http\Requests\PostUpdateRequest;
-use App\Http\Services\VueTable2Service;
+use App\Traits\WhitelistedDataTrait;
+use App\Models\Admin\WhitelistedData;
 use App\Http\Services\CustomVueTable2Service;
-use App\Traits\ImageTrait;
-use App\Traits\PostTrait;
-use Illuminate\Auth\Events\Validated;
+use App\Http\Requests\WhitelistedDataCreateRequest;
+use App\Http\Requests\WhitelistedDataUpdateRequest;
 
-class PostController extends Controller
+class WhitelistedDataController extends Controller
 {
-    use ImageTrait, PostTrait;
+    use WhitelistedDataTrait;
     /**
      * Display a listing of the resource.
      *
@@ -23,15 +21,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        if (!request()->user()->hasPermission('post_show')) {
-            return $this->noIndexPermissionResponse();
-        }
-
-
         $vs = new CustomVueTable2Service();
-        return  $vs->get(new Post(), [
-            'id', 'name', 'department_slug', 'level_term_slug', 'status',  'course_id', 'user_id',
-        ], ['admin:id,name:foreign_key=user_id', 'course:id,slug']);
+        return  $vs->get(new WhitelistedData(), [
+            'id', 'user_id', 'access_type', 'data_type', 'data', 'created_at'
+        ], ['user:id,name,student_id:foreign_key=user_id']);
     }
 
     /**
@@ -40,25 +33,32 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PostCreateRequest $request)
+    public function store(WhitelistedDataCreateRequest $request)
     {
-        if (!request()->user()->hasPermission('post_create')) {
+        if (!request()->user()->hasPermission('user_create')) {
             return  $this->noPermissionResponse();
         }
 
-        // return $request->validated();
-        $post =  Post::create(array_merge($request->validated(), ['image' => $this->upload(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
+        // user id
+        $user_id = User::where('student_id', $request->student_id)->first()->id;
 
-        $this->saveAdminActivity('added', $post->id, 'post', $post->name, ['oldData' => null, 'newData' => $post->toArray()]);
+        $post =  WhitelistedData::create(
+            $request->except('student_id')
+                + ['user_id' => $user_id]
+        );
+
+        $this->saveAdminActivity('added', $post->id, 'whitelisted', $post->user_id . $post->data_type, ['oldData' => null, 'newData' => $post->toArray()]);
+
+
 
         if ($post) {
             return response()->json([
-                'message' => self::$POST_CREATED,
+                'message' => self::$WHITELISTED_DATA_CREATED,
                 'status' => 'true'
             ], 201);
         } else {
             return response()->json([
-                'message' => self::$POST_CREATION_ERROR,
+                'message' => self::$WHITELISTED_DATA_CREATION_ERROR,
                 'status' => 'false'
             ], 422);
         }
@@ -72,21 +72,21 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        if (!request()->user()->hasPermission('post_show')) {
+        if (!request()->user()->hasPermission('user_show')) {
             return  $this->noPermissionResponse();
         }
 
-        $post = Post::find($id);
+        $post = WhitelistedData::find($id);
         if ($post) {
             return response()->json([
-                'message' => self::$POST_FOUND,
+                'message' => self::$WHITELISTED_DATA_FOUND,
                 'status' => 'true',
                 'post' => $post,
             ], 200);
         }
 
         return response()->json([
-            'message' => self::$POST_NOT_FOUND,
+            'message' => self::$WHITELISTED_DATA_NOT_FOUND,
             'status' => 'false',
             'post' => null,
         ], 404);
@@ -99,29 +99,32 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PostUpdateRequest $request, $id)
+    public function update(WhitelistedDataUpdateRequest $request, $id)
     {
-        if (!request()->user()->hasPermission('post_update')) {
+        if (!request()->user()->hasPermission('user_update')) {
             return  $this->noPermissionResponse();
         }
 
-        // dd($request->validated());
-        $post = Post::findOrFail($id);
+        $post = WhitelistedData::findOrFail($id);
         $postOld =  $post->replicate();
 
-        $post->update(array_merge($request->validated(), ['image' => $this->updateimage(), 'user_id' => auth()->id(), 'user_type' => 'admin']));
-        // dd($post);
-        $this->saveAdminUpdateActivity($post->id, 'post', $post->name, $postOld, $post->getChanges());
 
+
+        $post->update($request->validated());
+
+        // dd($request->validated());
+
+        $this->saveAdminUpdateActivity($post->id, 'whitelisted', $post->user_id . $post->data_type . $post->data, $postOld, $post->getChanges());
+        // dd($post);
         if ($post) {
             return response()->json([
-                'message' => self::$POST_UPDATED,
+                'message' => self::$WHITELISTED_DATA_UPDATED,
                 'status' => 'true',
 
             ], 200);
         }
         return response()->json([
-            'message' => self::$POST_NOT_UPDATED,
+            'message' => self::$WHITELISTED_DATA_NOT_UPDATED,
             'status' => 'false',
         ], 422);
     }
@@ -134,36 +137,30 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        if (!request()->user()->hasPermission('post_delete')) {
+        if (!request()->user()->hasPermission('user_delete')) {
             return  $this->noPermissionResponse();
         }
-
-        $post = Post::find($id);
+        $post = WhitelistedData::find($id);
 
         if ($post == null) {
             return response()->json([
-                'message' => self::$POST_NOT_FOUND,
+                'message' => self::$WHITELISTED_DATA_NOT_FOUND,
                 'status' => 'false',
             ], 422);
         }
-
-        if ($post->image) {
-            $this->deleteimage($post->image, $post->post_type);
-        }
         $postOld =  $post->replicate();
 
-        $this->saveAdminDeleteActivity($post->id, 'post', $post->name, $postOld);
+        $this->saveAdminDeleteActivity($post->id, 'whitelisted', $post->user_id . $post->data_type . $post->data, $postOld);
 
         if ($post->delete()) {
-
             return response()->json([
-                'message' => self::$POST_DELETED,
+                'message' => self::$WHITELISTED_DATA_DELETED,
                 'status' => 'true',
 
             ], 200);
         }
         return response()->json([
-            'message' => self::$POST_NOT_DELETED,
+            'message' => self::$WHITELISTED_DATA_NOT_DELETED,
             'status' => 'false',
         ], 422);
     }

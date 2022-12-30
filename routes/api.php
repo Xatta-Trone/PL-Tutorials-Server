@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Models\Admin\Department;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\BanController;
 use App\Http\Controllers\Api\Admin\FaqController;
@@ -36,14 +37,14 @@ use App\Http\Controllers\Api\User\UserDevicesController;
 use App\Http\Controllers\Api\Admin\TestimonialController;
 use App\Http\Controllers\Api\User\ActivitySaveController;
 use App\Http\Controllers\Api\Admin\BanHistoriesController;
-use App\Http\Controllers\Api\Admin\BugsController as AdminBugsController;
 use App\Http\Middleware\UpdateSanctumConfigForCustomGuard;
 use App\Http\Controllers\Api\Admin\DummyUserDataController;
 use App\Http\Controllers\Api\Admin\PasswordResetController;
+use App\Http\Controllers\Api\Admin\WhitelistedDataController;
 use App\Http\Controllers\Api\User\UserPasswordResetController;
 use App\Http\Controllers\Api\User\BookController as UserBookController;
+use App\Http\Controllers\Api\Admin\BugsController as AdminBugsController;
 use App\Http\Controllers\Api\User\SoftwareController as UserSoftwareController;
-use App\Models\Admin\Department;
 
 /*
 |--------------------------------------------------------------------------
@@ -194,6 +195,7 @@ Route::prefix('v1')->group(function () {
             Route::get('users/resetpass/{id}', [UserController::class, 'passwordReset']);
             Route::get('users/activitydata/{id}', [UserController::class, 'userActivity']);
             Route::get('users/locationdata/{id}', [UserController::class, 'userLocation']);
+            Route::get('users/whitelisted/{id}', [UserController::class, 'userWhitelistedData']);
             Route::get('users/saved-devices/{userId}', [UserController::class, 'userSavedDevices']);
             Route::delete('users/saved-device-delete/{id}', [UserController::class, 'deleteSavedDevice']);
             Route::get('users/device-data/{deviceId}', [UserController::class, 'userActivityByDeviceId']);
@@ -229,6 +231,7 @@ Route::prefix('v1')->group(function () {
             Route::apiResource('banhistory', BanHistoriesController::class);
             Route::apiResource('pages', PagesController::class);
             Route::apiResource('bugs', AdminBugsController::class);
+            Route::apiResource('whitelisted', WhitelistedDataController::class);
 
 
             Route::apiResource('dummyuserdata', DummyUserDataController::class);

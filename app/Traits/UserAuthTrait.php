@@ -13,6 +13,7 @@ use App\Mail\SendBannedUserMail;
 use App\Models\Admin\BanHistory;
 use Illuminate\Support\Facades\DB;
 use App\Models\Admin\UserTraceData;
+use App\Models\Admin\WhitelistedData;
 use hisorange\BrowserDetect\Parser;
 use Google\Service\Calendar\Setting;
 use Illuminate\Support\Facades\Http;
@@ -183,6 +184,8 @@ trait UserAuthTrait
 
     public function checkIfUserShouldBeBanned(User $user)
     {
+        $ipAddress = config('app.env') == 'local' ? '103.149.56.2' :  request()->ip();
+
 
         // check if user is whitelisted
         if ($user->whitelisted) {
@@ -201,10 +204,22 @@ trait UserAuthTrait
             return false;
         }
 
+        // check whitelisted locations
+
         // check for ban locations
-        $userLocation = strtolower($this->getLocationIspFromIpAddress(request()->ip()));
+        $userLocation = strtolower($this->getLocationIspFromIpAddress($ipAddress));
 
+        // check for whitelisted locations
+        $whitelistedUserDataLocationCheck = WhitelistedData::where('user_id', $user->id)->where('access_type', 'whitelisted')
+        ->where(function ($q) use ($userLocation, $ipAddress) {
+            $q->where('data', $ipAddress);
+            $q->orWhere('data', $userLocation);
+        })
+        ->exists();
 
+        if ($whitelistedUserDataLocationCheck) {
+            return false;
+        }
 
         $checkUserLocationShouldBeBanned = Ban::where('location', 'like', "%$userLocation%")->exists();
         // $checkUserLocationShouldBeBanned = Ban::where('location', $userLocation)->get();

@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\UserCreateRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Http\Services\VueTable2Service;
+use App\Models\User\User;
+use App\Traits\UserTrait;
+use Illuminate\Http\Request;
 use App\Models\Admin\Activity;
 use App\Models\Admin\UserData;
 use App\Models\Admin\UserTrace;
-use App\Models\User\User;
 use App\Models\User\UserDevice;
-use App\Traits\UserTrait;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Admin\WhitelistedData;
+use App\Http\Services\VueTable2Service;
+use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserUpdateRequest;
 
 class UserController extends Controller
 {
@@ -472,6 +473,36 @@ class UserController extends Controller
         return response()->json([
             'data' => $activiey->toArray(),
             'count' => UserDevice::query()->where('user_id', $userId)->count(),
+        ]);
+    }
+
+    public function userWhitelistedData($userId)
+    {
+        if (!request()->user()->hasPermission('user_show')) {
+            return $this->noIndexPermissionResponse();
+        }
+
+        $query = request()->input('query', null);
+        $limit = request()->input('limit', 10);
+        $page = request()->input('page', 1);
+        $orderBy = request()->input('orderBy', 'id');
+        $ascending = request()->input('ascending', 1);
+        $byColumn = request()->input('byColumn', 1);
+
+        $activiey = WhitelistedData::query()->where('user_id', $userId)
+            ->select(['id', 'access_type', 'data_type', 'data', 'created_at']);
+
+        if ($query != null) {
+            $activiey = $activiey->where('access_type', 'LIKE', "%{$query}%");
+            $activiey = $activiey->orWhere('data_type', 'LIKE', "%{$query}%");
+            $activiey = $activiey->orWhere('data', 'LIKE', "%{$query}%");
+        }
+
+        $activiey = $activiey->skip(($page - 1) * $limit)->take($limit)->orderBy($orderBy, $ascending == 1 ? 'asc' : 'desc')->get();
+
+        return response()->json([
+            'data' => $activiey->toArray(),
+            'count' => WhitelistedData::query()->where('user_id', $userId)->count(),
         ]);
     }
 }

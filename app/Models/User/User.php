@@ -8,6 +8,7 @@ use App\Models\Admin\Department;
 use App\Traits\UserTrait;
 use App\Models\Admin\Post;
 use App\Models\Admin\UserTrace;
+use App\Models\Admin\WhitelistedData;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -91,6 +92,11 @@ class User extends Authenticatable
     public function traces()
     {
         return $this->hasMany(UserTrace::class);
+    }
+
+    public function whitelistedData()
+    {
+        return $this->hasMany(WhitelistedData::class);
     }
 
     public function currentDevice()
