@@ -29,7 +29,7 @@ class ContactController extends Controller
 
         $vs = new CustomVueTable2Service();
         return  $vs->get(new Contact(), [
-            'id', 'name', 'email', 'subject', 'created_at', 'status', 'replied'
+            'id', 'name', 'email', 'subject', 'created_at', 'status', 'replied', 'is_seen'
         ], ['admin:id,name:foreign_key=replied_by']);
     }
 
@@ -55,7 +55,7 @@ class ContactController extends Controller
             return  $this->noPermissionResponse();
         }
 
-        Contact::find($id)->update(['replied_by' => auth()->id()]);
+        Contact::find($id)->update(['is_seen' => true, 'replied_by' => auth()->id()]);
         $post = Contact::with(['replies.repliedby', 'admin'])->where('id', $id)->get()->first();
         if ($post) {
             return response()->json([

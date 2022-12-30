@@ -24,7 +24,7 @@ class DashboardController extends Controller
     {
         $user = new User();
         $user_total = User::count();
-        $new_contact = Contact::where('status', 0)->count();
+        $new_contact = Contact::where('is_seen', 0)->count();
         $total_downloads = Activity::where('activity', 'downloaded')->count();
         $total_activities = Activity::count();
         $total_userdatas = UserData::count();
