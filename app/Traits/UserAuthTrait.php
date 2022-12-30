@@ -184,7 +184,7 @@ trait UserAuthTrait
 
     public function checkIfUserShouldBeBanned(User $user)
     {
-        $ipAddress = config('app.env') == 'local' ? '103.149.56.2' :  request()->ip();
+        $ipAddress =  request()->ip();
 
 
         // check if user is whitelisted
