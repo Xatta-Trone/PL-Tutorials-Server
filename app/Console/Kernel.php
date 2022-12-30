@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('user:unban')->dailyAt("00:15")->withoutOverlapping()->runInBackground();
         $schedule->command('user:activityCheck')->hourly()->withoutOverlapping()->runInBackground();
+        $schedule->command('cleanup:tokens')->daily()->withoutOverlapping()->runInBackground();
 
 
     }
