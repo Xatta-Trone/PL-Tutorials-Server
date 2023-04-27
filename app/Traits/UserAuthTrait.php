@@ -46,7 +46,7 @@ trait UserAuthTrait
             'user_agent' => request()->server('HTTP_USER_AGENT'),
             'device' => $deviceName ?? $this->getBrowser($browser_info),
             'platform' => $platform ?? 'web',
-            'pat_id' => explode('|', $token)[0],
+            'pat_id' => $token  ? explode('|', $token)[0] : null,
         ];
 
         $userTrace =  UserTrace::create($data);
@@ -59,8 +59,10 @@ trait UserAuthTrait
             'user_trace_id' => $userTrace->id
         ]);
 
+        if ($token) {
+            $this->saveAuthEvent($data, explode('|', $token)[0]);
+        }
 
-        $this->saveAuthEvent($data, explode('|', $token)[0]);
 
 
 
@@ -80,8 +82,10 @@ trait UserAuthTrait
     {
         $location_data = json_decode($location_info);
 
-        // return $location_data->isp . ',' . $location_data->city . ',' . $location_data->country;
-        return $location_data->isp . ',' . $location_data->city . ',' . $location_data->country_name;
+        // ip-api
+        return $location_data->isp . ',' . $location_data->city . ',' . $location_data->country;
+        // ipgeolocation
+        // return $location_data->isp . ',' . $location_data->city . ',' . $location_data->country_name;
     }
 
     public function getLocationIspFromIpAddress(string $ip_address)
@@ -96,18 +100,18 @@ trait UserAuthTrait
     {
         $checkedIpAddress = $ip_address == "127.0.0.1" ? '92.202.150.106' : $ip_address;
         $ipApiKey = env('IP_API_KEY', 'e0f405abbe884c7eb6b6f37e79b4884b');
-        // $loc = file_get_contents("http://ip-api.com/json/" . $checkedIpAddress);
+        $response = Http::get("http://ip-api.com/json/" . $checkedIpAddress);
         // $loc = file_get_contents("https://api.ipgeolocation.io/ipgeo?apiKey={$ipApiKey}&ip=" . $checkedIpAddress);
         // $location_info = json_decode($loc);
         // if ($location_info->status == 'fail') {
         //     $loc = file_get_contents("https://extreme-ip-lookup.com/json/" . $ip_address);
         // }
         // return $loc;
-        $response = Http::get("https://api.ipgeolocation.io/ipgeo?apiKey=$ipApiKey&ip=$checkedIpAddress");
+        // $response = Http::get("https://api.ipgeolocation.io/ipgeo?apiKey=$ipApiKey&ip=$checkedIpAddress");
         return json_encode($response->json());
     }
 
-    public function saveAuthEvent(array $data, string $pat_id, string $type = 'login',)
+    public function saveAuthEvent(array $data, string $pat_id, string $type = 'login')
     {
 
         $label = (string) $data['pat_id'] . "::" . (string) $data['device'] . " :: " . (string) $data['location'];
