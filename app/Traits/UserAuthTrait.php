@@ -100,14 +100,14 @@ trait UserAuthTrait
     {
         $checkedIpAddress = $ip_address == "127.0.0.1" ? '92.202.150.106' : $ip_address;
         $ipApiKey = env('IP_API_KEY', 'e0f405abbe884c7eb6b6f37e79b4884b');
-        // $response = Http::get("http://ip-api.com/json/" . $checkedIpAddress);
+        $response = Http::get("http://ip-api.com/json/" . $checkedIpAddress);
         // $loc = file_get_contents("https://api.ipgeolocation.io/ipgeo?apiKey={$ipApiKey}&ip=" . $checkedIpAddress);
         // $location_info = json_decode($loc);
         // if ($location_info->status == 'fail') {
         //     $loc = file_get_contents("https://extreme-ip-lookup.com/json/" . $ip_address);
         // }
         // return $loc;
-        $response = Http::get("https://api.ipgeolocation.io/ipgeo?apiKey=$ipApiKey&ip=$checkedIpAddress");
+        // $response = Http::get("https://api.ipgeolocation.io/ipgeo?apiKey=$ipApiKey&ip=$checkedIpAddress");
         return json_encode($response->json());
     }
 
