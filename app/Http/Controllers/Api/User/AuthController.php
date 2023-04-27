@@ -120,6 +120,7 @@ class AuthController extends Controller
 
         if ($checkIfUserShouldBeBanned) {
             $response = $this->banUser($user);
+            $this->saveUserTrace($user->id, $request->fingerprint, $request->deviceName, $request->platform);
             return response()->json([
                 'message' => $response ?? 'Account banned due to login from restricted locations.',
             ], 401);
