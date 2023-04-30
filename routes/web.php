@@ -390,7 +390,8 @@ Route::get('test-drive', function () {
 
 Route::get('test-api', function () {
     $checkedIpAddress = request()->ip() == "127.0.0.1" ? '92.202.150.106' : request()->ip();
-    $ipApiKey = env('IP_API_KEY', 'e0f405abbe884c7eb6b6f37e79b4884b');
+    $ipApiKey = env('IP_API_KEY');
+
     // $loc = file_get_contents("http://ip-api.com/json/" . $checkedIpAddress);
     // $loc = file_get_contents("https://api.ipgeolocation.io/ipgeo?apiKey={$ipApiKey}&ip=" . $checkedIpAddress);
     // $location_info = json_decode($loc);
@@ -399,5 +400,5 @@ Route::get('test-api', function () {
     // }
     // return $loc;
     $response = Http::get("https://api.ipgeolocation.io/ipgeo?apiKey=$ipApiKey&ip=$checkedIpAddress");
-    return $response->json();
+    dd($response->json(), $ipApiKey);
 });
