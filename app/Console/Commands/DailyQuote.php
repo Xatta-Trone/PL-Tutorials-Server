@@ -40,13 +40,16 @@ class DailyQuote extends Command
      */
     public function handle()
     {
-
-
+        $key = env('QUOTES_API_KEY');
+        $this->info("Attempting request. env; {$key}");
         $type = Arr::random(['inspire', 'life']);
 
         $response = Http::withHeaders([
-            'X-TheySaidSo-Api-Secret' => env('QUOTES_API_KEY')
-        ])->get('https://quotes.rest/qod?language=en&category=' . $type);
+            'X-TheySaidSo-Api-Secret' => $key
+        ])->get('https://quotes.rest/qod', [
+            'language' => 'en',
+            'category' => $type,
+        ]);
 
 
         // dd((array) json_decode($response->body()));
@@ -58,10 +61,13 @@ class DailyQuote extends Command
                 'author' => $response_data['contents']->quotes[0]->author,
                 // 'rawdata' => json_encode($response_data)
             ];
-            // dd($data);
-            Quote::create($data);
+            $q = Quote::create($data);
+            $this->info("Saved quote with id {$q->id}");
+           
         } else {
-            // print_r($response);
+            $this->info("Could not save quote");
+            print_r($response->body());
+            print_r($response->json());
         }
     }
 }
