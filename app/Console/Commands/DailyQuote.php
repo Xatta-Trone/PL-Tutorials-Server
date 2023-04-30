@@ -40,8 +40,8 @@ class DailyQuote extends Command
      */
     public function handle()
     {
-        $key = env('QUOTES_API_KEY');
-        $this->info("Attempting request. env; {$key}");
+        $key = config('keys.quotes-key');
+        $this->info("Attempting request. env: {$key}");
         $type = Arr::random(['inspire', 'life']);
 
         $response = Http::withHeaders([
