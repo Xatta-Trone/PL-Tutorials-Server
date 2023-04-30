@@ -44,7 +44,9 @@ class DailyQuote extends Command
 
         $type = Arr::random(['inspire', 'life']);
 
-        $response = Http::get('http://quotes.rest/qod.json?category=' . $type);
+        $response = Http::withHeaders([
+            'X-TheySaidSo-Api-Secret' => env('QUOTES_API_KEY')
+        ])->get('https://quotes.rest/qod?language=en&category=' . $type);
 
 
         // dd((array) json_decode($response->body()));
