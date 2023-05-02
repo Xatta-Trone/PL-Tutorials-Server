@@ -311,6 +311,10 @@ Route::get('call', function () {
     return $call . ' not success';
 });
 
+Route::get('test', function () {
+    return response('test');
+});
+
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
 Route::get('/scrap', function () {
