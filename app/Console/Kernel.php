@@ -34,6 +34,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('user:activityCheck')->hourly()->withoutOverlapping()->runInBackground();
         $schedule->command('cleanup:tokens')->daily()->withoutOverlapping()->runInBackground();
 
+        $schedule->command("optimize:clear")->everyFiveMinutes();
+
 
     }
 
