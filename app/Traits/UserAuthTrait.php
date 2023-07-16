@@ -215,11 +215,11 @@ trait UserAuthTrait
 
         // check for whitelisted locations
         $whitelistedUserDataLocationCheck = WhitelistedData::where('user_id', $user->id)->where('access_type', 'whitelisted')
-        ->where(function ($q) use ($userLocation, $ipAddress) {
-            $q->where('data', $ipAddress);
-            $q->orWhere('data', $userLocation);
-        })
-        ->exists();
+            ->where(function ($q) use ($userLocation, $ipAddress) {
+                $q->where('data', $ipAddress);
+                $q->orWhere('data', $userLocation);
+            })
+            ->exists();
 
         if ($whitelistedUserDataLocationCheck) {
             return false;
@@ -258,27 +258,27 @@ trait UserAuthTrait
         if ($nextBanLevel) {
             $msg  = "Banned for $nextBanLevel->days days";
             $msg  .= $reason ? $reason : " due to login form restricted location";
-            DB::transaction(function () use ($user, $nextBanLevel, $msg) {
-                // delete all tokens
-                DB::table('personal_access_tokens')->where('tokenable_type', User::class)->where('tokenable_id', $user->id)->delete();
-                // update all past records to todays date
-                BanHistory::where('user_id', $user->id)->where('ban_upto', '>=', Carbon::now()->startOfDay())->update(['ban_upto' => Carbon::now()]);
-                // update user status
-                $user->update(['status' => 0]);
-                // create a ban history record
-                $ban = BanHistory::create([
-                    'user_id' => $user->id,
-                    'ban_from' => Carbon::now()->startOfDay(),
-                    'ban_upto' => Carbon::now()->startOfDay()->addMinute()->addDays($nextBanLevel->days),
-                    'reason' => $msg
-                ]);
+            // DB::transaction(function () use ($user, $nextBanLevel, $msg) {
+            // delete all tokens
+            DB::table('personal_access_tokens')->where('tokenable_type', User::class)->where('tokenable_id', $user->id)->delete();
+            // update all past records to todays date
+            BanHistory::where('user_id', $user->id)->where('ban_upto', '>=', Carbon::now()->startOfDay())->update(['ban_upto' => Carbon::now()]);
+            // update user status
+            $user->update(['status' => 0]);
+            // create a ban history record
+            $ban = BanHistory::create([
+                'user_id' => $user->id,
+                'ban_from' => Carbon::now()->startOfDay(),
+                'ban_upto' => Carbon::now()->startOfDay()->addMinute()->addDays($nextBanLevel->days),
+                'reason' => $msg
+            ]);
 
-                $banMailContent = BanHistory::with('user')->find($ban->id);
+            $banMailContent = BanHistory::with('user')->find($ban->id);
 
-                Mail::to($user->email)->send(new SendBannedUserMail($banMailContent));
+            Mail::to($user->email)->send(new SendBannedUserMail($banMailContent));
 
-                DiscordAlert::to('banCheck')->message("{$user->name}( {$user->student_id} ) ::{$msg}");
-            });
+            DiscordAlert::to('banCheck')->message("{$user->name}( {$user->student_id} ) ::{$msg}");
+            // });
         }
         return $msg;
     }

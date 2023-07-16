@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UserPasswordResetRequest;
+use App\Models\User\UserDevice;
 
 class AuthController extends Controller
 {
@@ -27,7 +28,7 @@ class AuthController extends Controller
         $validatedData = $request->validated();
         // dd($validatedData);
         //data pre-process
-        $student_id_without_prefix = $request->student_id = $this->studentIdWithoutPrefix($validatedData['student_id']);
+        $student_id_without_prefix = $this->studentIdWithoutPrefix($validatedData['student_id']);
         $merit = sprintf("%04d", $validatedData['merit_position']);
 
         //check if already registered
@@ -136,7 +137,16 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token', ['type:user'])->plainTextToken;
 
-        $this->saveUserTrace($user->id, $request->fingerprint, $request->deviceName, $request->platform, $token);
+
+        // check if this is a new token type
+        if ($request->fingerprint_alt != null && ($request->platform == null || $request->platform == 'web')) {
+            // update the fingerprint
+            UserDevice::where('user_id', $user->id)->where('fingerprint', $request->fingerprint)->update(['fingerprint' => $request->fingerprint_alt]);
+        }
+
+        $fingerprint = $request->fingerprint_alt ?  $request->fingerprint_alt : $request->fingerprint;
+
+        $this->saveUserTrace($user->id, $fingerprint, $request->deviceName, $request->platform, $token);
 
         return response()->json([
             'access_token' => $token,

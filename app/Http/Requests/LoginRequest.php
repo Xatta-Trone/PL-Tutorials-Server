@@ -24,9 +24,10 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email',
-            'password' => 'required|',
-            'fingerprint' => 'required|',
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string'],
+            'fingerprint' => ['required', 'string'],
+            'fingerprint_alt' => ['nullable', 'string'],
             'deviceName' => ['sometimes', 'required', 'string'],
             'platform' => ['sometimes', 'required', 'string'],
         ];
