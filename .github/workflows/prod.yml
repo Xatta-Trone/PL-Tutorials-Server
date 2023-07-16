@@ -3,8 +3,8 @@ name: PL Production
 on:
   push:
     branches: [ "production" ]
-  pull_request:
-    branches: [ "production" ]
+  # pull_request:
+  #   branches: [ "production" ]
 
 jobs:
 
@@ -17,9 +17,9 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        USERNAME: ${{ secrets.USERNAME }}
-        PORT: ${{ secrets.PORT }}
-        KEY: ${{ secrets.SSHKEY }}
+        username: ${{ secrets.USERNAME }}
+        port: ${{ secrets.PORT }}
+        key: ${{ secrets.SSHKEY }}
         script: |
           cd /var/www/plserver
           git pull origin production
