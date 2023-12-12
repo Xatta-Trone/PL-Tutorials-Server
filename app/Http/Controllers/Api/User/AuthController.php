@@ -129,7 +129,7 @@ class AuthController extends Controller
 
 
         if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return response()->json(['message' => 'Email or password incorrect! If you forgot your password then try resetting it.',
+            return response()->json(['message' => 'Your email or password might be incorrect. If you are having trouble, you can try resetting your password.',
             ], 401);
         }
 
