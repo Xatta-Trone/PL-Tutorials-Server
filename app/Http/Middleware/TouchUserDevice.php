@@ -18,7 +18,7 @@ class TouchUserDevice
     {
 
         if ($request->user() && $request->user()->tokenCan('type:user')) {
-            $request->user()->currentDevice()->touch();
+            $request->user()->currentDevice()->update(['updated_at' => now()]);
         }
 
         return $next($request);
