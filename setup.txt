@@ -8,3 +8,6 @@ sudo find . -type d -exec chmod g+s {} \;  <----- NOTE THIS
 
 sudo chgrp -R www-data storage bootstrap/cache
 sudo chmod -R ug+rwx storage bootstrap/cache
+
+
+https://stackoverflow.com/questions/30639174/how-to-set-up-file-permissions-for-laravel
