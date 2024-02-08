@@ -81,7 +81,7 @@ trait ActivityTrait
                 return get_class(new Course());
                 break;
             case 'post':
-                return get_class(new Post());
+                return get_class(new  Post());
                 break;
             case 'book':
                 return get_class(new Book());
