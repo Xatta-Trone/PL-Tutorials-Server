@@ -126,11 +126,16 @@ class UserController extends Controller
             return  $this->noPermissionResponse();
         }
 
-
         $user = User::findOrFail($id);
         $userOld =  $user->replicate();
 
-        $user->update($request->validated());
+        $dept_access = array_merge($request->dept_access ? $request->dept_access : [], [$user->department]);
+        $dept_access = implode(',', $dept_access);
+        $data = array_merge($request->validated(), ['dept_access' => $dept_access]);
+
+        // dd($dept_access, $user->department, $data);
+
+        $user->update($data);
         $this->saveAdminUpdateActivity($user->id, 'user', $user->student_id, $userOld, $user->getChanges());
         // dd($user);
         if ($user) {

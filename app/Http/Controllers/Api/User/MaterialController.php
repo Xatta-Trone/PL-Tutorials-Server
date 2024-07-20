@@ -35,8 +35,16 @@ class MaterialController extends Controller
     public function infos($deptSlug, $ltSlug = null, $courseSlug = null)
     {
         // check if can access dept
-        $dept  = Department::select('can_be_accessed_by')->where('slug', $deptSlug)->first();
-        $canBeAccessedBy = explode(',', $dept->can_be_accessed_by);
+        // $dept  = Department::select('can_be_accessed_by')->where('slug', $deptSlug)->first();
+        // $canBeAccessedBy = explode(',', $dept->can_be_accessed_by);
+
+        $user =  auth()->user();
+        $userDepartments = $user->dept_access ? explode(',', $user->dept_access) : [];
+        $defaultDepartments  = explode(',', Department::query()
+            ->select('can_be_accessed_by')
+            ->where('code', substr($user->student_id, 2, 2))
+            ->get()->first()->can_be_accessed_by);
+        $canBeAccessedBy = array_unique(array_merge($defaultDepartments, $userDepartments));
 
         if (!in_array(auth()->user()->department, $canBeAccessedBy)) {
             return $this->errorResponse('NOT_AUTHORIZED_TO_ACCESS_THIS_DEPARTMENT', []);
