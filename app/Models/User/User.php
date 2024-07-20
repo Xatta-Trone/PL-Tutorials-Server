@@ -35,7 +35,6 @@ class User extends Authenticatable
     }
 
 
-
     /**
      * The attributes that are mass assignable.
      *
@@ -50,7 +49,8 @@ class User extends Authenticatable
         'whitelisted',
         'deleted_at',
         'status',
-        'max_devices'
+        'max_devices',
+        'dept_access',
     ];
 
     protected $guarded = [];

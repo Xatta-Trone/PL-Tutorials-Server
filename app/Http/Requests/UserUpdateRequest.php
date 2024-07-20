@@ -31,7 +31,10 @@ class UserUpdateRequest extends FormRequest
             'status' => ['required'],
             'user_letter' => ['required'],
             'whitelisted' => ['required'],
-            'max_devices' => ['required', 'integer']
+            'max_devices' => ['required', 'integer'],
+            'dept_access' => ['nullable', 'array'],
         ];
     }
+
+
 }
