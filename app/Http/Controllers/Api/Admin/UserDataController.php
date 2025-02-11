@@ -29,7 +29,13 @@ class UserDataController extends Controller
         $u = UserData::query();
         $t = new VueTable2Service();
         return $t->get($u, [
-            'id', 'student_name', 'merit', 'student_id', 'hall_name', 'status'
+            'id',
+            'student_name',
+            'merit',
+            'student_id',
+            'hall_name',
+            'status',
+            'grad_level'
         ]);
     }
 
