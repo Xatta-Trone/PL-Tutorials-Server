@@ -20,6 +20,7 @@ class DummyUserDataImport implements ToModel, WithHeadingRow
             'student_id' => $row['student_id'] ?? $row['student_no'] ?? $row['Student_Id'] ?? null,
             'student_name' => $row['student_name'] ?? $row['name_english'] ?? $row['name'] ?? null,
             'hall_name' => $row['hall_name'] ?? $row['hall'] ?? null,
+            'grad_level' => $row['grad_level'] ?? "UG",
         ]);
     }
 

@@ -68,7 +68,7 @@ trait UserTrait
 
         $userPassword = $this->randomPassword();
         $userData['password'] = bcrypt($userPassword);
-        $userData['student_id'] = $this->studentIdWithoutPrefix($userData['student_id']);
+        $userData['student_id'] = $userData['grad_level'] == 'UG' ? $this->studentIdWithoutPrefix($userData['student_id']) : $userData['student_id'];
         $userData['user_letter'] = $this->userLetter($userData['name']);
         $user = User::create($userData);
         $user->password = $userPassword;
