@@ -76,7 +76,7 @@ class UserDataController extends Controller
         }
 
         $user = UserData::find($id);
-        $userdata = ['name' => $user->student_name, 'student_id' => $user->student_id, 'email' => $request->input('email')];
+        $userdata = ['name' => $user->student_name, 'student_id' => $user->student_id, 'email' => $request->input('email'), 'grad_level' => $user->grad_level];
 
 
         return $this->createNewAccount($userdata,  $id, true);
