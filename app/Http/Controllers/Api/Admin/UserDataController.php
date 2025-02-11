@@ -29,7 +29,13 @@ class UserDataController extends Controller
         $u = UserData::query();
         $t = new VueTable2Service();
         return $t->get($u, [
-            'id', 'student_name', 'merit', 'student_id', 'hall_name', 'status'
+            'id',
+            'student_name',
+            'merit',
+            'student_id',
+            'hall_name',
+            'status',
+            'grad_level'
         ]);
     }
 
@@ -70,7 +76,7 @@ class UserDataController extends Controller
         }
 
         $user = UserData::find($id);
-        $userdata = ['name' => $user->student_name, 'student_id' => $user->student_id, 'email' => $request->input('email')];
+        $userdata = ['name' => $user->student_name, 'student_id' => $user->student_id, 'email' => $request->input('email'), 'grad_level' => $user->grad_level];
 
 
         return $this->createNewAccount($userdata,  $id, true);
