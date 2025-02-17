@@ -28,8 +28,11 @@ class AuthController extends Controller
         $validatedData = $request->validated();
         // dd($validatedData);
         //data pre-process
-        $student_id_without_prefix = $this->studentIdWithoutPrefix($validatedData['student_id']);
-        $merit = sprintf("%04d", $validatedData['merit_position']);
+        if ($request->grad_level == "UG") {
+            $student_id_without_prefix = $this->studentIdWithoutPrefix($validatedData['student_id']);
+        } else {
+            $student_id_without_prefix = $validatedData['student_id'];
+        }
 
         //check if already registered
         $checkinUsers = User::where('student_id',  $student_id_without_prefix)->orWhere('email', '=', $request->email)->get()->first();
@@ -55,7 +58,7 @@ class AuthController extends Controller
         }
 
 
-        if ($this->formatMeritPosition($checkForStudentInDB->merit) != $request->merit_position) {
+        if ($request->grad_level == "UG" && $this->formatMeritPosition($checkForStudentInDB->merit) != $request->merit_position) {
             return response()->json([
                 'message' => 'DATA_NOT_MATCHING',
                 'status' => 'false',
@@ -69,7 +72,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        return $this->createNewAccount(array_merge($request->validated(), ['student_id' => $student_id_without_prefix, 'name' => $checkForStudentInDB->student_name]), $checkForStudentInDB->id);
+        return $this->createNewAccount(array_merge($request->validated(), ['student_id' => $student_id_without_prefix, 'name' => $checkForStudentInDB->student_name, 'grad_level' => $request->grad_level]), $checkForStudentInDB->id);
 
         // $user = User::create([
         //     'name' => $validatedData['name'],
