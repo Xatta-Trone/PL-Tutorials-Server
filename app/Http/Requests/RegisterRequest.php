@@ -30,6 +30,7 @@ class RegisterRequest extends FormRequest
             'merit_position' => ['required', 'numeric'],
             'hall_name' => ['required'],
             'student_id' => ['required'],
+            'grad_level' => ['required'],
         ];
     }
 }
