@@ -59,7 +59,7 @@ class UserController extends Controller
         // return $request->validated();
         $student_id_without_prefix = $request->student_id = $this->studentIdWithoutPrefix($request->student_id);
 
-        $checkForStudentInDB = UserData::select('student_name', 'student_id', 'id', 'status')->where('student_id', 'like', '%'.$student_id_without_prefix.'%')->get()->first();
+        $checkForStudentInDB = UserData::select('student_name', 'student_id', 'id', 'status', 'grad_level')->where('student_id', 'like', '%' . $student_id_without_prefix . '%')->get()->first();
 
         if ($checkForStudentInDB && $checkForStudentInDB->status == 1) {
             return response()->json([
