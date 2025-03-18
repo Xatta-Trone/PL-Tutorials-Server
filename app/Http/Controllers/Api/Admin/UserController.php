@@ -79,6 +79,13 @@ class UserController extends Controller
 
         $userdata = $checkForStudentInDB != null ? array_merge($request->validated(), ['name' => $checkForStudentInDB->student_name, 'student_id' => $student_id_without_prefix, 'max_devices' => config('user.allowed_device_number')]) : array_merge($request->validated(), ['student_id' => $student_id_without_prefix, 'max_devices' => config('user.allowed_device_number')]);
 
+
+        if ($checkForStudentInDB == null) {
+            $userdata['grad_level'] = 'UG';
+        } else {
+            $userdata['grad_level'] = $checkForStudentInDB->grad_level;
+        }
+
         return $this->createNewAccount($userdata, $checkForStudentInDB != null ? $checkForStudentInDB->id : null, true);
     }
 
